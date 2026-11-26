@@ -13,23 +13,33 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     :root {
-      --bg: #f1f5f9;
-      --surface: #ffffff;
-      --surface-soft: #f8fafc;
+      --bg: #e8f1ec;
+      --court-tint: #f4fbf7;
+      --surface: #fcfffe;
+      --surface-soft: #f1f7f4;
       --accent: #16a34a;
       --accent-dark: #15803d;
       --accent-soft: #dcfce7;
+      --court-line: #0ea5e9;
       --danger: #dc2626;
       --danger-soft: #fee2e2;
       --text: #0f172a;
-      --muted: #64748b;
-      --border: #e2e8f0;
-      --brand-bg: #eff6ff;
-      --brand-border: #bfdbfe;
-      --brand-text: #1d4ed8;
+      --muted: #526071;
+      --border: #d5e3dc;
+      --brand-bg: #e0f2fe;
+      --brand-border: #bae6fd;
+      --brand-text: #0369a1;
     }
     * { box-sizing: border-box; font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
-    body { margin: 0; background: var(--bg); color: var(--text); padding: 0 0 40px; }
+    body {
+      margin: 0;
+      background:
+        radial-gradient(circle at 12% 8%, rgba(22, 163, 74, 0.14), transparent 36%),
+        radial-gradient(circle at 88% 14%, rgba(14, 165, 233, 0.12), transparent 38%),
+        var(--bg);
+      color: var(--text);
+      padding: 0 0 40px;
+    }
 
     /* CENTERED HOME PAGE */
     .home-center {
@@ -38,14 +48,11 @@
       align-items: center;
       justify-content: center;
       padding: 28px 16px;
-      background:
-        radial-gradient(circle at 50% 0%, rgba(22, 163, 74, 0.16), transparent 55%),
-        var(--bg);
     }
     .home-card {
       width: 100%;
       max-width: 460px;
-      background: var(--surface);
+      background: linear-gradient(180deg, #ffffff 0%, var(--court-tint) 100%);
       border: 1px solid var(--border);
       border-radius: 24px;
       padding: 28px 24px;
@@ -111,37 +118,109 @@
     }
     .form-align { text-align: left; }
 
-    /* MAIN APP */
+    /* COMPACT TOPBAR + RETRACTABLE SIDEBAR */
     .topbar {
       position: sticky; top: 0; z-index: 30;
-      background: rgba(255, 255, 255, 0.94); backdrop-filter: blur(10px);
-      border-bottom: 1px solid var(--border); padding: 12px 18px;
+      background: linear-gradient(90deg, rgba(255, 255, 255, 0.95) 0%, rgba(240, 253, 244, 0.96) 100%);
+      backdrop-filter: blur(10px);
+      border-bottom: 2px solid #bbf7d0;
+      padding: 10px 18px;
     }
     .topbar-inner {
       max-width: 1140px; margin: 0 auto;
-      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;
+      display: flex; justify-content: space-between; align-items: center; gap: 12px;
     }
     .brand-logo { display: flex; align-items: center; gap: 10px; }
     .mini-rb-emblem {
-      width: 44px;
-      height: 44px;
+      width: 42px;
+      height: 42px;
       border-radius: 13px;
       background: linear-gradient(145deg, #0f172a 0%, #14532d 60%, #0284c7 100%);
       display: grid;
       place-items: center;
       flex-shrink: 0;
-      border: 1.5px solid rgba(134, 239, 172, 0.4);
+      border: 1.5px solid rgba(134, 239, 172, 0.45);
     }
-    .brand-logo h1 { margin: 0; font-size: 1.2rem; letter-spacing: -0.02em; }
-    .brand-logo p { margin: 0; font-size: 0.78rem; color: var(--muted); }
-    .header-actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+    .brand-logo h1 { margin: 0; font-size: 1.15rem; letter-spacing: -0.02em; }
+    .brand-logo p { margin: 0; font-size: 0.75rem; color: var(--muted); }
+
+    button.menu-trigger {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      border: 1px solid #86efac;
+      background: var(--accent-soft);
+      color: var(--accent-dark);
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-size: 0.82rem;
+      font-weight: 800;
+      cursor: pointer;
+    }
+    button.menu-trigger:hover { filter: brightness(0.97); }
+
+    .drawer-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.42);
+      display: none;
+      z-index: 50;
+    }
+    .drawer-backdrop.open { display: block; }
+    .side-drawer {
+      position: fixed;
+      top: 0;
+      right: -340px;
+      width: 320px;
+      max-width: 86vw;
+      height: 100vh;
+      background: linear-gradient(180deg, #ffffff 0%, #f0fdf4 100%);
+      border-left: 1px solid var(--border);
+      box-shadow: -12px 0 32px rgba(15, 23, 42, 0.16);
+      padding: 20px 18px;
+      z-index: 55;
+      transition: right 0.22s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      overflow-y: auto;
+    }
+    .side-drawer.open { right: 0; }
+    .drawer-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+    .drawer-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+    }
+    .drawer-btn {
+      width: 100%;
+      text-align: left;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      padding: 10px 13px;
+      border-radius: 12px;
+      font-size: 0.84rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .drawer-btn:hover { background: var(--surface-soft); }
+    .drawer-btn.dev-on { background: #fef3c7; border-color: #f59e0b; color: #92400e; }
+    .drawer-btn.danger { border-color: #fecaca; background: var(--danger-soft); color: var(--danger); }
+
     .lang-pill {
       display: inline-flex; background: var(--surface-soft); border: 1px solid var(--border);
-      border-radius: 999px; padding: 3px;
+      border-radius: 999px; padding: 3px; width: fit-content;
     }
     .lang-btn {
       border: none; background: transparent; color: var(--muted); font-size: 0.76rem;
-      font-weight: 700; padding: 5px 10px; border-radius: 999px; cursor: pointer;
+      font-weight: 700; padding: 5px 11px; border-radius: 999px; cursor: pointer;
     }
     .lang-btn.active { background: var(--accent); color: #fff; }
     button.ghost {
@@ -149,25 +228,26 @@
       padding: 7px 12px; border-radius: 999px; font-size: 0.8rem; font-weight: 600; cursor: pointer;
     }
     button.ghost:hover { background: var(--surface-soft); }
-    button.ghost.dev-on { background: #fef3c7; border-color: #f59e0b; color: #92400e; }
-    button.danger-ghost {
-      border: 1px solid #fecaca; background: var(--danger-soft); color: var(--danger);
-      padding: 7px 12px; border-radius: 999px; font-size: 0.8rem; font-weight: 700; cursor: pointer;
-    }
+
     .container { max-width: 1140px; margin: 18px auto 0; padding: 0 18px; }
     .nav-bar {
       display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;
       gap: 10px; margin-bottom: 18px;
     }
-    .nav-tabs { display: flex; gap: 8px; }
+    .nav-tabs { display: flex; gap: 8px; flex-wrap: wrap; }
     .nav-btn {
       border: 1px solid var(--border); background: var(--surface); color: var(--muted);
       padding: 9px 16px; border-radius: 999px; font-weight: 700; font-size: 0.88rem; cursor: pointer;
     }
-    .nav-btn.active { background: var(--text); color: #fff; border-color: var(--text); }
+    .nav-btn.active {
+      background: linear-gradient(135deg, #16a34a, #0284c7);
+      color: #fff;
+      border-color: transparent;
+      box-shadow: 0 4px 12px rgba(22, 163, 74, 0.22);
+    }
     .status-pills { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
     .auth-badge {
-      font-size: 0.8rem; color: var(--muted); background: var(--surface);
+      font-size: 0.8rem; color: var(--text); background: var(--surface);
       border: 1px solid var(--border); padding: 7px 12px; border-radius: 999px; font-weight: 600;
     }
     .mode-badge {
@@ -177,21 +257,35 @@
     .mode-badge.dev {
       background: #fef3c7; color: #92400e; border-color: #fcd34d;
     }
+
     .grid-2 { display: grid; grid-template-columns: 1.05fr 1.15fr; gap: 20px; align-items: start; }
     @media (max-width: 880px) { .grid-2 { grid-template-columns: 1fr; } }
+
     .card {
-      background: var(--surface); border: 1px solid var(--border); border-radius: 16px;
-      padding: 18px; margin-bottom: 16px; box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+      background: linear-gradient(180deg, #ffffff 0%, var(--court-tint) 100%);
+      border: 1px solid var(--border);
+      border-top: 4px solid var(--accent);
+      border-radius: 18px;
+      padding: 18px;
+      margin-bottom: 16px;
+      box-shadow: 0 6px 18px rgba(15, 23, 42, 0.05);
+    }
+    .card.feed-card {
+      border-top-color: var(--court-line);
     }
     .section-divider {
       font-size: 0.78rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em;
-      color: var(--accent); margin: 14px 0 6px; padding-top: 10px; border-top: 1px solid var(--border);
+      color: var(--accent-dark);
+      background: var(--accent-soft);
+      padding: 6px 10px;
+      border-radius: 8px;
+      margin: 14px 0 8px;
     }
     h2 { margin: 0 0 8px; font-size: 1.08rem; }
     label { display: block; font-size: 0.78rem; font-weight: 600; color: var(--muted); margin: 8px 0 4px; }
     input, select, textarea {
       width: 100%; padding: 9px 11px; border-radius: 10px; border: 1px solid var(--border);
-      background: var(--surface-soft); color: var(--text); font-size: 0.88rem;
+      background: #ffffff; color: var(--text); font-size: 0.88rem;
     }
     input:focus, select:focus, textarea:focus { outline: 2px solid #86efac; border-color: var(--accent); background: #fff; }
     .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
@@ -199,31 +293,41 @@
     .row-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
     @media (max-width: 640px) { .row-3, .row-4 { grid-template-columns: 1fr 1fr; } }
     button.primary {
-      margin-top: 14px; width: 100%; padding: 11px 14px; border: none; border-radius: 10px;
-      background: var(--accent); color: #fff; font-weight: 700; font-size: 0.92rem; cursor: pointer;
+      margin-top: 14px; width: 100%; padding: 11px 14px; border: none; border-radius: 12px;
+      background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+      color: #fff; font-weight: 700; font-size: 0.92rem; cursor: pointer;
+      box-shadow: 0 6px 14px rgba(22, 163, 74, 0.22);
     }
-    button.primary:hover { filter: brightness(0.96); }
+    button.primary:hover { filter: brightness(0.97); }
     .search-box {
       margin-bottom: 10px;
-      background: var(--surface-soft);
-      border: 1px solid var(--border);
+      background: #ffffff;
+      border: 1px solid #bae6fd;
       border-radius: 10px;
       padding: 9px 12px;
       font-size: 0.88rem;
     }
     .filter-strip { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
     .filter-chip {
-      border: 1px solid var(--border); background: var(--surface-soft); color: var(--muted);
+      border: 1px solid var(--border); background: #ffffff; color: var(--muted);
       padding: 5px 11px; border-radius: 999px; font-size: 0.76rem; font-weight: 600; cursor: pointer;
     }
     .filter-chip.active { background: var(--accent); color: #fff; border-color: var(--accent); }
-    .social-post { border-top: 1px solid var(--border); padding-top: 14px; margin-top: 14px; }
-    .social-post:first-of-type { border-top: none; padding-top: 4px; margin-top: 4px; }
+
+    .social-post {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-left: 4px solid #22c55e;
+      border-radius: 14px;
+      padding: 13px 14px;
+      margin-top: 12px;
+    }
+    .social-post:first-of-type { margin-top: 4px; }
     .post-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 8px; }
     .author-row { display: flex; align-items: center; gap: 10px; }
     .avatar {
       width: 36px; height: 36px; border-radius: 999px;
-      background: linear-gradient(135deg, #22c55e, #3b82f6);
+      background: linear-gradient(135deg, #16a34a, #0284c7);
       color: #fff; font-weight: 800; font-size: 0.85rem;
       display: grid; place-items: center; flex-shrink: 0;
     }
@@ -248,13 +352,15 @@
     }
     .action-btn:hover { background: #e2e8f0; }
     .action-btn.del { border-color: #fecaca; background: var(--danger-soft); color: var(--danger); }
+
     .ai-summary-box {
-      background: var(--accent-soft); border: 1px solid #86efac; color: #14532d;
+      background: linear-gradient(135deg, #dcfce7 0%, #e0f2fe 100%);
+      border: 1px solid #86efac; color: #0f172a;
       border-radius: 12px; padding: 13px 15px; font-size: 0.9rem; line-height: 1.5;
     }
     .verdict-card {
-      background: var(--surface); border: 1px solid var(--border); border-left: 4px solid var(--accent);
-      border-radius: 14px; padding: 15px; margin-top: 12px; box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05);
+      background: #ffffff; border: 1px solid var(--border); border-left: 4px solid var(--accent);
+      border-radius: 14px; padding: 15px; margin-top: 12px; box-shadow: 0 2px 6px rgba(15, 23, 42, 0.05);
     }
     .rec-layout { display: grid; grid-template-columns: 106px 1fr; gap: 14px; align-items: start; }
     @media (max-width: 560px) { .rec-layout { grid-template-columns: 1fr; } }
@@ -262,7 +368,7 @@
       width: 106px; height: 126px; object-fit: contain; background: var(--surface-soft);
       border: 1px solid var(--border); border-radius: 10px; padding: 6px;
     }
-    .img-search-link { display: inline-block; margin-top: 6px; font-size: 0.76rem; color: #2563eb; text-decoration: none; font-weight: 600; }
+    .img-search-link { display: inline-block; margin-top: 6px; font-size: 0.76rem; color: #0284c7; text-decoration: none; font-weight: 600; }
     .cite-ref {
       font-size: 0.84rem; color: #334155; margin-top: 8px;
       padding: 8px 10px; background: var(--surface-soft); border-radius: 8px; line-height: 1.45;
@@ -289,23 +395,18 @@
     <div class="home-card">
       <div class="big-rb-emblem" aria-label="RacketBuddy RB Badminton Emblem">
         <svg width="78" height="78" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <!-- Badminton Racket Frame & Shaft Behind RB -->
           <g transform="rotate(-24 60 56)">
             <ellipse cx="60" cy="40" rx="25" ry="31" stroke="#86efac" stroke-width="4.5" fill="rgba(22,163,74,0.16)" />
-            <!-- String Bed Mesh -->
             <line x1="42" y1="40" x2="78" y2="40" stroke="rgba(255,255,255,0.45)" stroke-width="1.3" />
             <line x1="45" y1="28" x2="75" y2="28" stroke="rgba(255,255,255,0.35)" stroke-width="1.2" />
             <line x1="45" y1="52" x2="75" y2="52" stroke="rgba(255,255,255,0.35)" stroke-width="1.2" />
             <line x1="52" y1="13" x2="52" y2="67" stroke="rgba(255,255,255,0.35)" stroke-width="1.2" />
             <line x1="60" y1="10" x2="60" y2="70" stroke="rgba(255,255,255,0.45)" stroke-width="1.3" />
             <line x1="68" y1="13" x2="68" y2="67" stroke="rgba(255,255,255,0.35)" stroke-width="1.2" />
-            <!-- Racket Shaft & Grip -->
             <line x1="60" y1="71" x2="60" y2="96" stroke="#38bdf8" stroke-width="4.5" stroke-linecap="round" />
             <rect x="55.5" y="94" width="9" height="17" rx="3" fill="#f8fafc" />
           </g>
-          <!-- Shuttlecock Accent Top-Right -->
           <path d="M92 18L102 28M94 15L105 22M89 20L98 31" stroke="#fde047" stroke-width="2" stroke-linecap="round" />
-          <!-- Bold RB Lettering Foreground -->
           <text x="60" y="69" text-anchor="middle" fill="#ffffff" stroke="#0f172a" stroke-width="5" paint-order="stroke fill" font-size="38" font-weight="900" font-family="system-ui, -apple-system, sans-serif" letter-spacing="-1.5">RB</text>
         </svg>
       </div>
@@ -372,6 +473,31 @@
     </div>
   </div>
 
+  <!-- RETRACTABLE SIDEBAR & BACKDROP -->
+  <div id="drawerBackdrop" class="drawer-backdrop" onclick="closeSidebar()"></div>
+  <aside id="sideDrawer" class="side-drawer" aria-label="Menu Sidebar">
+    <div class="drawer-head">
+      <strong id="drawerTitle">RB Menu</strong>
+      <button type="button" class="ghost" onclick="closeSidebar()">✕</button>
+    </div>
+
+    <div>
+      <label style="margin-top:0;" id="drawerLangLbl">Language / Bahasa</label>
+      <div class="lang-pill">
+        <button type="button" id="btn_en" class="lang-btn active" onclick="setLang('en')">EN</button>
+        <button type="button" id="btn_bm" class="lang-btn" onclick="setLang('bm')">BM</button>
+      </div>
+    </div>
+
+    <div class="drawer-stack">
+      <button type="button" id="app_installBtn" class="drawer-btn" onclick="closeSidebar(); triggerAddToHomeScreen();">📲 Add to Home Screen</button>
+      <button type="button" id="devToggleBtn" class="drawer-btn" onclick="toggleDevMode()">Dev Mode</button>
+      <button type="button" id="t_clearMine" class="drawer-btn" onclick="clearMyPosts()">Clear My Posts</button>
+      <button type="button" id="t_clearAll" class="drawer-btn danger" style="display:none;" onclick="clearEntireFeed()">Dev: Clear All Feed</button>
+      <button type="button" id="t_logoutBtn" class="drawer-btn" onclick="closeSidebar(); signOutToGate();">Sign Out</button>
+    </div>
+  </aside>
+
   <!-- MAIN AUTHENTICATED APP -->
   <div id="mainApp" style="display:none;">
     <div class="topbar">
@@ -391,17 +517,7 @@
             <p id="t_subtitle">Find your best racket as your buddy</p>
           </div>
         </div>
-        <div class="header-actions">
-          <div class="lang-pill">
-            <button type="button" id="btn_en" class="lang-btn active" onclick="setLang('en')">EN</button>
-            <button type="button" id="btn_bm" class="lang-btn" onclick="setLang('bm')">BM</button>
-          </div>
-          <button type="button" id="app_installBtn" class="ghost" onclick="triggerAddToHomeScreen()">📲 Add to Home Screen</button>
-          <button type="button" id="devToggleBtn" class="ghost" onclick="toggleDevMode()">Dev Mode</button>
-          <button type="button" id="t_clearMine" class="ghost" onclick="clearMyPosts()">Clear My Posts</button>
-          <button type="button" id="t_clearAll" class="danger-ghost" style="display:none;" onclick="clearEntireFeed()">Dev: Clear All Feed</button>
-          <button type="button" id="t_logoutBtn" class="ghost" onclick="signOutToGate()">Sign Out</button>
-        </div>
+        <button type="button" class="menu-trigger" onclick="openSidebar()">☰ <span id="t_menuBtn">Menu</span></button>
       </div>
     </div>
 
@@ -409,7 +525,7 @@
       <div class="nav-bar">
         <div class="nav-tabs">
           <button type="button" id="nav_p1" class="nav-btn active" onclick="showPage('page1')">1. Post & Feed</button>
-          <button type="button" id="nav_p2" class="nav-btn" onclick="showPage('page2')">2. AI Consultant</button>
+          <button type="button" id="nav_p2" class="nav-btn" onclick="showPage('page2')">2. Find Racket</button>
         </div>
         <div class="status-pills">
           <div id="modeBadge" class="mode-badge">User Mode</div>
@@ -440,25 +556,19 @@
               </div>
             </div>
 
-            <div class="row-2">
-              <div>
-                <label id="t_pStyle">Main Playstyle</label>
-                <select id="pStyle" onchange="syncAdvisorStyleFromProfile()">
-                  <option value="Double front (Speed)">Double front (Speed)</option>
-                  <option value="Double backcourt (Hard hitter)">Double backcourt (Hard hitter)</option>
-                  <option value="Single (Attacking)">Single (Attacking)</option>
-                  <option value="Single (Control)" selected>Single (Control)</option>
-                  <option value="Mixed">Mixed</option>
-                </select>
-              </div>
-              <div>
-                <label id="t_pCurrentRacket">Current Racket Using Now</label>
-                <input id="pCurrentRacket" placeholder="e.g. Arcsaber 11 Pro 4U" />
-              </div>
+            <div>
+              <label id="t_pStyle">Main Playstyle</label>
+              <select id="pStyle" onchange="syncAdvisorStyleFromProfile()">
+                <option value="Double front (Speed)">Double front (Speed)</option>
+                <option value="Double backcourt (Hard hitter)">Double backcourt (Hard hitter)</option>
+                <option value="Single (Attacking)">Single (Attacking)</option>
+                <option value="Single (Control)" selected>Single (Control)</option>
+                <option value="Mixed">Mixed</option>
+              </select>
             </div>
 
             <div class="section-divider" id="t_secRacket">B. Racket & Court Feedback</div>
-            <div class="row-3">
+            <div class="row-2">
               <div>
                 <label id="t_brandLabel">Brand</label>
                 <select id="brandSelect">
@@ -474,10 +584,6 @@
               <div>
                 <label id="t_racket">Racket Model *</label>
                 <input id="racket" placeholder="e.g. Nanoflare 1000 Play" />
-              </div>
-              <div>
-                <label id="t_priceRm">Price (RM)</label>
-                <input id="priceRm" type="number" min="50" max="2000" value="220" />
               </div>
             </div>
 
@@ -551,7 +657,7 @@
           </div>
 
           <!-- SOCIAL FEED COLUMN WITH SEARCH BAR -->
-          <div class="card">
+          <div class="card feed-card">
             <h2><span id="t_feedTitle">RacketBuddy Feed</span> (<span id="count">0</span>)</h2>
 
             <input
@@ -575,11 +681,11 @@
         </div>
       </section>
 
-      <!-- PAGE 2: DEDICATED AI CONSULTANT / SEARCH PAGE -->
+      <!-- PAGE 2: FIND RACKET -->
       <section id="page2" style="display:none;">
         <div class="card">
-          <h2 id="t_advTitle">RacketBuddy AI Consultant (BM & EN · Works With Empty or Full Feed)</h2>
-          <div class="hint" id="t_advContextHint">Automatically uses your saved player playstyle & current racket context.</div>
+          <h2 id="t_advTitle">Find Racket (BM & EN · Works With Empty or Full Feed)</h2>
+          <div class="hint" id="t_advContextHint">Automatically uses your saved player playstyle context.</div>
 
           <div class="row-3">
             <div>
@@ -635,7 +741,7 @@
           <label id="t_qText">Ask in BM or English (e.g. "nanoflare 1000 play", "sakit wrist", "smash padu")</label>
           <input id="queryText" placeholder="Taip soalan atau model raket: nanoflare 1000 play, sakit wrist..." />
 
-          <button type="button" class="primary" id="t_advBtn" onclick="recommend()">Consult AI Advisor</button>
+          <button type="button" class="primary" id="t_advBtn" onclick="recommend()">Find Racket</button>
           <div id="results" style="margin-top:14px;"></div>
         </div>
       </section>
@@ -654,6 +760,16 @@
     let currentFeedFilter = "All";
     let authMode = "register";
     let deferredInstallPrompt = null;
+
+    function openSidebar() {
+      document.getElementById("drawerBackdrop")?.classList.add("open");
+      document.getElementById("sideDrawer")?.classList.add("open");
+    }
+
+    function closeSidebar() {
+      document.getElementById("drawerBackdrop")?.classList.remove("open");
+      document.getElementById("sideDrawer")?.classList.remove("open");
+    }
 
     function setupAppManifestAndIcons() {
       const iconSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
@@ -677,7 +793,7 @@
         description: "Find your best racket as your buddy",
         start_url: window.location.href,
         display: "standalone",
-        background_color: "#f1f5f9",
+        background_color: "#e8f1ec",
         theme_color: "#16a34a",
         icons: [
           { src: iconDataUrl, sizes: "192x192", type: "image/svg+xml", purpose: "any maskable" },
@@ -725,9 +841,14 @@
         btnLogin: "Login",
         title: "RacketBuddy (RB)",
         subtitle: "Find your best racket as your buddy",
+        menuBtn: "Menu",
+        drawerTitle: "RB Menu",
+        drawerLangLbl: "Language / Bahasa",
         clearMine: "Clear My Posts",
         clearAll: "Dev: Clear All Feed",
         logoutBtn: "Sign Out",
+        tab1: "1. Post & Feed",
+        tab2: "2. Find Racket",
         combTitle: "Player Info + Racket Feedback (Submit Together)",
         combHint: "Fill your player info, racket details, and court feedback once—everything saves and posts together to the shared feed.",
         secPlayer: "A. Player Info",
@@ -736,10 +857,8 @@
         pAge: "Age",
         pYears: "Years Playing",
         pStyle: "Main Playstyle",
-        pCurrentRacket: "Current Racket Using Now",
         brandLabel: "Brand",
         racket: "Racket Model *",
-        priceRm: "Price (RM)",
         weightGrip: "Weight & Grip",
         balance: "Balance",
         stringSetup: "String & Tension",
@@ -753,15 +872,15 @@
         submitBtn: "Submit Player & Racket Post",
         feedTitle: "RacketBuddy Feed",
         searchPlaceholder: "Search racket, brand, @player, string, or court feedback...",
-        advTitle: "RacketBuddy AI Consultant (BM & EN · Works With Empty or Full Feed)",
-        advContextHint: "Automatically uses your saved player playstyle & current racket context.",
+        advTitle: "Find Racket (BM & EN · Works With Empty or Full Feed)",
+        advContextHint: "Automatically uses your saved player playstyle context.",
         qBrand: "Brand",
         qStyle: "Playstyle",
         qBudget: "Max Budget (RM)",
         qWeight: "Preferred Weight",
         qPriority: "Top Court Priority",
         qText: "Ask in BM or English (e.g. \"nanoflare 1000 play\", \"sakit wrist\", \"smash padu\")",
-        advBtn: "Consult AI Advisor",
+        advBtn: "Find Racket",
         yrs: "yrs",
         ageLabel: "age",
         helpful: "Helpful",
@@ -796,9 +915,14 @@
         btnLogin: "Log Masuk",
         title: "RacketBuddy (RB)",
         subtitle: "Find your best racket as your buddy",
+        menuBtn: "Menu",
+        drawerTitle: "Menu RB",
+        drawerLangLbl: "Bahasa / Language",
         clearMine: "Padam Post Saya",
         clearAll: "Dev: Kosongkan Semua Feed",
         logoutBtn: "Log Keluar",
+        tab1: "1. Post & Feed",
+        tab2: "2. Cari Raket",
         combTitle: "Info Pemain + Feedback Raket (Hantar Sekali Gus)",
         combHint: "Isi info pemain, butiran raket, dan ulasan court sekali sahaja—semua disimpan dan dihantar serentak ke feed bersama.",
         secPlayer: "A. Info Pemain",
@@ -807,10 +931,8 @@
         pAge: "Umur",
         pYears: "Tahun Main",
         pStyle: "Gaya Main Utama",
-        pCurrentRacket: "Raket Sedang Digunakan Sekarang",
         brandLabel: "Jenama",
         racket: "Model Raket *",
-        priceRm: "Harga (RM)",
         weightGrip: "Berat & Grip",
         balance: "Imbangan",
         stringSetup: "Tali & Tension",
@@ -824,15 +946,15 @@
         submitBtn: "Hantar Post Pemain & Raket",
         feedTitle: "Feed RacketBuddy",
         searchPlaceholder: "Cari raket, jenama, @pemain, tali, atau feedback court...",
-        advTitle: "Penasihat AI RacketBuddy (BM & EN · Feed Kosong / Ada Isi)",
-        advContextHint: "Mengambil gaya main & raket semasa yang disimpan pada profil anda.",
+        advTitle: "Cari Raket (BM & EN · Feed Kosong / Ada Isi)",
+        advContextHint: "Mengambil gaya main yang disimpan pada profil anda.",
         qBrand: "Jenama",
         qStyle: "Gaya Main",
         qBudget: "Bajet Maksimum (RM)",
         qWeight: "Pilihan Berat",
         qPriority: "Keutamaan Utama",
         qText: "Tanya dalam BM atau English (cth: \"nanoflare 1000 play\", \"sakit wrist\", \"smash padu\")",
-        advBtn: "Tanya Penasihat AI",
+        advBtn: "Cari Raket",
         yrs: "thn",
         ageLabel: "umur",
         helpful: "Membantu",
@@ -915,7 +1037,7 @@
         }
       });
       if (changed) {
-        localStorage.setItem("rb_accounts_v4", JSON.stringify(next));
+        localStorage.setItem("rb_accounts_v5", JSON.stringify(next));
       }
       return next;
     }
@@ -923,22 +1045,22 @@
     function touchAccountActivity(handle) {
       if (!handle || !accounts[handle]) return;
       accounts[handle].lastActiveAt = Date.now();
-      localStorage.setItem("rb_accounts_v4", JSON.stringify(accounts));
+      localStorage.setItem("rb_accounts_v5", JSON.stringify(accounts));
     }
 
-    let accounts = pruneInactiveAccounts(JSON.parse(localStorage.getItem("rb_accounts_v4")) || {});
-    let profile = JSON.parse(localStorage.getItem("rb_profile_v4")) || {
-      handle: "", age: 24, years: 6, style: "Single (Control)", currentRacket: ""
+    let accounts = pruneInactiveAccounts(JSON.parse(localStorage.getItem("rb_accounts_v5")) || {});
+    let profile = JSON.parse(localStorage.getItem("rb_profile_v5")) || {
+      handle: "", age: 24, years: 6, style: "Single (Control)"
     };
-    let currentSession = JSON.parse(localStorage.getItem("rb_session_v4")) || null;
+    let currentSession = JSON.parse(localStorage.getItem("rb_session_v5")) || null;
     if (currentSession && !accounts[currentSession.handle]) {
       currentSession = null;
-      localStorage.removeItem("rb_session_v4");
+      localStorage.removeItem("rb_session_v5");
     } else if (currentSession) {
       touchAccountActivity(currentSession.handle);
     }
 
-    let reviews = JSON.parse(localStorage.getItem("rb_reviews_v4")) || [];
+    let reviews = JSON.parse(localStorage.getItem("rb_reviews_v5")) || [];
 
     function switchAuthTab(mode) {
       authMode = mode;
@@ -976,9 +1098,9 @@
         accounts[normHandle] = {
           pass,
           lastActiveAt: Date.now(),
-          profile: { handle: normHandle, age, years: profile.years || 1, style, currentRacket: "" }
+          profile: { handle: normHandle, age, years: profile.years || 1, style }
         };
-        localStorage.setItem("rb_accounts_v4", JSON.stringify(accounts));
+        localStorage.setItem("rb_accounts_v5", JSON.stringify(accounts));
         profile = { ...accounts[normHandle].profile };
       } else {
         if (!existing) {
@@ -992,13 +1114,13 @@
           return;
         }
         existing.lastActiveAt = Date.now();
-        localStorage.setItem("rb_accounts_v4", JSON.stringify(accounts));
+        localStorage.setItem("rb_accounts_v5", JSON.stringify(accounts));
         profile = { ...(existing.profile || {}), handle: normHandle };
       }
 
-      localStorage.setItem("rb_profile_v4", JSON.stringify(profile));
+      localStorage.setItem("rb_profile_v5", JSON.stringify(profile));
       currentSession = { handle: normHandle };
-      localStorage.setItem("rb_session_v4", JSON.stringify(currentSession));
+      localStorage.setItem("rb_session_v5", JSON.stringify(currentSession));
       msgEl.textContent = "";
       syncGateVisibility();
     }
@@ -1006,7 +1128,7 @@
     function signOutToGate() {
       currentSession = null;
       isDevMode = false;
-      localStorage.removeItem("rb_session_v4");
+      localStorage.removeItem("rb_session_v5");
       document.getElementById("gatePass").value = "";
       syncGateVisibility();
     }
@@ -1019,7 +1141,6 @@
         age: row.age ?? 24,
         expYears: row.exp_years ?? row.expYears ?? 1,
         racket: row.racket || "",
-        priceRm: row.price_rm ?? row.priceRm ?? 350,
         weightGrip: row.weight_grip ?? row.weightGrip ?? "4U G5",
         balance: row.balance || "Even-Balance",
         paperFlex: row.paper_flex ?? row.paperFlex ?? "Medium",
@@ -1044,7 +1165,7 @@
 
       if (!error && Array.isArray(data)) {
         reviews = data.map(normalizeRow);
-        localStorage.setItem("rb_reviews_v4", JSON.stringify(reviews));
+        localStorage.setItem("rb_reviews_v5", JSON.stringify(reviews));
       }
       renderFeed();
     }
@@ -1090,13 +1211,13 @@
       if (isDevMode) {
         badge.textContent = currentLang === "bm" ? "Mod Developer" : "Developer Mode";
         badge.className = "mode-badge dev";
-        devBtn.className = "ghost dev-on";
+        devBtn.className = "drawer-btn dev-on";
         devBtn.textContent = currentLang === "bm" ? "Keluar Dev Mode" : "Exit Dev Mode";
-        clearAllBtn.style.display = "inline-block";
+        clearAllBtn.style.display = "block";
       } else {
         badge.textContent = currentLang === "bm" ? "Mod Pengguna" : "User Mode";
         badge.className = "mode-badge";
-        devBtn.className = "ghost";
+        devBtn.className = "drawer-btn";
         devBtn.textContent = "Dev Mode";
         clearAllBtn.style.display = "none";
       }
@@ -1116,11 +1237,15 @@
       if (!confirm(msg)) return;
 
       if (sbClient) {
-        await sbClient.from("rb_posts").delete().ilike("author", getActiveHandle());
+        const { error } = await sbClient.from("rb_posts").delete().ilike("author", getActiveHandle());
+        if (error) {
+          alert(error.message);
+          return;
+        }
         await loadSharedPosts();
       } else {
         reviews = reviews.filter(r => (r.author || "").toLowerCase() !== me);
-        localStorage.setItem("rb_reviews_v4", JSON.stringify(reviews));
+        localStorage.setItem("rb_reviews_v5", JSON.stringify(reviews));
         renderFeed();
       }
     }
@@ -1134,11 +1259,15 @@
       if (!confirm(msg)) return;
 
       if (sbClient) {
-        await sbClient.from("rb_posts").delete().gt("id", 0);
+        const { error } = await sbClient.from("rb_posts").delete().gt("id", 0);
+        if (error) {
+          alert(error.message);
+          return;
+        }
         await loadSharedPosts();
       } else {
         reviews = [];
-        localStorage.setItem("rb_reviews_v4", JSON.stringify(reviews));
+        localStorage.setItem("rb_reviews_v5", JSON.stringify(reviews));
         renderFeed();
       }
     }
@@ -1154,11 +1283,15 @@
       }
 
       if (sbClient) {
-        await sbClient.from("rb_posts").delete().eq("id", id);
+        const { error } = await sbClient.from("rb_posts").delete().eq("id", id);
+        if (error) {
+          alert(error.message);
+          return;
+        }
         await loadSharedPosts();
       } else {
         reviews = reviews.filter(r => r.id !== id);
-        localStorage.setItem("rb_reviews_v4", JSON.stringify(reviews));
+        localStorage.setItem("rb_reviews_v5", JSON.stringify(reviews));
         renderFeed();
       }
     }
@@ -1201,7 +1334,6 @@
       document.getElementById("pAge").value = profile.age || 24;
       document.getElementById("pYears").value = profile.years || 6;
       document.getElementById("pStyle").value = profile.style || "Single (Control)";
-      document.getElementById("pCurrentRacket").value = profile.currentRacket || "";
       document.getElementById("queryStyle").value = profile.style || "Single (Control)";
     }
 
@@ -1228,12 +1360,14 @@
         tabRegister: t.tabReg, tabLogin: t.tabLog,
         g_lblHandle: t.lblHandle, g_lblPass: t.lblPass, g_lblAge: t.lblAge, g_lblStyle: t.lblStyle,
         g_submitBtn: authMode === "register" ? t.btnRegister : t.btnLogin,
-        t_title: t.title, t_subtitle: t.subtitle,
+        t_title: t.title, t_subtitle: t.subtitle, t_menuBtn: t.menuBtn,
+        drawerTitle: t.drawerTitle, drawerLangLbl: t.drawerLangLbl,
         t_clearMine: t.clearMine, t_clearAll: t.clearAll, t_logoutBtn: t.logoutBtn,
+        nav_p1: t.tab1, nav_p2: t.tab2,
         t_combTitle: t.combTitle, t_combHint: t.combHint, t_secPlayer: t.secPlayer,
         t_secRacket: t.secRacket, t_pHandle: t.pHandle, t_pAge: t.pAge, t_pYears: t.pYears,
-        t_pStyle: t.pStyle, t_pCurrentRacket: t.pCurrentRacket, t_brandLabel: t.brandLabel,
-        t_racket: t.racket, t_priceRm: t.priceRm, t_weightGrip: t.weightGrip, t_balance: t.balance,
+        t_pStyle: t.pStyle, t_brandLabel: t.brandLabel,
+        t_racket: t.racket, t_weightGrip: t.weightGrip, t_balance: t.balance,
         t_stringSetup: t.stringSetup, t_paperFlex: t.paperFlex, t_feelFlex: t.feelFlex,
         t_sPower: t.sPower, t_sControl: t.sControl, t_sSpeed: t.sSpeed, t_sComfort: t.sComfort,
         t_notes: t.notes, t_submitBtn: t.submitBtn, t_feedTitle: t.feedTitle,
@@ -1248,8 +1382,6 @@
 
       const searchEl = document.getElementById("feedSearchInput");
       if (searchEl) searchEl.placeholder = t.searchPlaceholder;
-      document.getElementById("nav_p1").textContent = currentLang === "bm" ? "1. Post & Feed" : "1. Post & Feed";
-      document.getElementById("nav_p2").textContent = currentLang === "bm" ? "2. Penasihat AI" : "2. AI Consultant";
     }
 
     function setLang(lang) {
@@ -1281,14 +1413,13 @@
       const ageVal = Number(document.getElementById("pAge").value) || 24;
       const yearsVal = Number(document.getElementById("pYears").value) || 6;
       const styleVal = document.getElementById("pStyle").value;
-      const currentRacketVal = document.getElementById("pCurrentRacket").value.trim() || rawRacket;
 
-      profile = { handle: handleVal, age: ageVal, years: yearsVal, style: styleVal, currentRacket: currentRacketVal };
-      localStorage.setItem("rb_profile_v4", JSON.stringify(profile));
+      profile = { handle: handleVal, age: ageVal, years: yearsVal, style: styleVal };
+      localStorage.setItem("rb_profile_v5", JSON.stringify(profile));
       if (currentSession && accounts[currentSession.handle]) {
         accounts[currentSession.handle].profile = { ...profile };
         accounts[currentSession.handle].lastActiveAt = Date.now();
-        localStorage.setItem("rb_accounts_v4", JSON.stringify(accounts));
+        localStorage.setItem("rb_accounts_v5", JSON.stringify(accounts));
       }
       document.getElementById("queryStyle").value = styleVal;
 
@@ -1302,7 +1433,7 @@
         exp_years: yearsVal,
         brand,
         racket,
-        price_rm: Number(document.getElementById("priceRm").value) || 350,
+        price_rm: 350,
         weight_grip: document.getElementById("weightGrip").value,
         balance: document.getElementById("balance").value,
         paper_flex: document.getElementById("paperFlex").value,
@@ -1328,7 +1459,7 @@
         await loadSharedPosts();
       } else {
         reviews.unshift(normalizeRow({ ...payload, id: Date.now() }));
-        localStorage.setItem("rb_reviews_v4", JSON.stringify(reviews));
+        localStorage.setItem("rb_reviews_v5", JSON.stringify(reviews));
         renderFeed();
       }
 
@@ -1342,11 +1473,15 @@
       if (!item) return;
       const nextHelpful = (item.helpful || 1) + 1;
       if (sbClient) {
-        await sbClient.from("rb_posts").update({ helpful: nextHelpful }).eq("id", id);
+        const { error } = await sbClient.from("rb_posts").update({ helpful: nextHelpful }).eq("id", id);
+        if (error) {
+          alert(error.message);
+          return;
+        }
         await loadSharedPosts();
       } else {
         item.helpful = nextHelpful;
-        localStorage.setItem("rb_reviews_v4", JSON.stringify(reviews));
+        localStorage.setItem("rb_reviews_v5", JSON.stringify(reviews));
         renderFeed();
       }
     }
@@ -1367,7 +1502,7 @@
       document.getElementById("count").textContent = filtered.length;
       const feed = document.getElementById("feed");
       if (!filtered.length) {
-        feed.innerHTML = `<p style="color:#64748b;font-size:0.88rem;">${currentLang === "bm" ? "Tiada post sepadan — Penasihat AI di tab 2 tetap boleh digunakan!" : "No matching posts yet — the AI Consultant on Tab 2 still works!"}</p>`;
+        feed.innerHTML = `<p style="color:#526071;font-size:0.88rem;">${currentLang === "bm" ? "Tiada post sepadan — Cari Raket di tab 2 tetap boleh digunakan!" : "No matching posts yet — Find Racket on Tab 2 still works!"}</p>`;
         return;
       }
 
@@ -1386,7 +1521,7 @@
               </div>
               <span class="brand-pill">${brand}</span>
             </div>
-            <div style="font-weight:700;font-size:0.96rem;">${r.racket} <span style="font-weight:500;color:#64748b;">(${r.weightGrip} · ~RM${r.priceRm})</span></div>
+            <div style="font-weight:700;font-size:0.96rem;">${r.racket} <span style="font-weight:500;color:#526071;">(${r.weightGrip})</span></div>
             <div>
               <span class="meta-tag">${r.balance}</span>
               <span class="meta-tag">Spec: ${r.paperFlex} → Feel: ${r.feelFlex}</span>
@@ -1412,9 +1547,9 @@
     function makeFallbackSvg(racketName, brand) {
       const safeLabel = `${brand} · ${racketName}`.slice(0, 26).replace(/[<>&"]/g, "");
       const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="160" height="190" viewBox="0 0 160 190">
-        <rect width="160" height="190" rx="12" fill="#f8fafc"/>
+        <rect width="160" height="190" rx="12" fill="#f1f7f4"/>
         <ellipse cx="80" cy="64" rx="34" ry="44" fill="none" stroke="#16a34a" stroke-width="5"/>
-        <line x1="80" y1="108" x2="80" y2="152" stroke="#64748b" stroke-width="5"/>
+        <line x1="80" y1="108" x2="80" y2="152" stroke="#0284c7" stroke-width="5"/>
         <rect x="74" y="152" width="12" height="24" rx="3" fill="#94a3b8"/>
         <text x="80" y="185" text-anchor="middle" fill="#334155" font-size="10" font-family="sans-serif">${safeLabel}</text>
       </svg>`;
@@ -1472,6 +1607,7 @@
 
       const feedItems = reviews.map(r => ({
         ...r,
+        priceRm: 350,
         brand: r.brand || detectBrand(r.racket),
         fromFeed: true,
         proofText: `"${r.notes}"`,
@@ -1507,13 +1643,9 @@
         if (top.length === 2) break;
       }
 
-      const curGearLine = profile.currentRacket
-        ? (currentLang === "bm" ? ` · Raket semasa: <strong>${profile.currentRacket}</strong>` : ` · Current bag: <strong>${profile.currentRacket}</strong>`)
-        : "";
-
       const summary = currentLang === "bm"
-        ? `<div class="ai-summary-box"><strong>Ringkasan AI RB:</strong> Gaya <em>${qStyle}</em> · Umur ~${profile.age} · Bajet RM${qBudget}${curGearLine}. Cadangan utama: <strong>${top[0].racket}</strong>.</div>`
-        : `<div class="ai-summary-box"><strong>RB AI Verdict:</strong> <em>${qStyle}</em> · Age ~${profile.age} · Budget RM${qBudget}${curGearLine}. Top pick: <strong>${top[0].racket}</strong>.</div>`;
+        ? `<div class="ai-summary-box"><strong>Ringkasan Cari Raket RB:</strong> Gaya <em>${qStyle}</em> · Umur ~${profile.age}. Cadangan utama: <strong>${top[0].racket}</strong>.</div>`
+        : `<div class="ai-summary-box"><strong>RB Racket Match:</strong> <em>${qStyle}</em> · Age ~${profile.age}. Top pick: <strong>${top[0].racket}</strong>.</div>`;
 
       const cards = top.map((r, i) => {
         const imgSrc = getRacketImageUrl(r.racket, r.brand);
@@ -1532,7 +1664,7 @@
                 <a class="img-search-link" href="${getGoogleImagesUrl(r.racket, r.brand)}" target="_blank" rel="noopener noreferrer">${t.googleImg}</a>
               </div>
               <div>
-                <h3 style="margin:0 0 6px;font-size:1.02rem;">${r.racket} <span style="font-weight:500;color:#64748b;">(${r.weightGrip} · ~RM${r.priceRm})</span></h3>
+                <h3 style="margin:0 0 6px;font-size:1.02rem;">${r.racket} <span style="font-weight:500;color:#526071;">(${r.weightGrip})</span></h3>
                 <div style="font-size:0.82rem;color:#475569;">
                   <strong>${t.specsLabel}:</strong> ${r.style} · ${r.balance} · Spec: ${r.paperFlex} → Feel: <strong>${r.feelFlex}</strong> · Power ${r.scores.power}/5, Control ${r.scores.control}/5, Speed ${r.scores.speed}/5, Comfort ${r.scores.comfort}/5
                 </div>
