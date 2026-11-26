@@ -405,7 +405,8 @@
       color: var(--accent-dark);
       font-weight: 800;
     }
-    .action-btn.del { border-color: #fecaca; background: var(--danger-soft); color: var(--danger); }
+    .action-btn.del { border-color: #fecaca; background: var(--danger-soft); color: var(--danger); font-weight: 700; }
+    .action-btn.del:hover { background: #fecaca; }
 
     .ai-summary-box {
       background: linear-gradient(135deg, #dcfce7 0%, #e0f2fe 100%);
@@ -487,7 +488,7 @@
         <button type="button" id="tabLogin" class="switch-btn" onclick="switchAuthTab('login')">Login</button>
       </div>
 
-      <!-- REGISTER FORM: USERNAME, EMAIL, NEW PASSWORD, CONFIRM PASSWORD -->
+      <!-- REGISTER FORM: USERNAME, EMAIL, NEW PASSWORD (MIN 8 CHARS), CONFIRM PASSWORD -->
       <div id="registerForm" class="form-align">
         <label id="r_lblUsername">Username (Unique — cannot be same) *</label>
         <input id="regUsername" placeholder="e.g. @AimanCourt or AimanCourt" />
@@ -497,12 +498,12 @@
 
         <div class="row-2">
           <div>
-            <label id="r_lblPass">New Password (min 4 chars) *</label>
-            <input id="regPass" type="password" placeholder="••••••••" />
+            <label id="r_lblPass">New Password (min 8 chars) *</label>
+            <input id="regPass" type="password" minlength="8" placeholder="Min 8 characters" />
           </div>
           <div>
             <label id="r_lblConfirm">Confirm Password *</label>
-            <input id="regConfirmPass" type="password" placeholder="••••••••" />
+            <input id="regConfirmPass" type="password" minlength="8" placeholder="Repeat password" />
           </div>
         </div>
 
@@ -533,7 +534,7 @@
         <input id="loginUsername" placeholder="e.g. @AimanCourt" />
 
         <label id="l_lblPass">Password *</label>
-        <input id="loginPass" type="password" placeholder="••••••••" />
+        <input id="loginPass" type="password" placeholder="Enter your password" />
 
         <div class="link-row">
           <button type="button" class="link-btn" id="btnOpenForgot" onclick="openForgotModal()">Forgot Password?</button>
@@ -546,12 +547,12 @@
     </div>
   </div>
 
-  <!-- FORGOT PASSWORD MODAL (VERIFY USERNAME + EMAIL -> SET NEW PASSWORD) -->
-  <div id="forgotModal" class="modal-backdrop">
+  <!-- FORGOT PASSWORD MODAL (VERIFY USERNAME + EMAIL -> SET NEW PASSWORD MIN 8 CHARS) -->
+  <div id="forgotModal" class="modal-backdrop" onclick="handleBackdropClose(event, 'forgotModal')">
     <div class="modal-card">
       <h2 style="margin:0 0 6px;" id="fp_title">Forgot Password — Reset Here</h2>
       <p class="hint" id="fp_desc" style="margin:0 0 10px;">
-        Enter the <strong>Username</strong> and registered <strong>Email</strong> linked to your account, then set your new password.
+        Enter the <strong>Username</strong> and registered <strong>Email</strong> linked to your account, then set your new password (minimum 8 characters).
       </p>
 
       <label id="fp_lblUser">Registered Username *</label>
@@ -562,12 +563,12 @@
 
       <div class="row-2">
         <div>
-          <label id="fp_lblNewPass">New Password *</label>
-          <input id="fpNewPass" type="password" placeholder="••••••••" />
+          <label id="fp_lblNewPass">New Password (min 8 chars) *</label>
+          <input id="fpNewPass" type="password" minlength="8" placeholder="Min 8 characters" />
         </div>
         <div>
           <label id="fp_lblConfirm">Confirm New Password *</label>
-          <input id="fpConfirmPass" type="password" placeholder="••••••••" />
+          <input id="fpConfirmPass" type="password" minlength="8" placeholder="Repeat password" />
         </div>
       </div>
 
@@ -580,11 +581,11 @@
   </div>
 
   <!-- PASSWORD RECOVERY TROUBLESHOOTING MODAL -->
-  <div id="recoveryHelpModal" class="modal-backdrop">
+  <div id="recoveryHelpModal" class="modal-backdrop" onclick="handleBackdropClose(event, 'recoveryHelpModal')">
     <div class="modal-card">
       <h2 style="margin:0 0 8px;" id="rh_title">Forgot Password Help</h2>
       <p class="hint" id="rh_body" style="margin:0 0 12px;">
-        • <strong>Know your Username & Email:</strong> Click <em>Forgot Password?</em> on the Login tab to set a new password immediately.<br/>
+        • <strong>Know your Username & Email:</strong> Click <em>Forgot Password?</em> on the Login tab to set a new password (at least 8 characters) immediately.<br/>
         • <strong>Forgot your Email:</strong> Check any email address you usually use for badminton/apps, or ask a teammate to look up your exact <code>@username</code> in the RacketBuddy Feed.<br/>
         • <strong>Using a new device/browser:</strong> Accounts created in local browser storage stay on that device unless saved/synced. If your account is not found or was inactive for 60 days, register a new account with an unused username and email.
       </p>
@@ -593,7 +594,7 @@
   </div>
 
   <!-- ADD TO HOME SCREEN GUIDE MODAL -->
-  <div id="installModal" class="modal-backdrop">
+  <div id="installModal" class="modal-backdrop" onclick="handleBackdropClose(event, 'installModal')">
     <div class="modal-card">
       <h2 style="margin:0 0 8px;" id="inst_title">Install RacketBuddy on Your Phone</h2>
       <p class="hint" id="inst_body" style="margin:0 0 12px;">
@@ -905,6 +906,7 @@
     const sbClient = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
 
     const DEV_PIN = "RBDEV2026";
+    const MIN_PASSWORD_LEN = 8;
     const INACTIVE_DAYS_MS = 60 * 24 * 60 * 60 * 1000;
     let isDevMode = false;
     let currentLang = "en";
@@ -912,6 +914,12 @@
     let authMode = "register";
     let deferredInstallPrompt = null;
     let autoRefreshTimer = null;
+
+    function handleBackdropClose(event, modalId) {
+      if (event && event.target && event.target.id === modalId) {
+        document.getElementById(modalId)?.classList.remove("open");
+      }
+    }
 
     function openSidebar() {
       document.getElementById("drawerBackdrop")?.classList.add("open");
@@ -987,7 +995,7 @@
         tabLog: "Login",
         rLblUsername: "Username (Unique — cannot be same) *",
         rLblEmail: "Email (One email = One account) *",
-        rLblPass: "New Password (min 4 chars) *",
+        rLblPass: "New Password (min 8 chars) *",
         rLblConfirm: "Confirm Password *",
         gLblAge: "Age",
         gLblStyle: "Main Playstyle",
@@ -998,10 +1006,10 @@
         btnForgot: "Forgot Password?",
         btnHelp: "Forgot username/email too?",
         fpTitle: "Forgot Password — Reset Here",
-        fpDesc: "Enter the Username and registered Email linked to your account, then set your new password.",
+        fpDesc: "Enter the Username and registered Email linked to your account, then set your new password (min 8 chars).",
         fpLblUser: "Registered Username *",
         fpLblEmail: "Registered Email *",
-        fpLblNewPass: "New Password *",
+        fpLblNewPass: "New Password (min 8 chars) *",
         fpLblConfirm: "Confirm New Password *",
         fpBtnReset: "Reset Password",
         title: "RacketBuddy (RB)",
@@ -1051,7 +1059,7 @@
         helpful: "Helpful",
         liked: "Liked",
         share: "Copy Summary",
-        deletePost: "Delete Post",
+        deletePost: "Delete This Post",
         copied: "Copied!",
         matchLabel: "RANK",
         scoreLabel: "Fit Score",
@@ -1064,13 +1072,14 @@
         postSaved: "Racket posted! You can immediately enter and submit another racket below.",
         errUsernameReq: "Please enter a valid username (at least 2 characters).",
         errEmailInvalid: "Please enter a valid email address.",
-        errPassShort: "Password must be at least 4 characters.",
+        errPassShort: "Password must be at least 8 characters.",
         errPassMismatch: "New Password and Confirm Password do not match.",
         errUsernameTaken: "That username is already taken. Please choose another username.",
         errEmailTaken: "This email is already registered to an account (one email = one account).",
         errLoginInvalid: "Invalid username or password (or account inactive for 60+ days).",
         errForgotMatch: "No account matches both that username and email.",
-        resetSuccess: "Password reset! You can now log in with your new password."
+        resetSuccess: "Password reset! You can now log in with your new password.",
+        confirmDeleteOne: "Delete this specific post/feedback only? Other posts will not be deleted."
       },
       bm: {
         tagline: "Find your best racket as your buddy",
@@ -1080,7 +1089,7 @@
         tabLog: "Log Masuk",
         rLblUsername: "Username (Unik — tidak boleh sama) *",
         rLblEmail: "Emel (Satu emel = Satu akaun) *",
-        rLblPass: "Kata Laluan Baru (min 4 aksara) *",
+        rLblPass: "Kata Laluan Baru (min 8 aksara) *",
         rLblConfirm: "Sahkan Kata Laluan *",
         gLblAge: "Umur",
         gLblStyle: "Gaya Main Utama",
@@ -1091,10 +1100,10 @@
         btnForgot: "Lupa Kata Laluan?",
         btnHelp: "Lupa username/emel juga?",
         fpTitle: "Lupa Kata Laluan — Tetapkan Semula",
-        fpDesc: "Masukkan Username dan Emel berdaftar yang sepadan dengan akaun anda, kemudian tetapkan kata laluan baru.",
+        fpDesc: "Masukkan Username dan Emel berdaftar yang sepadan dengan akaun anda, kemudian tetapkan kata laluan baru (min 8 aksara).",
         fpLblUser: "Username Berdaftar *",
         fpLblEmail: "Emel Berdaftar *",
-        fpLblNewPass: "Kata Laluan Baru *",
+        fpLblNewPass: "Kata Laluan Baru (min 8 aksara) *",
         fpLblConfirm: "Sahkan Kata Laluan Baru *",
         fpBtnReset: "Tetapkan Kata Laluan",
         title: "RacketBuddy (RB)",
@@ -1144,7 +1153,7 @@
         helpful: "Membantu",
         liked: "Disukai",
         share: "Salin Ringkasan",
-        deletePost: "Padam Post",
+        deletePost: "Padam Post Ini",
         copied: "Disalin!",
         matchLabel: "RANK",
         scoreLabel: "Skor Sesuai",
@@ -1157,13 +1166,14 @@
         postSaved: "Raket berjaya dihantar! Anda boleh terus masukkan raket lain di bawah.",
         errUsernameReq: "Masukkan username yang sah (sekurang-kurangnya 2 aksara).",
         errEmailInvalid: "Masukkan alamat emel yang sah.",
-        errPassShort: "Kata laluan mestilah sekurang-kurangnya 4 aksara.",
+        errPassShort: "Kata laluan mestilah sekurang-kurangnya 8 aksara.",
         errPassMismatch: "Kata Laluan Baru dan Sahkan Kata Laluan tidak sepadan.",
         errUsernameTaken: "Username tersebut sudah digunakan. Sila pilih username lain.",
         errEmailTaken: "Emel ini sudah didaftarkan untuk satu akaun (satu emel = satu akaun).",
         errLoginInvalid: "Username atau kata laluan tidak sah (atau akaun tamat selepas 60 hari tidak aktif).",
         errForgotMatch: "Tiada akaun yang sepadan dengan username dan emel tersebut.",
-        resetSuccess: "Kata laluan berjaya dikemas kini! Sila log masuk dengan kata laluan baru."
+        resetSuccess: "Kata laluan berjaya dikemas kini! Sila log masuk dengan kata laluan baru.",
+        confirmDeleteOne: "Padam post/feedback yang dipilih ini sahaja? Post lain tidak akan dipadam."
       }
     };
 
@@ -1406,16 +1416,9 @@
         }
       });
       if (changed) {
-        localStorage.setItem("rb_accounts_v7", JSON.stringify(next));
+        localStorage.setItem("rb_accounts_v8", JSON.stringify(next));
       }
       return next;
-    }
-
-    function touchAccountActivity(username) {
-      const key = findAccountKeyByUsername(username);
-      if (!key || !accounts[key]) return;
-      accounts[key].lastActiveAt = Date.now();
-      localStorage.setItem("rb_accounts_v7", JSON.stringify(accounts));
     }
 
     function findAccountKeyByUsername(rawUsername) {
@@ -1424,28 +1427,35 @@
       return Object.keys(accounts).find(k => k.toLowerCase() === target) || null;
     }
 
+    function touchAccountActivity(username) {
+      const key = findAccountKeyByUsername(username);
+      if (!key || !accounts[key]) return;
+      accounts[key].lastActiveAt = Date.now();
+      localStorage.setItem("rb_accounts_v8", JSON.stringify(accounts));
+    }
+
     function isEmailAlreadyUsed(rawEmail) {
       const targetEmail = normalizeEmail(rawEmail);
       if (!targetEmail) return false;
       return Object.values(accounts).some(acc => normalizeEmail(acc?.email) === targetEmail);
     }
 
-    let accounts = pruneInactiveAccounts(JSON.parse(localStorage.getItem("rb_accounts_v7")) || {});
-    let profile = JSON.parse(localStorage.getItem("rb_profile_v7")) || {
+    let accounts = pruneInactiveAccounts(JSON.parse(localStorage.getItem("rb_accounts_v8")) || {});
+    let profile = JSON.parse(localStorage.getItem("rb_profile_v8")) || {
       handle: "", age: 24, years: 6, style: "Single (Control)"
     };
-    let currentSession = JSON.parse(localStorage.getItem("rb_session_v7")) || null;
+    let currentSession = JSON.parse(localStorage.getItem("rb_session_v8")) || null;
     const sessionKey = currentSession ? findAccountKeyByUsername(currentSession.handle) : null;
     if (!sessionKey) {
       currentSession = null;
-      localStorage.removeItem("rb_session_v7");
+      localStorage.removeItem("rb_session_v8");
     } else {
       currentSession.handle = sessionKey;
       touchAccountActivity(sessionKey);
     }
 
-    let reviews = JSON.parse(localStorage.getItem("rb_reviews_v7")) || [];
-    let userLikedMap = JSON.parse(localStorage.getItem("rb_user_likes_v7")) || {};
+    let reviews = JSON.parse(localStorage.getItem("rb_reviews_v8")) || [];
+    let userLikedMap = JSON.parse(localStorage.getItem("rb_user_likes_v8")) || {};
 
     function getUserLikesSet() {
       const me = getActiveHandle().toLowerCase();
@@ -1457,7 +1467,7 @@
       const me = getActiveHandle().toLowerCase();
       if (!me) return;
       userLikedMap[me] = Array.from(setObj);
-      localStorage.setItem("rb_user_likes_v7", JSON.stringify(userLikedMap));
+      localStorage.setItem("rb_user_likes_v8", JSON.stringify(userLikedMap));
     }
 
     const avatarGradients = [
@@ -1497,8 +1507,7 @@
       const t = uiText[currentLang];
       const msgEl = document.getElementById("regMsg");
 
-      const rawUser = document.getElementById("regUsername").value;
-      const username = normalizeUsername(rawUser);
+      const username = normalizeUsername(document.getElementById("regUsername").value);
       const email = normalizeEmail(document.getElementById("regEmail").value);
       const pass = document.getElementById("regPass").value;
       const confirmPass = document.getElementById("regConfirmPass").value;
@@ -1513,7 +1522,7 @@
         msgEl.className = "status-msg status-err";
         return;
       }
-      if (pass.length < 4) {
+      if (pass.length < MIN_PASSWORD_LEN) {
         msgEl.textContent = t.errPassShort;
         msgEl.className = "status-msg status-err";
         return;
@@ -1544,12 +1553,12 @@
         lastActiveAt: Date.now(),
         profile: { handle: username, age, years: profile.years || 1, style }
       };
-      localStorage.setItem("rb_accounts_v7", JSON.stringify(accounts));
+      localStorage.setItem("rb_accounts_v8", JSON.stringify(accounts));
 
       profile = { ...accounts[username].profile };
-      localStorage.setItem("rb_profile_v7", JSON.stringify(profile));
+      localStorage.setItem("rb_profile_v8", JSON.stringify(profile));
       currentSession = { handle: username };
-      localStorage.setItem("rb_session_v7", JSON.stringify(currentSession));
+      localStorage.setItem("rb_session_v8", JSON.stringify(currentSession));
 
       document.getElementById("regPass").value = "";
       document.getElementById("regConfirmPass").value = "";
@@ -1573,11 +1582,11 @@
       }
 
       accounts[key].lastActiveAt = Date.now();
-      localStorage.setItem("rb_accounts_v7", JSON.stringify(accounts));
+      localStorage.setItem("rb_accounts_v8", JSON.stringify(accounts));
       profile = { ...(accounts[key].profile || {}), handle: key };
-      localStorage.setItem("rb_profile_v7", JSON.stringify(profile));
+      localStorage.setItem("rb_profile_v8", JSON.stringify(profile));
       currentSession = { handle: key };
-      localStorage.setItem("rb_session_v7", JSON.stringify(currentSession));
+      localStorage.setItem("rb_session_v8", JSON.stringify(currentSession));
 
       document.getElementById("loginPass").value = "";
       msgEl.textContent = "";
@@ -1621,7 +1630,7 @@
         msgEl.className = "status-msg status-err";
         return;
       }
-      if (newPass.length < 4) {
+      if (newPass.length < MIN_PASSWORD_LEN) {
         msgEl.textContent = t.errPassShort;
         msgEl.className = "status-msg status-err";
         return;
@@ -1634,7 +1643,7 @@
 
       accounts[key].pass = newPass;
       accounts[key].lastActiveAt = Date.now();
-      localStorage.setItem("rb_accounts_v7", JSON.stringify(accounts));
+      localStorage.setItem("rb_accounts_v8", JSON.stringify(accounts));
 
       document.getElementById("loginUsername").value = key;
       document.getElementById("loginPass").value = "";
@@ -1651,7 +1660,7 @@
         clearInterval(autoRefreshTimer);
         autoRefreshTimer = null;
       }
-      localStorage.removeItem("rb_session_v7");
+      localStorage.removeItem("rb_session_v8");
       document.getElementById("loginPass").value = "";
       switchAuthTab("login");
       syncGateVisibility();
@@ -1661,9 +1670,9 @@
       const brand = row.brand || detectBrand(row.racket || "");
       const racket = row.racket || "";
       return {
-        id: row.id,
+        id: String(row.id ?? Date.now() + Math.random()),
         brand,
-        author: row.author || "@RBPlayer",
+        author: normalizeUsername(row.author || "@RBPlayer") || "@RBPlayer",
         age: row.age ?? 24,
         expYears: row.exp_years ?? row.expYears ?? 1,
         racket,
@@ -1692,7 +1701,7 @@
 
       if (!error && Array.isArray(data)) {
         reviews = data.map(normalizeRow);
-        localStorage.setItem("rb_reviews_v7", JSON.stringify(reviews));
+        localStorage.setItem("rb_reviews_v8", JSON.stringify(reviews));
       }
       renderFeed();
     }
@@ -1728,7 +1737,7 @@
     }
 
     function getActiveHandle() {
-      return (currentSession?.handle || document.getElementById("pHandle")?.value.trim() || profile.handle || "").trim();
+      return normalizeUsername(currentSession?.handle || document.getElementById("pHandle")?.value || profile.handle || "");
     }
 
     function toggleDevMode() {
@@ -1769,7 +1778,7 @@
     async function clearMyPosts() {
       const me = getActiveHandle().toLowerCase();
       if (!me) return;
-      const mineCount = reviews.filter(r => (r.author || "").toLowerCase() === me).length;
+      const mineCount = reviews.filter(r => normalizeUsername(r.author).toLowerCase() === me).length;
       if (!mineCount) {
         alert(currentLang === "bm" ? `Tiada post milik ${getActiveHandle()} untuk dipadam.` : `No posts by ${getActiveHandle()} to clear.`);
         return;
@@ -1787,8 +1796,8 @@
         }
         await loadSharedPosts();
       } else {
-        reviews = reviews.filter(r => (r.author || "").toLowerCase() !== me);
-        localStorage.setItem("rb_reviews_v7", JSON.stringify(reviews));
+        reviews = reviews.filter(r => normalizeUsername(r.author).toLowerCase() !== me);
+        localStorage.setItem("rb_reviews_v8", JSON.stringify(reviews));
         renderFeed();
       }
     }
@@ -1802,7 +1811,7 @@
       if (!confirm(msg)) return;
 
       if (sbClient) {
-        const { error } = await sbClient.from("rb_posts").delete().gt("id", 0);
+        const { error } = await sbClient.from("rb_posts").delete().not("id", "is", null);
         if (error) {
           alert(error.message);
           return;
@@ -1810,31 +1819,35 @@
         await loadSharedPosts();
       } else {
         reviews = [];
-        localStorage.setItem("rb_reviews_v7", JSON.stringify(reviews));
+        localStorage.setItem("rb_reviews_v8", JSON.stringify(reviews));
         renderFeed();
       }
     }
 
     async function deleteSinglePost(id) {
-      const target = reviews.find(r => r.id === id);
+      const targetId = String(id);
+      const target = reviews.find(r => String(r.id) === targetId);
       if (!target) return;
+
       const me = getActiveHandle().toLowerCase();
-      const isOwner = (target.author || "").toLowerCase() === me;
+      const isOwner = normalizeUsername(target.author).toLowerCase() === me;
       if (!isOwner && !isDevMode) {
         alert(currentLang === "bm" ? "Dalam User Mode, anda hanya boleh memadam post anda sendiri." : "In User Mode, you can only delete your own posts.");
         return;
       }
 
+      if (!confirm(uiText[currentLang].confirmDeleteOne)) return;
+
       if (sbClient) {
-        const { error } = await sbClient.from("rb_posts").delete().eq("id", id);
+        const { error } = await sbClient.from("rb_posts").delete().eq("id", target.id);
         if (error) {
           alert(error.message);
           return;
         }
         await loadSharedPosts();
       } else {
-        reviews = reviews.filter(r => r.id !== id);
-        localStorage.setItem("rb_reviews_v7", JSON.stringify(reviews));
+        reviews = reviews.filter(r => String(r.id) !== targetId);
+        localStorage.setItem("rb_reviews_v8", JSON.stringify(reviews));
         renderFeed();
       }
     }
@@ -1849,7 +1862,8 @@
         .replace(/&/g, "&")
         .replace(/</g, "<")
         .replace(/>/g, ">")
-        .replace(/"/g, """);
+        .replace(/"/g, """)
+        .replace(/'/g, "'");
     }
 
     function showPage(pageId) {
@@ -1867,7 +1881,7 @@
     }
 
     function copyPostSummary(id) {
-      const r = reviews.find(x => x.id === id);
+      const r = reviews.find(x => String(x.id) === String(id));
       if (!r) return;
       const text = `${r.racket} (${r.weightGrip}, ${r.style}) — "${r.notes}" by ${r.author} via RacketBuddy (RB)`;
       navigator.clipboard?.writeText(text).catch(() => {});
@@ -2011,17 +2025,17 @@
         return;
       }
 
-      const handleVal = currentSession?.handle || document.getElementById("pHandle").value.trim() || "@RBPlayer";
+      const handleVal = getActiveHandle() || "@RBPlayer";
       const ageVal = Number(document.getElementById("pAge").value) || 24;
       const yearsVal = Number(document.getElementById("pYears").value) || 6;
       const styleVal = document.getElementById("pStyle").value;
 
       profile = { handle: handleVal, age: ageVal, years: yearsVal, style: styleVal };
-      localStorage.setItem("rb_profile_v7", JSON.stringify(profile));
+      localStorage.setItem("rb_profile_v8", JSON.stringify(profile));
       if (currentSession && accounts[currentSession.handle]) {
         accounts[currentSession.handle].profile = { ...profile };
         accounts[currentSession.handle].lastActiveAt = Date.now();
-        localStorage.setItem("rb_accounts_v7", JSON.stringify(accounts));
+        localStorage.setItem("rb_accounts_v8", JSON.stringify(accounts));
       }
       document.getElementById("queryStyle").value = styleVal;
 
@@ -2053,15 +2067,20 @@
       };
 
       if (sbClient) {
-        const { error } = await sbClient.from("rb_posts").insert([payload]);
+        const { data, error } = await sbClient.from("rb_posts").insert([payload]).select();
         if (error) {
           setStatusMsg(error.message, true);
           return;
         }
+        if (Array.isArray(data) && data[0]) {
+          reviews.unshift(normalizeRow(data[0]));
+          localStorage.setItem("rb_reviews_v8", JSON.stringify(reviews));
+          renderFeed();
+        }
         await loadSharedPosts();
       } else {
-        reviews.unshift(normalizeRow({ ...payload, id: Date.now() }));
-        localStorage.setItem("rb_reviews_v7", JSON.stringify(reviews));
+        reviews.unshift(normalizeRow({ ...payload, id: String(Date.now()) }));
+        localStorage.setItem("rb_reviews_v8", JSON.stringify(reviews));
         renderFeed();
       }
 
@@ -2072,24 +2091,24 @@
     }
 
     async function toggleLikePost(id) {
-      const item = reviews.find(r => r.id === id);
+      const targetId = String(id);
+      const item = reviews.find(r => String(r.id) === targetId);
       if (!item) return;
 
       const likesSet = getUserLikesSet();
-      const key = String(id);
-      const alreadyLiked = likesSet.has(key);
+      const alreadyLiked = likesSet.has(targetId);
       const currentCount = Math.max(0, Number(item.helpful || 0));
       const nextHelpful = alreadyLiked ? Math.max(0, currentCount - 1) : currentCount + 1;
 
       if (alreadyLiked) {
-        likesSet.delete(key);
+        likesSet.delete(targetId);
       } else {
-        likesSet.add(key);
+        likesSet.add(targetId);
       }
       saveUserLikesSet(likesSet);
 
       if (sbClient) {
-        const { error } = await sbClient.from("rb_posts").update({ helpful: nextHelpful }).eq("id", id);
+        const { error } = await sbClient.from("rb_posts").update({ helpful: nextHelpful }).eq("id", item.id);
         if (error) {
           alert(error.message);
           return;
@@ -2097,7 +2116,7 @@
         await loadSharedPosts();
       } else {
         item.helpful = nextHelpful;
-        localStorage.setItem("rb_reviews_v7", JSON.stringify(reviews));
+        localStorage.setItem("rb_reviews_v8", JSON.stringify(reviews));
         renderFeed();
       }
     }
@@ -2125,9 +2144,10 @@
 
       feed.innerHTML = filtered.map(r => {
         const brand = r.brand || detectBrand(r.racket);
-        const canDelete = isDevMode || (r.author || "").toLowerCase() === me;
+        const canDelete = isDevMode || normalizeUsername(r.author).toLowerCase() === me;
         const isLiked = likesSet.has(String(r.id));
         const avatarBg = getAvatarGradient(r.author);
+        const safeIdArg = JSON.stringify(String(r.id));
         return `
           <div class="social-post">
             <div class="post-head">
@@ -2154,9 +2174,9 @@
             </div>
             <div class="feedback-full-text">"${escapeHtml(r.notes)}"</div>
             <div class="post-actions">
-              <button type="button" class="action-btn ${isLiked ? "liked" : ""}" onclick="toggleLikePost(${r.id})">👍 ${isLiked ? t.liked : t.helpful} (${r.helpful})</button>
-              <button type="button" class="action-btn" onclick="copyPostSummary(${r.id})">↗ ${t.share}</button>
-              ${canDelete ? `<button type="button" class="action-btn del" onclick="deleteSinglePost(${r.id})">🗑 ${t.deletePost}</button>` : ""}
+              <button type="button" class="action-btn ${isLiked ? "liked" : ""}" onclick='toggleLikePost(${safeIdArg})'>👍 ${isLiked ? t.liked : t.helpful} (${r.helpful})</button>
+              <button type="button" class="action-btn" onclick='copyPostSummary(${safeIdArg})'>↗ ${t.share}</button>
+              ${canDelete ? `<button type="button" class="action-btn del" onclick='deleteSinglePost(${safeIdArg})'>🗑 ${t.deletePost}</button>` : ""}
             </div>
           </div>
         `;
