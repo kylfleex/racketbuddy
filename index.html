@@ -1,0 +1,1130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="RacketBuddy (RB) — Social court feed, 5 playstyles, and AI badminton racket consultant." />
+  <title>RacketBuddy (RB) — Player Feed & AI Racket Consultant</title>
+  <style>
+    :root {
+      --bg: #f1f5f9;
+      --surface: #ffffff;
+      --surface-soft: #f8fafc;
+      --accent: #16a34a;
+      --accent-soft: #dcfce7;
+      --danger: #dc2626;
+      --danger-soft: #fee2e2;
+      --text: #0f172a;
+      --muted: #64748b;
+      --border: #e2e8f0;
+      --brand-bg: #eff6ff;
+      --brand-border: #bfdbfe;
+      --brand-text: #1d4ed8;
+    }
+    * { box-sizing: border-box; font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    body { margin: 0; background: var(--bg); color: var(--text); padding: 0 0 36px; }
+    .topbar {
+      position: sticky; top: 0; z-index: 30;
+      background: rgba(255, 255, 255, 0.94); backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border); padding: 12px 18px;
+    }
+    .topbar-inner {
+      max-width: 1140px; margin: 0 auto;
+      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;
+    }
+    .brand-logo { display: flex; align-items: center; gap: 10px; }
+    .logo-mark {
+      width: 38px; height: 38px; border-radius: 12px;
+      background: linear-gradient(135deg, #16a34a, #0ea5e9);
+      color: #fff; font-weight: 800; font-size: 0.95rem; letter-spacing: 0.02em;
+      display: grid; place-items: center;
+    }
+    .brand-logo h1 { margin: 0; font-size: 1.2rem; letter-spacing: -0.02em; }
+    .brand-logo p { margin: 0; font-size: 0.78rem; color: var(--muted); }
+    .header-actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+    .lang-pill {
+      display: inline-flex; background: var(--surface-soft); border: 1px solid var(--border);
+      border-radius: 999px; padding: 3px;
+    }
+    .lang-btn {
+      border: none; background: transparent; color: var(--muted); font-size: 0.76rem;
+      font-weight: 700; padding: 5px 10px; border-radius: 999px; cursor: pointer;
+    }
+    .lang-btn.active { background: var(--accent); color: #fff; }
+    button.ghost {
+      border: 1px solid var(--border); background: var(--surface); color: var(--text);
+      padding: 7px 12px; border-radius: 999px; font-size: 0.8rem; font-weight: 600; cursor: pointer;
+    }
+    button.ghost:hover { background: var(--surface-soft); }
+    button.ghost.dev-on { background: #fef3c7; border-color: #f59e0b; color: #92400e; }
+    button.danger-ghost {
+      border: 1px solid #fecaca; background: var(--danger-soft); color: var(--danger);
+      padding: 7px 12px; border-radius: 999px; font-size: 0.8rem; font-weight: 700; cursor: pointer;
+    }
+    .container { max-width: 1140px; margin: 18px auto 0; padding: 0 18px; }
+    .nav-bar {
+      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;
+      gap: 10px; margin-bottom: 18px;
+    }
+    .nav-tabs { display: flex; gap: 8px; }
+    .nav-btn {
+      border: 1px solid var(--border); background: var(--surface); color: var(--muted);
+      padding: 9px 16px; border-radius: 999px; font-weight: 700; font-size: 0.88rem; cursor: pointer;
+    }
+    .nav-btn.active { background: var(--text); color: #fff; border-color: var(--text); }
+    .status-pills { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+    .auth-badge {
+      font-size: 0.8rem; color: var(--muted); background: var(--surface);
+      border: 1px solid var(--border); padding: 7px 12px; border-radius: 999px; font-weight: 600;
+    }
+    .mode-badge {
+      font-size: 0.78rem; padding: 7px 12px; border-radius: 999px; font-weight: 700;
+      background: var(--accent-soft); color: #15803d; border: 1px solid #86efac;
+    }
+    .mode-badge.dev {
+      background: #fef3c7; color: #92400e; border-color: #fcd34d;
+    }
+    .grid-2 { display: grid; grid-template-columns: 1.05fr 1.15fr; gap: 20px; align-items: start; }
+    @media (max-width: 880px) { .grid-2 { grid-template-columns: 1fr; } }
+    .card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 16px;
+      padding: 18px; margin-bottom: 16px; box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+    }
+    .section-divider {
+      font-size: 0.78rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em;
+      color: var(--accent); margin: 14px 0 6px; padding-top: 10px; border-top: 1px solid var(--border);
+    }
+    h2 { margin: 0 0 8px; font-size: 1.08rem; }
+    label { display: block; font-size: 0.78rem; font-weight: 600; color: var(--muted); margin: 8px 0 4px; }
+    input, select, textarea {
+      width: 100%; padding: 9px 11px; border-radius: 10px; border: 1px solid var(--border);
+      background: var(--surface-soft); color: var(--text); font-size: 0.88rem;
+    }
+    input:focus, select:focus, textarea:focus { outline: 2px solid #86efac; border-color: var(--accent); background: #fff; }
+    .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+    .row-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+    @media (max-width: 640px) { .row-3, .row-4 { grid-template-columns: 1fr 1fr; } }
+    button.primary {
+      margin-top: 14px; width: 100%; padding: 11px 14px; border: none; border-radius: 10px;
+      background: var(--accent); color: #fff; font-weight: 700; font-size: 0.92rem; cursor: pointer;
+    }
+    button.primary:hover { filter: brightness(0.96); }
+    .filter-strip { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
+    .filter-chip {
+      border: 1px solid var(--border); background: var(--surface-soft); color: var(--muted);
+      padding: 5px 11px; border-radius: 999px; font-size: 0.76rem; font-weight: 600; cursor: pointer;
+    }
+    .filter-chip.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+    .social-post { border-top: 1px solid var(--border); padding-top: 14px; margin-top: 14px; }
+    .social-post:first-of-type { border-top: none; padding-top: 4px; margin-top: 4px; }
+    .post-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 8px; }
+    .author-row { display: flex; align-items: center; gap: 10px; }
+    .avatar {
+      width: 36px; height: 36px; border-radius: 999px;
+      background: linear-gradient(135deg, #22c55e, #3b82f6);
+      color: #fff; font-weight: 800; font-size: 0.85rem;
+      display: grid; place-items: center; flex-shrink: 0;
+    }
+    .author-name { font-weight: 700; font-size: 0.9rem; }
+    .author-sub { font-size: 0.76rem; color: var(--muted); }
+    .brand-pill {
+      display: inline-block; background: var(--brand-bg); border: 1px solid var(--brand-border);
+      color: var(--brand-text); padding: 2px 9px; border-radius: 999px; font-size: 0.74rem; font-weight: 700;
+    }
+    .meta-tag {
+      display: inline-block; background: var(--surface-soft); border: 1px solid var(--border);
+      color: #334155; padding: 3px 8px; border-radius: 999px; font-size: 0.74rem; margin: 4px 4px 0 0; font-weight: 500;
+    }
+    .stat-pill {
+      display: inline-block; background: var(--accent-soft); color: #15803d;
+      padding: 2px 8px; border-radius: 6px; font-size: 0.74rem; font-weight: 700; margin: 6px 4px 0 0;
+    }
+    .post-actions { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+    .action-btn {
+      border: 1px solid var(--border); background: var(--surface-soft); color: var(--text);
+      padding: 5px 11px; border-radius: 8px; font-size: 0.78rem; font-weight: 600; cursor: pointer;
+    }
+    .action-btn:hover { background: #e2e8f0; }
+    .action-btn.del { border-color: #fecaca; background: var(--danger-soft); color: var(--danger); }
+    .ai-summary-box {
+      background: var(--accent-soft); border: 1px solid #86efac; color: #14532d;
+      border-radius: 12px; padding: 13px 15px; font-size: 0.9rem; line-height: 1.5;
+    }
+    .verdict-card {
+      background: var(--surface); border: 1px solid var(--border); border-left: 4px solid var(--accent);
+      border-radius: 14px; padding: 15px; margin-top: 12px; box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05);
+    }
+    .rec-layout { display: grid; grid-template-columns: 106px 1fr; gap: 14px; align-items: start; }
+    @media (max-width: 560px) { .rec-layout { grid-template-columns: 1fr; } }
+    .racket-thumb {
+      width: 106px; height: 126px; object-fit: contain; background: var(--surface-soft);
+      border: 1px solid var(--border); border-radius: 10px; padding: 6px;
+    }
+    .img-search-link { display: inline-block; margin-top: 6px; font-size: 0.76rem; color: #2563eb; text-decoration: none; font-weight: 600; }
+    .cite-ref {
+      font-size: 0.84rem; color: #334155; margin-top: 8px;
+      padding: 8px 10px; background: var(--surface-soft); border-radius: 8px; line-height: 1.45;
+    }
+    .hint { font-size: 0.78rem; color: var(--muted); line-height: 1.45; margin-top: 4px; }
+    .status-msg { font-size: 0.84rem; font-weight: 700; margin-top: 10px; min-height: 20px; }
+    .status-ok { color: #15803d; }
+    .status-err { color: #dc2626; }
+    .modal-backdrop {
+      position: fixed; inset: 0; background: rgba(15, 23, 42, 0.55); display: none;
+      align-items: center; justify-content: center; padding: 16px; z-index: 60;
+    }
+    .modal-backdrop.open { display: flex; }
+    .modal-card {
+      max-width: 410px; width: 100%; background: var(--surface); border: 1px solid var(--border);
+      border-radius: 16px; padding: 20px; box-shadow: 0 20px 40px rgba(15, 23, 42, 0.18);
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="topbar-inner">
+      <div class="brand-logo">
+        <div class="logo-mark">RB</div>
+        <div>
+          <h1 id="t_title">RacketBuddy (RB)</h1>
+          <p id="t_subtitle">Player Feed · 5 Playstyles · AI Racket Consultant</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <div class="lang-pill">
+          <button id="btn_en" class="lang-btn active" onclick="setLang('en')">EN</button>
+          <button id="btn_bm" class="lang-btn" onclick="setLang('bm')">BM</button>
+        </div>
+        <button id="authActionBtn" class="ghost" onclick="openAuthModal()">Login / Sign Up</button>
+        <button id="devToggleBtn" class="ghost" onclick="toggleDevMode()">Dev Mode</button>
+        <button id="t_clearMine" class="ghost" onclick="clearMyPosts()">Clear My Posts</button>
+        <button id="t_clearAll" class="danger-ghost" style="display:none;" onclick="clearEntireFeed()">Dev: Clear All Feed</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="nav-bar">
+      <div class="nav-tabs">
+        <button id="nav_p1" class="nav-btn active" onclick="showPage('page1')">1. Post & Feed</button>
+        <button id="nav_p2" class="nav-btn" onclick="showPage('page2')">2. AI Consultant</button>
+      </div>
+      <div class="status-pills">
+        <div id="modeBadge" class="mode-badge">User Mode</div>
+        <div id="userStatusBar" class="auth-badge">Guest Mode</div>
+      </div>
+    </div>
+
+    <!-- PAGE 1: COMBINED PLAYER + RACKET + FEEDBACK FORM + SOCIAL FEED -->
+    <section id="page1">
+      <div class="grid-2">
+        <div class="card">
+          <h2 id="t_combTitle">Player Info + Racket Feedback (Submit Together)</h2>
+          <p class="hint" id="t_combHint">Fill your player info, racket details, and court feedback once—everything saves and posts together.</p>
+
+          <div class="section-divider" id="t_secPlayer">A. Player Info</div>
+          <div class="row-3">
+            <div>
+              <label id="t_pHandle">Handle / Name</label>
+              <input id="pHandle" placeholder="@RBPlayer" />
+            </div>
+            <div>
+              <label id="t_pAge">Age</label>
+              <input id="pAge" type="number" min="8" max="80" value="24" />
+            </div>
+            <div>
+              <label id="t_pYears">Years Playing</label>
+              <input id="pYears" type="number" min="0" max="45" value="6" />
+            </div>
+          </div>
+
+          <div class="row-2">
+            <div>
+              <label id="t_pStyle">Main Playstyle</label>
+              <select id="pStyle" onchange="syncAdvisorStyleFromProfile()">
+                <option value="Double front (Speed)">Double front (Speed)</option>
+                <option value="Double backcourt (Hard hitter)">Double backcourt (Hard hitter)</option>
+                <option value="Single (Attacking)">Single (Attacking)</option>
+                <option value="Single (Control)" selected>Single (Control)</option>
+                <option value="Mixed">Mixed</option>
+              </select>
+            </div>
+            <div>
+              <label id="t_pCurrentRacket">Current Racket Using Now</label>
+              <input id="pCurrentRacket" placeholder="e.g. Arcsaber 11 Pro 4U" />
+            </div>
+          </div>
+
+          <div class="section-divider" id="t_secRacket">B. Racket & Court Feedback</div>
+          <div class="row-3">
+            <div>
+              <label id="t_brandLabel">Brand</label>
+              <select id="brandSelect">
+                <option value="Auto">Auto-Detect</option>
+                <option value="Yonex">Yonex</option>
+                <option value="Victor">Victor</option>
+                <option value="Li-Ning">Li-Ning</option>
+                <option value="Felet">Felet</option>
+                <option value="Apacs">Apacs</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            <div>
+              <label id="t_racket">Racket Model *</label>
+              <input id="racket" placeholder="e.g. Nanoflare 1000 Play" />
+            </div>
+            <div>
+              <label id="t_priceRm">Price (RM)</label>
+              <input id="priceRm" type="number" min="50" max="2000" value="220" />
+            </div>
+          </div>
+
+          <div class="row-3">
+            <div>
+              <label id="t_weightGrip">Weight & Grip</label>
+              <select id="weightGrip">
+                <option value="3U G5">3U G5</option>
+                <option value="4U G5" selected>4U G5</option>
+                <option value="4U G6">4U G6</option>
+                <option value="5U G5">5U G5</option>
+              </select>
+            </div>
+            <div>
+              <label id="t_balance">Balance</label>
+              <select id="balance">
+                <option value="Head-Light">Head-Light</option>
+                <option value="Even-Balance" selected>Even-Balance</option>
+                <option value="Head-Heavy">Head-Heavy</option>
+              </select>
+            </div>
+            <div>
+              <label id="t_stringSetup">String & Tension</label>
+              <input id="stringSetup" placeholder="e.g. BG66 Ultimax @ 25 lbs" />
+            </div>
+          </div>
+
+          <div class="row-2">
+            <div>
+              <label id="t_paperFlex">Paper Flex</label>
+              <select id="paperFlex">
+                <option value="Flexible">Flexible</option>
+                <option value="Medium" selected>Medium</option>
+                <option value="Stiff">Stiff</option>
+              </select>
+            </div>
+            <div>
+              <label id="t_feelFlex">Actual Court Feel</label>
+              <select id="feelFlex">
+                <option value="Flexible">Plays Flexible</option>
+                <option value="Medium" selected>Plays Medium</option>
+                <option value="Stiff">Plays Stiff</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="row-4">
+            <div>
+              <label id="t_sPower">Power (1-5)</label>
+              <input id="scorePower" type="number" min="1" max="5" value="4" />
+            </div>
+            <div>
+              <label id="t_sControl">Control (1-5)</label>
+              <input id="scoreControl" type="number" min="1" max="5" value="4" />
+            </div>
+            <div>
+              <label id="t_sSpeed">Speed (1-5)</label>
+              <input id="scoreSpeed" type="number" min="1" max="5" value="4" />
+            </div>
+            <div>
+              <label id="t_sComfort">Comfort (1-5)</label>
+              <input id="scoreComfort" type="number" min="1" max="5" value="4" />
+            </div>
+          </div>
+
+          <label id="t_notes">Honest Court Feedback (BM / EN) *</label>
+          <textarea id="notes" rows="2" placeholder="e.g. Fast swing, tak sakit wrist lepas main 2 jam..."></textarea>
+
+          <button type="button" class="primary" id="t_submitBtn" onclick="submitCombinedPost()">Submit Player & Racket Post</button>
+          <div id="statusMsg" class="status-msg"></div>
+        </div>
+
+        <!-- SOCIAL FEED COLUMN -->
+        <div class="card">
+          <h2><span id="t_feedTitle">RacketBuddy Feed</span> (<span id="count">0</span>)</h2>
+          <div class="filter-strip" id="feedFilters">
+            <button type="button" class="filter-chip active" onclick="setFeedFilter('All', this)">All</button>
+            <button type="button" class="filter-chip" onclick="setFeedFilter('Double front (Speed)', this)">Double front (Speed)</button>
+            <button type="button" class="filter-chip" onclick="setFeedFilter('Double backcourt (Hard hitter)', this)">Double backcourt (Hard hitter)</button>
+            <button type="button" class="filter-chip" onclick="setFeedFilter('Single (Attacking)', this)">Single (Attacking)</button>
+            <button type="button" class="filter-chip" onclick="setFeedFilter('Single (Control)', this)">Single (Control)</button>
+            <button type="button" class="filter-chip" onclick="setFeedFilter('Mixed', this)">Mixed</button>
+          </div>
+          <div id="feed"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PAGE 2: DEDICATED AI CONSULTANT / SEARCH PAGE -->
+    <section id="page2" style="display: none;">
+      <div class="card">
+        <h2 id="t_advTitle">RacketBuddy AI Consultant (BM & EN · Works With Empty or Full Feed)</h2>
+        <div class="hint" id="t_advContextHint">Automatically uses your saved player playstyle & current racket context.</div>
+
+        <div class="row-3">
+          <div>
+            <label id="t_qBrand">Brand</label>
+            <select id="queryBrand">
+              <option value="Any">Any Brand / Semua</option>
+              <option value="Yonex">Yonex</option>
+              <option value="Victor">Victor</option>
+              <option value="Li-Ning">Li-Ning</option>
+              <option value="Felet">Felet</option>
+              <option value="Apacs">Apacs</option>
+              <option value="Other">Other / Lain-lain</option>
+            </select>
+          </div>
+          <div>
+            <label id="t_qStyle">Playstyle</label>
+            <select id="queryStyle">
+              <option value="Double front (Speed)">Double front (Speed)</option>
+              <option value="Double backcourt (Hard hitter)">Double backcourt (Hard hitter)</option>
+              <option value="Single (Attacking)">Single (Attacking)</option>
+              <option value="Single (Control)" selected>Single (Control)</option>
+              <option value="Mixed">Mixed</option>
+            </select>
+          </div>
+          <div>
+            <label id="t_qBudget">Max Budget (RM)</label>
+            <input id="queryBudget" type="number" min="50" max="2000" value="800" />
+          </div>
+        </div>
+
+        <div class="row-2">
+          <div>
+            <label id="t_qWeight">Preferred Weight</label>
+            <select id="queryWeight">
+              <option value="Any">Any Weight / Mana-mana</option>
+              <option value="3U">3U</option>
+              <option value="4U">4U</option>
+              <option value="5U">5U</option>
+            </select>
+          </div>
+          <div>
+            <label id="t_qPriority">Top Court Priority</label>
+            <select id="queryPriority">
+              <option value="balanced">Balanced / Seimbang</option>
+              <option value="comfort">Wrist Comfort / Tak Sakit Tangan</option>
+              <option value="speed">Fast Defense & Net / Laju</option>
+              <option value="power">Smash Power / Smash Padu</option>
+              <option value="control">Shuttle Control / Kawalan</option>
+            </select>
+          </div>
+        </div>
+
+        <label id="t_qText">Ask in BM or English (e.g. "nanoflare 1000 play", "sakit wrist", "smash padu")</label>
+        <input id="queryText" placeholder="Taip soalan atau model raket: nanoflare 1000 play, sakit wrist..." />
+
+        <button type="button" class="primary" id="t_advBtn" onclick="recommend()">Consult AI Advisor</button>
+        <div id="results" style="margin-top:14px;"></div>
+      </div>
+    </section>
+  </div>
+
+  <!-- LOGIN / REGISTER MODAL -->
+  <div id="authModal" class="modal-backdrop">
+    <div class="modal-card">
+      <h2 id="t_authTitle">RacketBuddy Login / Create Account</h2>
+      <p class="hint" id="t_authNote">Local browser login — connect Supabase Auth + Postgres for 40–50+ shared users across phones.</p>
+      <label id="t_loginUser">Handle or Email</label>
+      <input id="authHandle" placeholder="e.g. @RBPlayer" />
+      <label id="t_loginPass">Password</label>
+      <input id="authPass" type="password" placeholder="••••••••" />
+      <div class="row-2" style="margin-top: 12px;">
+        <button type="button" class="primary" style="margin-top:0;" onclick="handleLoginOrRegister()">Login / Save</button>
+        <button type="button" class="ghost" style="width:100%; border-radius:10px;" onclick="closeAuthModal()">Cancel</button>
+      </div>
+      <div id="authMsg" class="status-msg"></div>
+    </div>
+  </div>
+
+  <script>
+    const DEV_PIN = "RBDEV2026";
+    let isDevMode = false;
+    let currentLang = "en";
+    let currentFeedFilter = "All";
+
+    const uiText = {
+      en: {
+        title: "RacketBuddy (RB)",
+        subtitle: "Player Feed · 5 Playstyles · AI Racket Consultant",
+        clearMine: "Clear My Posts",
+        clearAll: "Dev: Clear All Feed",
+        combTitle: "Player Info + Racket Feedback (Submit Together)",
+        combHint: "Fill your player info, racket details, and court feedback once—everything saves and posts together.",
+        secPlayer: "A. Player Info",
+        secRacket: "B. Racket & Court Feedback",
+        pHandle: "Handle / Name",
+        pAge: "Age",
+        pYears: "Years Playing",
+        pStyle: "Main Playstyle",
+        pCurrentRacket: "Current Racket Using Now",
+        brandLabel: "Brand",
+        racket: "Racket Model *",
+        priceRm: "Price (RM)",
+        weightGrip: "Weight & Grip",
+        balance: "Balance",
+        stringSetup: "String & Tension",
+        paperFlex: "Paper Flex",
+        feelFlex: "Actual Court Feel",
+        sPower: "Power (1-5)",
+        sControl: "Control (1-5)",
+        sSpeed: "Speed (1-5)",
+        sComfort: "Comfort (1-5)",
+        notes: "Honest Court Feedback (BM / EN) *",
+        submitBtn: "Submit Player & Racket Post",
+        feedTitle: "RacketBuddy Feed",
+        advTitle: "RacketBuddy AI Consultant (BM & EN · Works With Empty or Full Feed)",
+        advContextHint: "Automatically uses your saved player playstyle & current racket context.",
+        qBrand: "Brand",
+        qStyle: "Playstyle",
+        qBudget: "Max Budget (RM)",
+        qWeight: "Preferred Weight",
+        qPriority: "Top Court Priority",
+        qText: "Ask in BM or English (e.g. \"nanoflare 1000 play\", \"sakit wrist\", \"smash padu\")",
+        advBtn: "Consult AI Advisor",
+        yrs: "yrs",
+        ageLabel: "age",
+        helpful: "Helpful",
+        share: "Copy Summary",
+        deletePost: "Delete Post",
+        copied: "Copied!",
+        matchLabel: "RB AI PICK",
+        scoreLabel: "Match Score",
+        specsLabel: "Specs",
+        proofLabel: "Evidence & Reasoning",
+        citedFrom: "Player log by",
+        aiCatalogSource: "RB Catalog + Playstyle Knowledge (No community log for this exact match yet)",
+        googleImg: "Search photos on Google Images ↗",
+        authTitle: "RacketBuddy Login / Create Account",
+        authNote: "Local browser login — connect Supabase Auth + Postgres for 40–50+ shared users across phones.",
+        loginUser: "Handle or Email",
+        loginPass: "Password",
+        missingFields: "Please enter both Racket Model and Honest Court Feedback before submitting.",
+        postSaved: "Player profile and racket feedback posted to RacketBuddy!"
+      },
+      bm: {
+        title: "RacketBuddy (RB)",
+        subtitle: "Feed Pemain · 5 Gaya Main · Penasihat AI Raket",
+        clearMine: "Padam Post Saya",
+        clearAll: "Dev: Kosongkan Semua Feed",
+        combTitle: "Info Pemain + Feedback Raket (Hantar Sekali Gus)",
+        combHint: "Isi info pemain, butiran raket, dan ulasan court sekali sahaja—semua disimpan dan dihantar serentak.",
+        secPlayer: "A. Info Pemain",
+        secRacket: "B. Raket & Feedback Court",
+        pHandle: "Handle / Nama",
+        pAge: "Umur",
+        pYears: "Tahun Main",
+        pStyle: "Gaya Main Utama",
+        pCurrentRacket: "Raket Sedang Digunakan Sekarang",
+        brandLabel: "Jenama",
+        racket: "Model Raket *",
+        priceRm: "Harga (RM)",
+        weightGrip: "Berat & Grip",
+        balance: "Imbangan",
+        stringSetup: "Tali & Tension",
+        paperFlex: "Flex Kertas",
+        feelFlex: "Rasa Sebenar Court",
+        sPower: "Power (1-5)",
+        sControl: "Control (1-5)",
+        sSpeed: "Speed (1-5)",
+        sComfort: "Comfort (1-5)",
+        notes: "Feedback Jujur Di Court (BM / EN) *",
+        submitBtn: "Hantar Post Pemain & Raket",
+        feedTitle: "Feed RacketBuddy",
+        advTitle: "Penasihat AI RacketBuddy (BM & EN · Feed Kosong / Ada Isi)",
+        advContextHint: "Mengambil gaya main & raket semasa yang disimpan pada profil anda.",
+        qBrand: "Jenama",
+        qStyle: "Gaya Main",
+        qBudget: "Bajet Maksimum (RM)",
+        qWeight: "Pilihan Berat",
+        qPriority: "Keutamaan Utama",
+        qText: "Tanya dalam BM atau English (cth: \"nanoflare 1000 play\", \"sakit wrist\", \"smash padu\")",
+        advBtn: "Tanya Penasihat AI",
+        yrs: "thn",
+        ageLabel: "umur",
+        helpful: "Membantu",
+        share: "Salin Ringkasan",
+        deletePost: "Padam Post",
+        copied: "Disalin!",
+        matchLabel: "PILIHAN AI RB",
+        scoreLabel: "Skor Padanan",
+        specsLabel: "Spesifikasi",
+        proofLabel: "Bukti & Huraian AI",
+        citedFrom: "Log pemain oleh",
+        aiCatalogSource: "Pengetahuan Katalog RB & Gaya Main (Belum ada log komuniti untuk padanan ini)",
+        googleImg: "Cari gambar di Google Images ↗",
+        authTitle: "Log Masuk / Daftar Akaun RacketBuddy",
+        authNote: "Log masuk pelayar tempatan — sambung Supabase Auth + Postgres untuk 40–50+ pengguna merentas telefon.",
+        loginUser: "Handle atau Emel",
+        loginPass: "Kata Laluan",
+        missingFields: "Sila isi Model Raket dan Feedback Jujur Di Court sebelum menghantar.",
+        postSaved: "Profil pemain dan feedback raket berjaya dihantar ke RacketBuddy!"
+      }
+    };
+
+    const builtInCatalog = [
+      {
+        id: "cat-1", brand: "Yonex", racket: "Yonex Nanoflare 1000 Play", priceRm: 220,
+        weightGrip: "4U G5", balance: "Head-Light", paperFlex: "Medium", feelFlex: "Medium",
+        style: "Double front (Speed)", scores: { power: 3, control: 4, speed: 5, comfort: 5 },
+        aiNoteEn: "Head-light speed frame makes fast front-court net play, flat drives, and defensive lifts quick and easy on the wrist.",
+        aiNoteBm: "Frame ringan di kepala (head-light) membantu permainan depan net, drive laju, dan defend dengan selesa.",
+        imgUrl: "https://www.yonex.com/media/catalog/product/n/a/nanoflare_1000play.png?quality=80&bg-color=248,248,248,0.75&fit=bounds&height=819&width=600&canvas=600:819"
+      },
+      {
+        id: "cat-2", brand: "Yonex", racket: "Yonex Arcsaber 11 Pro", priceRm: 720,
+        weightGrip: "4U G5", balance: "Even-Balance", paperFlex: "Stiff", feelFlex: "Medium",
+        style: "Single (Control)", scores: { power: 4, control: 5, speed: 4, comfort: 4 },
+        aiNoteEn: "Even-balance control racket with strong shuttle hold for pinpoint placement and steady rally consistency.",
+        aiNoteBm: "Raket kawalan seimbang dengan cengkaman bulu tangkis yang kemas untuk penempatan tepat dan rally konsisten.",
+        imgUrl: "https://www.yonex.com/media/catalog/product/2/0/2022-03-yonex-arcsaber-11-d-stacked_2.png?quality=80&bg-color=248,248,248,0.75&fit=bounds&height=819&width=600&canvas=600:819"
+      },
+      {
+        id: "cat-3", brand: "Victor", racket: "Victor Thruster K Ryuga II", priceRm: 540,
+        weightGrip: "4U G5", balance: "Head-Heavy", paperFlex: "Stiff", feelFlex: "Stiff",
+        style: "Double backcourt (Hard hitter)", scores: { power: 5, control: 4, speed: 3, comfort: 3 },
+        aiNoteEn: "Head-heavy power profile designed for rear-court hard hitters looking for heavy smash angles and rear-court drive punch.",
+        aiNoteBm: "Profil berat kepala untuk pemain belakang (hard hitter) yang mahukan smash tajam dan kuasa hentakan tinggi."
+      },
+      {
+        id: "cat-4", brand: "Li-Ning", racket: "Li-Ning Axforce 80", priceRm: 690,
+        weightGrip: "4U G5", balance: "Head-Heavy", paperFlex: "Stiff", feelFlex: "Stiff",
+        style: "Single (Attacking)", scores: { power: 5, control: 4, speed: 4, comfort: 3 },
+        aiNoteEn: "Attacking singles frame built to press opponents with steep smashes, heavy clears, and offensive rally pressure.",
+        aiNoteBm: "Frame menyerang untuk single yang membantu menekan lawan melalui smash tajam dan clear bertenaga."
+      },
+      {
+        id: "cat-5", brand: "Felet", racket: "Felet Woven 8000", priceRm: 330,
+        weightGrip: "4U G5", balance: "Even-Balance", paperFlex: "Medium", feelFlex: "Medium",
+        style: "Mixed", scores: { power: 4, control: 4, speed: 4, comfort: 4 },
+        aiNoteEn: "Versatile even-balance setup well suited for mixed rotations where players switch between net control and rear support.",
+        aiNoteBm: "Raket seimbang serba boleh yang sesuai untuk mixed kerana mudah bertukar antara kawalan net dan sokongan belakang."
+      },
+      {
+        id: "cat-6", brand: "Apacs", racket: "Apacs Z-Ziggler", priceRm: 165,
+        weightGrip: "4U G5", balance: "Head-Heavy", paperFlex: "Medium", feelFlex: "Medium",
+        style: "Double backcourt (Hard hitter)", scores: { power: 4, control: 4, speed: 4, comfort: 4 },
+        aiNoteEn: "Budget-friendly head-heavy option for backcourt power at a lower price point.",
+        aiNoteBm: "Pilihan bajet berat kepala untuk hentakan belakang gelanggang pada harga lebih mesra."
+      }
+    ];
+
+    let profile = JSON.parse(localStorage.getItem("rb_profile_v2")) || {
+      handle: "@RBPlayer", age: 24, years: 6, style: "Single (Control)", currentRacket: ""
+    };
+    let currentSession = JSON.parse(localStorage.getItem("rb_session_v2")) || null;
+    let accounts = JSON.parse(localStorage.getItem("rb_accounts_v2")) || {};
+
+    const defaultReviews = [
+      {
+        id: 1, brand: "Yonex", author: "@RBPlayer", age: 24, expYears: 6,
+        racket: "Yonex Arcsaber 11 Pro", priceRm: 720, weightGrip: "4U G5",
+        balance: "Even-Balance", paperFlex: "Stiff", feelFlex: "Medium",
+        stringSetup: "BG80 @ 26 lbs", style: "Single (Control)",
+        scores: { power: 4, control: 5, speed: 4, comfort: 4 },
+        notes: "Hold on the shuttle feels super predictable for net placement and mid-court blocks. Kawalan net memang sedap.",
+        helpful: 4
+      },
+      {
+        id: 2, brand: "Yonex", author: "@CourtMate02", age: 22, expYears: 4,
+        racket: "Yonex Nanoflare 1000 Play", priceRm: 220, weightGrip: "4U G5",
+        balance: "Head-Light", paperFlex: "Medium", feelFlex: "Medium",
+        stringSetup: "BG66 Ultimax @ 25 lbs", style: "Double front (Speed)",
+        scores: { power: 3, control: 4, speed: 5, comfort: 5 },
+        notes: "Fast swing at the net and easy defense when tired.",
+        helpful: 3
+      }
+    ];
+
+    let reviews = JSON.parse(localStorage.getItem("rb_reviews_v2")) || defaultReviews;
+
+    function getActiveHandle() {
+      return (currentSession?.handle || document.getElementById("pHandle")?.value.trim() || profile.handle || "@RBPlayer").trim();
+    }
+
+    function toggleDevMode() {
+      if (!isDevMode) {
+        const pin = prompt(currentLang === "bm" ? "Masukkan PIN Developer:" : "Enter Developer PIN:");
+        if (pin !== DEV_PIN) {
+          alert(currentLang === "bm" ? "PIN Developer tidak sah." : "Invalid Developer PIN.");
+          return;
+        }
+        isDevMode = true;
+      } else {
+        isDevMode = false;
+      }
+      updateModeUI();
+      renderFeed();
+    }
+
+    function updateModeUI() {
+      const badge = document.getElementById("modeBadge");
+      const devBtn = document.getElementById("devToggleBtn");
+      const clearAllBtn = document.getElementById("t_clearAll");
+      if (isDevMode) {
+        badge.textContent = currentLang === "bm" ? "Mod Developer" : "Developer Mode";
+        badge.className = "mode-badge dev";
+        devBtn.className = "ghost dev-on";
+        devBtn.textContent = currentLang === "bm" ? "Keluar Dev Mode" : "Exit Dev Mode";
+        clearAllBtn.style.display = "inline-block";
+      } else {
+        badge.textContent = currentLang === "bm" ? "Mod Pengguna" : "User Mode";
+        badge.className = "mode-badge";
+        devBtn.className = "ghost";
+        devBtn.textContent = "Dev Mode";
+        clearAllBtn.style.display = "none";
+      }
+    }
+
+    function clearMyPosts() {
+      const me = getActiveHandle().toLowerCase();
+      const mineCount = reviews.filter(r => (r.author || "").toLowerCase() === me).length;
+      if (!mineCount) {
+        alert(currentLang === "bm" ? `Tiada post milik ${getActiveHandle()} untuk dipadam.` : `No posts by ${getActiveHandle()} to clear.`);
+        return;
+      }
+      const msg = currentLang === "bm"
+        ? `Padam ${mineCount} post milik ${getActiveHandle()} sahaja? (Post orang lain tidak disentuh)`
+        : `Delete ${mineCount} post(s) belonging to ${getActiveHandle()} only? (Other users' posts stay intact)`;
+      if (confirm(msg)) {
+        reviews = reviews.filter(r => (r.author || "").toLowerCase() !== me);
+        save();
+      }
+    }
+
+    function clearEntireFeed() {
+      if (!isDevMode) {
+        alert(currentLang === "bm" ? "Hanya Developer Mode boleh mengosongkan keseluruhan feed." : "Only Developer Mode can clear the entire feed.");
+        return;
+      }
+      if (confirm(currentLang === "bm" ? "[DEV] Kosongkan SEMUA post dalam feed?" : "[DEV] Clear ALL posts across the entire feed?")) {
+        reviews = [];
+        save();
+      }
+    }
+
+    function deleteSinglePost(id) {
+      const target = reviews.find(r => r.id === id);
+      if (!target) return;
+      const me = getActiveHandle().toLowerCase();
+      const isOwner = (target.author || "").toLowerCase() === me;
+      if (!isOwner && !isDevMode) {
+        alert(currentLang === "bm" ? "Dalam User Mode, anda hanya boleh memadam post anda sendiri." : "In User Mode, you can only delete your own posts.");
+        return;
+      }
+      reviews = reviews.filter(r => r.id !== id);
+      save();
+    }
+
+    function getInitials(handle) {
+      const clean = (handle || "RB").replace(/^@/, "").trim();
+      return clean.slice(0, 2).toUpperCase() || "RB";
+    }
+
+    function showPage(pageId) {
+      document.getElementById("page1").style.display = pageId === "page1" ? "block" : "none";
+      document.getElementById("page2").style.display = pageId === "page2" ? "block" : "none";
+      document.getElementById("nav_p1").classList.toggle("active", pageId === "page1");
+      document.getElementById("nav_p2").classList.toggle("active", pageId === "page2");
+    }
+
+    function setFeedFilter(styleFilter, btnEl) {
+      currentFeedFilter = styleFilter;
+      document.querySelectorAll("#feedFilters .filter-chip").forEach(b => b.classList.remove("active"));
+      if (btnEl) btnEl.classList.add("active");
+      renderFeed();
+    }
+
+    function copyPostSummary(id) {
+      const r = reviews.find(x => x.id === id);
+      if (!r) return;
+      const text = `${r.racket} (${r.weightGrip}, ${r.style}) — "${r.notes}" by ${r.author} via RacketBuddy (RB)`;
+      navigator.clipboard?.writeText(text).catch(() => {});
+      alert(uiText[currentLang].copied + "\n\n" + text);
+    }
+
+    function openAuthModal() {
+      document.getElementById("authHandle").value = currentSession?.handle || profile.handle || "";
+      document.getElementById("authPass").value = "";
+      document.getElementById("authMsg").textContent = "";
+      document.getElementById("authModal").classList.add("open");
+    }
+
+    function closeAuthModal() {
+      document.getElementById("authModal").classList.remove("open");
+    }
+
+    function handleLoginOrRegister() {
+      const handleInput = document.getElementById("authHandle").value.trim();
+      const passInput = document.getElementById("authPass").value;
+      if (!handleInput || passInput.length < 4) {
+        document.getElementById("authMsg").textContent = currentLang === "bm"
+          ? "Masukkan handle/emel dan kata laluan (sekurang-kurangnya 4 aksara)."
+          : "Enter a handle/email and password (at least 4 characters).";
+        return;
+      }
+      const normHandle = handleInput.startsWith("@") ? handleInput : "@" + handleInput;
+      const existing = accounts[normHandle];
+      if (existing && existing.pass !== passInput) {
+        document.getElementById("authMsg").textContent = currentLang === "bm"
+          ? "Kata laluan tidak sepadan untuk akaun ini."
+          : "Incorrect password for this handle.";
+        return;
+      }
+      if (!existing) {
+        accounts[normHandle] = { pass: passInput, profile: { ...profile, handle: normHandle } };
+        localStorage.setItem("rb_accounts_v2", JSON.stringify(accounts));
+      }
+      currentSession = { handle: normHandle };
+      localStorage.setItem("rb_session_v2", JSON.stringify(currentSession));
+      profile = { ...accounts[normHandle].profile, handle: normHandle };
+      applyProfileToInputs();
+      updateAuthUI();
+      renderFeed();
+      closeAuthModal();
+    }
+
+    function logoutUser() {
+      currentSession = null;
+      localStorage.removeItem("rb_session_v2");
+      updateAuthUI();
+      renderFeed();
+    }
+
+    function updateAuthUI() {
+      const bar = document.getElementById("userStatusBar");
+      const btn = document.getElementById("authActionBtn");
+      if (currentSession) {
+        bar.textContent = currentLang === "bm" ? `Log masuk: ${currentSession.handle}` : `Logged in: ${currentSession.handle}`;
+        btn.textContent = currentLang === "bm" ? "Log Keluar" : "Logout";
+        btn.onclick = logoutUser;
+      } else {
+        bar.textContent = currentLang === "bm" ? "Mod Tetamu" : "Guest Mode";
+        btn.textContent = currentLang === "bm" ? "Log Masuk / Daftar" : "Login / Sign Up";
+        btn.onclick = openAuthModal;
+      }
+    }
+
+    function applyProfileToInputs() {
+      document.getElementById("pHandle").value = profile.handle || "";
+      document.getElementById("pAge").value = profile.age || 24;
+      document.getElementById("pYears").value = profile.years || 6;
+      document.getElementById("pStyle").value = profile.style || "Single (Control)";
+      document.getElementById("pCurrentRacket").value = profile.currentRacket || "";
+      document.getElementById("queryStyle").value = profile.style || "Single (Control)";
+    }
+
+    function syncAdvisorStyleFromProfile() {
+      const st = document.getElementById("pStyle").value;
+      profile.style = st;
+      document.getElementById("queryStyle").value = st;
+    }
+
+    function detectBrand(text) {
+      const low = text.toLowerCase();
+      if (/yonex|arcsaber|astrox|nanoflare|nanoray|duora|voltric/.test(low)) return "Yonex";
+      if (/victor|auraspeed|thruster|drivex|jetspeed|bravesword/.test(low)) return "Victor";
+      if (/li-ning|lining|halbertec|bladex|axforce/.test(low)) return "Li-Ning";
+      if (/felet|woven|tj\s*power|tj\s*1000/.test(low)) return "Felet";
+      if (/apacs|lethal|tantrum|z-ziggler/.test(low)) return "Apacs";
+      return "Other";
+    }
+
+    function setLang(lang) {
+      currentLang = lang;
+      document.getElementById("btn_en").classList.toggle("active", lang === "en");
+      document.getElementById("btn_bm").classList.toggle("active", lang === "bm");
+      const t = uiText[lang];
+      Object.keys(t).forEach(k => {
+        const el = document.getElementById("t_" + k);
+        if (el) el.textContent = t[k];
+      });
+      document.getElementById("nav_p1").textContent = lang === "bm" ? "1. Post & Feed" : "1. Post & Feed";
+      document.getElementById("nav_p2").textContent = lang === "bm" ? "2. Penasihat AI" : "2. AI Consultant";
+      updateAuthUI();
+      updateModeUI();
+      renderFeed();
+    }
+
+    function save() {
+      localStorage.setItem("rb_reviews_v2", JSON.stringify(reviews));
+      renderFeed();
+    }
+
+    function setStatusMsg(msg, isError) {
+      const el = document.getElementById("statusMsg");
+      el.textContent = msg;
+      el.className = "status-msg " + (isError ? "status-err" : "status-ok");
+    }
+
+    function submitCombinedPost() {
+      const t = uiText[currentLang];
+      const rawRacket = document.getElementById("racket").value.trim();
+      const notes = document.getElementById("notes").value.trim();
+      if (!rawRacket || !notes) {
+        setStatusMsg(t.missingFields, true);
+        return;
+      }
+
+      const handleVal = document.getElementById("pHandle").value.trim() || "@RBPlayer";
+      const ageVal = Number(document.getElementById("pAge").value) || 24;
+      const yearsVal = Number(document.getElementById("pYears").value) || 6;
+      const styleVal = document.getElementById("pStyle").value;
+      const currentRacketVal = document.getElementById("pCurrentRacket").value.trim() || rawRacket;
+
+      profile = { handle: handleVal, age: ageVal, years: yearsVal, style: styleVal, currentRacket: currentRacketVal };
+      localStorage.setItem("rb_profile_v2", JSON.stringify(profile));
+      if (currentSession && accounts[currentSession.handle]) {
+        accounts[currentSession.handle].profile = { ...profile };
+        localStorage.setItem("rb_accounts_v2", JSON.stringify(accounts));
+      }
+      document.getElementById("queryStyle").value = styleVal;
+
+      const chosenBrand = document.getElementById("brandSelect").value;
+      const brand = chosenBrand === "Auto" ? detectBrand(rawRacket) : chosenBrand;
+      const racket = (brand !== "Other" && !rawRacket.toLowerCase().startsWith(brand.toLowerCase())) ? `${brand} ${rawRacket}` : rawRacket;
+
+      reviews.unshift({
+        id: Date.now(),
+        brand,
+        author: handleVal,
+        age: ageVal,
+        expYears: yearsVal,
+        racket,
+        priceRm: Number(document.getElementById("priceRm").value) || 350,
+        weightGrip: document.getElementById("weightGrip").value,
+        balance: document.getElementById("balance").value,
+        paperFlex: document.getElementById("paperFlex").value,
+        feelFlex: document.getElementById("feelFlex").value,
+        stringSetup: document.getElementById("stringSetup").value.trim() || "Standard setup",
+        style: styleVal,
+        scores: {
+          power: Number(document.getElementById("scorePower").value) || 4,
+          control: Number(document.getElementById("scoreControl").value) || 4,
+          speed: Number(document.getElementById("scoreSpeed").value) || 4,
+          comfort: Number(document.getElementById("scoreComfort").value) || 4
+        },
+        notes,
+        helpful: 1
+      });
+
+      document.getElementById("racket").value = "";
+      document.getElementById("notes").value = "";
+      save();
+      setStatusMsg(t.postSaved, false);
+    }
+
+    function upvote(id) {
+      const item = reviews.find(r => r.id === id);
+      if (item) { item.helpful += 1; save(); }
+    }
+
+    function renderFeed() {
+      const t = uiText[currentLang];
+      const me = getActiveHandle().toLowerCase();
+      const filtered = currentFeedFilter === "All"
+        ? reviews
+        : reviews.filter(r => r.style === currentFeedFilter);
+
+      document.getElementById("count").textContent = filtered.length;
+      const feed = document.getElementById("feed");
+      if (!filtered.length) {
+        feed.innerHTML = `<p style="color:#64748b;font-size:0.88rem;">${currentLang === "bm" ? "Tiada post untuk tapisan ini — Penasihat AI di tab 2 tetap boleh digunakan!" : "No posts for this filter yet — the AI Consultant on Tab 2 still works!"}</p>`;
+        return;
+      }
+      feed.innerHTML = filtered.map(r => {
+        const brand = r.brand || detectBrand(r.racket);
+        const canDelete = isDevMode || (r.author || "").toLowerCase() === me;
+        return `
+          <div class="social-post">
+            <div class="post-head">
+              <div class="author-row">
+                <div class="avatar">${getInitials(r.author)}</div>
+                <div>
+                  <div class="author-name">${r.author}</div>
+                  <div class="author-sub">${t.ageLabel} ${r.age || profile.age || 24} · ${r.expYears} ${t.yrs} · ${r.style}</div>
+                </div>
+              </div>
+              <span class="brand-pill">${brand}</span>
+            </div>
+            <div style="font-weight:700;font-size:0.96rem;">${r.racket} <span style="font-weight:500;color:#64748b;">(${r.weightGrip} · ~RM${r.priceRm})</span></div>
+            <div>
+              <span class="meta-tag">${r.balance}</span>
+              <span class="meta-tag">Spec: ${r.paperFlex} → Feel: ${r.feelFlex}</span>
+              <span class="meta-tag">${r.stringSetup}</span>
+            </div>
+            <div>
+              <span class="stat-pill">Power ${r.scores.power}/5</span>
+              <span class="stat-pill">Control ${r.scores.control}/5</span>
+              <span class="stat-pill">Speed ${r.scores.speed}/5</span>
+              <span class="stat-pill">Comfort ${r.scores.comfort}/5</span>
+            </div>
+            <p style="margin:8px 0 4px;font-size:0.9rem;line-height:1.45;">"${r.notes}"</p>
+            <div class="post-actions">
+              <button type="button" class="action-btn" onclick="upvote(${r.id})">👍 ${t.helpful} (${r.helpful})</button>
+              <button type="button" class="action-btn" onclick="copyPostSummary(${r.id})">↗ ${t.share}</button>
+              ${canDelete ? `<button type="button" class="action-btn del" onclick="deleteSinglePost(${r.id})">🗑 ${t.deletePost}</button>` : ""}
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function makeFallbackSvg(racketName, brand) {
+      const safeLabel = `${brand} · ${racketName}`.slice(0, 26).replace(/[<>&"]/g, "");
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="160" height="190" viewBox="0 0 160 190">
+        <rect width="160" height="190" rx="12" fill="#f8fafc"/>
+        <ellipse cx="80" cy="64" rx="34" ry="44" fill="none" stroke="#16a34a" stroke-width="5"/>
+        <line x1="80" y1="108" x2="80" y2="152" stroke="#64748b" stroke-width="5"/>
+        <rect x="74" y="152" width="12" height="24" rx="3" fill="#94a3b8"/>
+        <text x="80" y="185" text-anchor="middle" fill="#334155" font-size="10" font-family="sans-serif">${safeLabel}</text>
+      </svg>`;
+      return "data:image/svg+xml;charset=UTF-8," + encodeURIComponent(svg);
+    }
+
+    function getRacketImageUrl(racketName, brand) {
+      const hit = builtInCatalog.find(c =>
+        c.imgUrl && (c.racket.toLowerCase().includes(racketName.toLowerCase()) || racketName.toLowerCase().includes(c.racket.toLowerCase().replace(/^(yonex|victor|li-ning|felet|apacs)\s+/i, "")))
+      );
+      return hit ? hit.imgUrl : makeFallbackSvg(racketName, brand);
+    }
+
+    function getGoogleImagesUrl(racketName, brand) {
+      const q = `${brand !== "Other" ? brand + " " : ""}${racketName} badminton racket`;
+      return `https://www.google.com/search?tbm=isch&q=${encodeURIComponent(q)}`;
+    }
+
+    const synonymGroups = [
+      ["wrist", "pergelangan", "sakit", "lenguh", "fatigue", "comfort", "selesa", "arm", "ringan"],
+      ["smash", "padu", "power", "kuasa", "berat", "heavy", "clear", "lob", "hitter", "backcourt"],
+      ["speed", "laju", "cepat", "fast", "defend", "defense", "drive", "flat", "front"],
+      ["control", "kawalan", "net", "jaring", "sedap", "hold"]
+    ];
+
+    function expandBilingualTokens(rawQuery) {
+      const base = rawQuery.toLowerCase().split(/[\s,./!?]+/).filter(Boolean);
+      const set = new Set(base);
+      base.forEach(tok => {
+        synonymGroups.forEach(grp => {
+          if (grp.some(w => tok.includes(w) || w.includes(tok))) grp.forEach(s => set.add(s));
+        });
+      });
+      return Array.from(set);
+    }
+
+    function playstyleScoreBonus(item, qStyle) {
+      if (item.style === qStyle) return 5;
+      if (qStyle === "Double front (Speed)") return item.scores.speed * 1.1;
+      if (qStyle === "Double backcourt (Hard hitter)") return item.scores.power * 1.1;
+      if (qStyle === "Single (Attacking)") return (item.scores.power + item.scores.speed) * 0.6;
+      if (qStyle === "Single (Control)") return (item.scores.control + item.scores.comfort) * 0.6;
+      if (qStyle === "Mixed") return (item.scores.control + item.scores.speed) * 0.55;
+      return 0;
+    }
+
+    function recommend() {
+      const t = uiText[currentLang];
+      const qBrand = document.getElementById("queryBrand").value;
+      const qStyle = document.getElementById("queryStyle").value;
+      const qBudget = Number(document.getElementById("queryBudget").value) || 2000;
+      const qWeight = document.getElementById("queryWeight").value;
+      const qPriority = document.getElementById("queryPriority").value;
+      const tokens = expandBilingualTokens(document.getElementById("queryText").value.trim());
+
+      const feedItems = reviews.map(r => ({
+        ...r,
+        brand: r.brand || detectBrand(r.racket),
+        fromFeed: true,
+        proofText: `"${r.notes}"`,
+        citationLine: `${t.citedFrom} ${r.author} (${r.expYears} ${t.yrs}, ${r.stringSetup}, ${r.helpful} ${t.helpful.toLowerCase()})`
+      }));
+
+      const catItems = builtInCatalog.map(c => ({
+        ...c,
+        fromFeed: false,
+        proofText: currentLang === "bm" ? c.aiNoteBm : c.aiNoteEn,
+        citationLine: t.aiCatalogSource
+      }));
+
+      const scored = [...feedItems, ...catItems].map(item => {
+        let score = 0;
+        if (qBrand !== "Any") score += (item.brand.toLowerCase() === qBrand.toLowerCase()) ? 8 : -6;
+        if (item.priceRm <= qBudget) score += 3; else score -= 4;
+        score += playstyleScoreBonus(item, qStyle);
+        if (qWeight === "Any" || item.weightGrip.startsWith(qWeight)) score += 2.5;
+        if (qPriority !== "balanced" && item.scores[qPriority]) score += item.scores[qPriority] * 1.2;
+
+        const hay = `${item.brand} ${item.racket} ${item.balance} ${item.feelFlex} ${item.style} ${item.proofText}`.toLowerCase();
+        tokens.forEach(w => { if (hay.includes(w)) score += 2; });
+        if (item.fromFeed) score += 1.5 + (item.helpful * 0.4);
+        return { ...item, score };
+      }).sort((a, b) => b.score - a.score);
+
+      const top = [];
+      const seen = new Set();
+      for (const item of scored) {
+        const k = item.racket.toLowerCase();
+        if (!seen.has(k)) { seen.add(k); top.push(item); }
+        if (top.length === 2) break;
+      }
+
+      const curGearLine = profile.currentRacket
+        ? (currentLang === "bm" ? ` · Raket semasa: <strong>${profile.currentRacket}</strong>` : ` · Current bag: <strong>${profile.currentRacket}</strong>`)
+        : "";
+
+      const summary = currentLang === "bm"
+        ? `<div class="ai-summary-box"><strong>Ringkasan AI RB:</strong> Gaya <em>${qStyle}</em> · Umur ~${profile.age} · Bajet RM${qBudget}${curGearLine}. Cadangan utama: <strong>${top[0].racket}</strong>.</div>`
+        : `<div class="ai-summary-box"><strong>RB AI Verdict:</strong> <em>${qStyle}</em> · Age ~${profile.age} · Budget RM${qBudget}${curGearLine}. Top pick: <strong>${top[0].racket}</strong>.</div>`;
+
+      const cards = top.map((r, i) => {
+        const imgSrc = getRacketImageUrl(r.racket, r.brand);
+        const fallbackSrc = makeFallbackSvg(r.racket, r.brand);
+        const badge = r.fromFeed
+          ? `<span class="stat-pill">${currentLang === "bm" ? "Bukti Komuniti" : "Community Proof"}</span>`
+          : `<span class="meta-tag">${currentLang === "bm" ? "Katalog RB" : "RB Catalog"}</span>`;
+        return `
+          <div class="verdict-card">
+            <div style="font-size:0.78rem;color:#15803d;font-weight:700;margin-bottom:8px;">
+              <span class="brand-pill">${r.brand}</span> ${t.matchLabel} #${i + 1} · ${t.scoreLabel} ${r.score.toFixed(1)} ${badge}
+            </div>
+            <div class="rec-layout">
+              <div>
+                <img class="racket-thumb" src="${imgSrc}" alt="${r.racket}" onerror="this.onerror=null;this.src='${fallbackSrc}';" />
+                <a class="img-search-link" href="${getGoogleImagesUrl(r.racket, r.brand)}" target="_blank" rel="noopener noreferrer">${t.googleImg}</a>
+              </div>
+              <div>
+                <h3 style="margin:0 0 6px;font-size:1.02rem;">${r.racket} <span style="font-weight:500;color:#64748b;">(${r.weightGrip} · ~RM${r.priceRm})</span></h3>
+                <div style="font-size:0.82rem;color:#475569;">
+                  <strong>${t.specsLabel}:</strong> ${r.style} · ${r.balance} · Spec: ${r.paperFlex} → Feel: <strong>${r.feelFlex}</strong> · Power ${r.scores.power}/5, Control ${r.scores.control}/5, Speed ${r.scores.speed}/5, Comfort ${r.scores.comfort}/5
+                </div>
+                <div class="cite-ref">
+                  <strong>${t.proofLabel}:</strong> ${r.proofText}<br/>
+                  <span style="color:#15803d;font-weight:600;">— ${r.citationLine}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join("");
+
+      document.getElementById("results").innerHTML = summary + cards;
+    }
+
+    applyProfileToInputs();
+    updateAuthUI();
+    updateModeUI();
+    renderFeed();
+  </script>
+</body>
+</html>
