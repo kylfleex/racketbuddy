@@ -3,12 +3,15 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="RacketBuddy (RB) — Member court feed, 5 playstyles, and AI badminton racket consultant." />
-  <title>RacketBuddy (RB) — Member Court Feed & AI Racket Consultant</title>
+  <meta name="theme-color" content="#16a34a" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="RacketBuddy" />
+  <meta name="description" content="RacketBuddy (RB) — Find your best racket as your buddy." />
+  <title>RacketBuddy (RB) — Find your best racket as your buddy</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     :root {
-      --bg: #eef2f6;
+      --bg: #f1f5f9;
       --surface: #ffffff;
       --surface-soft: #f8fafc;
       --accent: #16a34a;
@@ -26,63 +29,88 @@
     * { box-sizing: border-box; font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
     body { margin: 0; background: var(--bg); color: var(--text); padding: 0 0 40px; }
 
-    /* HOME GATE PAGE */
-    .gate-wrap {
+    /* CENTERED HOME PAGE (NO UPPER BANNER) */
+    .home-center {
       min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 24px 16px;
+      padding: 28px 16px;
       background:
-        radial-gradient(circle at top right, rgba(22, 163, 74, 0.14), transparent 42%),
-        radial-gradient(circle at bottom left, rgba(14, 165, 233, 0.14), transparent 45%),
+        radial-gradient(circle at 50% 0%, rgba(22, 163, 74, 0.14), transparent 55%),
         var(--bg);
     }
-    .gate-shell {
-      max-width: 960px;
+    .home-card {
       width: 100%;
-      display: grid;
-      grid-template-columns: 1.1fr 0.9fr;
-      gap: 22px;
-      align-items: stretch;
-    }
-    @media (max-width: 840px) { .gate-shell { grid-template-columns: 1fr; } }
-    .hero-panel {
-      background: linear-gradient(155deg, #0f172a 0%, #1e293b 65%, #14532d 100%);
-      color: #fff;
-      border-radius: 22px;
-      padding: 28px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.16);
-    }
-    .hero-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: rgba(255, 255, 255, 0.12);
-      border: 1px solid rgba(255, 255, 255, 0.18);
-      padding: 6px 12px;
-      border-radius: 999px;
-      font-size: 0.78rem;
-      font-weight: 700;
-      width: fit-content;
-    }
-    .hero-title { margin: 18px 0 10px; font-size: 2rem; line-height: 1.15; letter-spacing: -0.02em; }
-    .hero-sub { margin: 0; color: #cbd5e1; font-size: 0.94rem; line-height: 1.55; }
-    .feature-list { list-style: none; padding: 0; margin: 22px 0 0; display: grid; gap: 10px; font-size: 0.88rem; color: #e2e8f0; }
-    .feature-list li { display: flex; align-items: center; gap: 8px; }
-    .auth-panel {
+      max-width: 460px;
       background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: 22px;
-      padding: 26px;
-      box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
+      border-radius: 24px;
+      padding: 28px 24px;
+      box-shadow: 0 16px 36px rgba(15, 23, 42, 0.08);
+      text-align: center;
     }
+    .big-rb-logo {
+      width: 88px;
+      height: 88px;
+      margin: 0 auto 14px;
+      border-radius: 24px;
+      background: linear-gradient(135deg, #16a34a 0%, #059669 52%, #0284c7 100%);
+      color: #ffffff;
+      font-size: 2.25rem;
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      display: grid;
+      place-items: center;
+      box-shadow: 0 12px 24px rgba(22, 163, 74, 0.28);
+    }
+    .home-brand { margin: 0; font-size: 1.65rem; font-weight: 800; letter-spacing: -0.02em; }
+    .home-tagline {
+      margin: 6px 0 8px;
+      font-size: 0.98rem;
+      font-weight: 700;
+      color: var(--accent-dark);
+    }
+    .home-desc {
+      margin: 0 auto 18px;
+      max-width: 380px;
+      font-size: 0.88rem;
+      line-height: 1.5;
+      color: var(--muted);
+    }
+    .home-top-controls {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+    .auth-switch {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      padding: 4px;
+      border-radius: 12px;
+      margin-bottom: 12px;
+    }
+    .switch-btn {
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      font-weight: 700;
+      font-size: 0.86rem;
+      padding: 8px 10px;
+      border-radius: 9px;
+      cursor: pointer;
+    }
+    .switch-btn.active {
+      background: var(--text);
+      color: #ffffff;
+    }
+    .form-align { text-align: left; }
 
     /* MAIN APP */
     .topbar {
@@ -240,47 +268,50 @@
     .status-msg { font-size: 0.84rem; font-weight: 700; margin-top: 10px; min-height: 20px; }
     .status-ok { color: var(--accent-dark); }
     .status-err { color: var(--danger); }
+    .modal-backdrop {
+      position: fixed; inset: 0; background: rgba(15, 23, 42, 0.55); display: none;
+      align-items: center; justify-content: center; padding: 16px; z-index: 60;
+    }
+    .modal-backdrop.open { display: flex; }
+    .modal-card {
+      max-width: 400px; width: 100%; background: var(--surface); border: 1px solid var(--border);
+      border-radius: 18px; padding: 20px; box-shadow: 0 20px 40px rgba(15, 23, 42, 0.2);
+      text-align: left;
+    }
   </style>
 </head>
 <body>
-  <!-- HOME GATE PAGE: REGISTER / SIGN IN REQUIRED (GUEST MODE DISABLED) -->
-  <div id="homeGate" class="gate-wrap">
-    <div class="gate-shell">
-      <div class="hero-panel">
-        <div>
-          <div class="hero-badge">🏸 RacketBuddy (RB) · Shared Court Network</div>
-          <h1 class="hero-title" id="g_heroTitle">Real Court Feel From Real Players.</h1>
-          <p class="hero-sub" id="g_heroSub">
-            Register your player account to join the shared RacketBuddy court feed, compare real racket specs vs. actual court feel, and consult the bilingual AI racket advisor.
-          </p>
-          <ul class="feature-list">
-            <li>✅ <span id="g_f1">Shared cloud feed synced across phones via Supabase</span></li>
-            <li>✅ <span id="g_f2">5 playstyles + search & filter across court feedback</span></li>
-            <li>✅ <span id="g_f3">Member-only access — Guest Mode is disabled</span></li>
-          </ul>
+  <!-- CENTERED HOME PAGE: BIG RB LOGO + TAGLINE + SEPARATE REGISTER & LOGIN -->
+  <div id="homeGate" class="home-center">
+    <div class="home-card">
+      <div class="big-rb-logo" aria-label="RB Logo">RB</div>
+      <h1 class="home-brand">RacketBuddy</h1>
+      <div class="home-tagline" id="g_tagline">Find your best racket as your buddy</div>
+      <p class="home-desc" id="g_desc">
+        Compare real court feel from fellow players, post your racket setup, and ask the AI consultant. Accounts inactive for 60 days are automatically removed.
+      </p>
+
+      <div class="home-top-controls">
+        <div class="lang-pill">
+          <button type="button" id="g_btn_en" class="lang-btn active" onclick="setLang('en')">EN</button>
+          <button type="button" id="g_btn_bm" class="lang-btn" onclick="setLang('bm')">BM</button>
         </div>
-        <div style="margin-top:20px;font-size:0.78rem;color:#94a3b8;" id="g_footerNote">
-          RacketBuddy (RB) · Add to Home Screen on iOS or Android for quick court access.
-        </div>
+        <button type="button" id="g_installBtn" class="ghost" onclick="triggerAddToHomeScreen()">📲 Add to Home Screen</button>
       </div>
 
-      <div class="auth-panel">
-        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:10px;">
-          <h2 style="margin:0;font-size:1.25rem;" id="g_formTitle">Member Registration & Login</h2>
-          <div class="lang-pill">
-            <button type="button" id="g_btn_en" class="lang-btn active" onclick="setLang('en')">EN</button>
-            <button type="button" id="g_btn_bm" class="lang-btn" onclick="setLang('bm')">BM</button>
-          </div>
-        </div>
-        <p class="hint" id="g_formHint">New players register automatically on first submit; returning players sign in with their handle and password.</p>
+      <div class="auth-switch" role="tablist">
+        <button type="button" id="tabRegister" class="switch-btn active" onclick="switchAuthTab('register')">Register</button>
+        <button type="button" id="tabLogin" class="switch-btn" onclick="switchAuthTab('login')">Login</button>
+      </div>
 
+      <div class="form-align">
         <label id="g_lblHandle">Player Handle or Email *</label>
         <input id="gateHandle" placeholder="e.g. @AimanCourt or aiman@example.com" />
 
         <label id="g_lblPass">Password (min 4 chars) *</label>
         <input id="gatePass" type="password" placeholder="••••••••" />
 
-        <div class="row-2">
+        <div id="registerExtraFields" class="row-2">
           <div>
             <label id="g_lblAge">Age</label>
             <input id="gateAge" type="number" min="8" max="80" value="24" />
@@ -297,9 +328,22 @@
           </div>
         </div>
 
-        <button type="button" class="primary" id="g_submitBtn" onclick="registerAndEnterApp()">Register & Enter RacketBuddy</button>
+        <button type="button" class="primary" id="g_submitBtn" onclick="submitGateAuth()">Register Account</button>
         <div id="gateMsg" class="status-msg"></div>
       </div>
+    </div>
+  </div>
+
+  <!-- ADD TO HOME SCREEN GUIDE MODAL -->
+  <div id="installModal" class="modal-backdrop">
+    <div class="modal-card">
+      <h2 style="margin:0 0 8px;" id="inst_title">Add RacketBuddy to Home Screen</h2>
+      <p class="hint" id="inst_body" style="margin:0 0 12px;">
+        Open this page in Safari (iPhone/iPad) or Chrome (Android):<br/>
+        • <strong>iPhone / iPad (Safari):</strong> Tap <strong>Share</strong> (square with arrow) → scroll down → tap <strong>Add to Home Screen</strong>.<br/>
+        • <strong>Android (Chrome):</strong> Tap the <strong>⋮ menu</strong> (top right) → tap <strong>Add to Home screen</strong> or <strong>Install app</strong>.
+      </p>
+      <button type="button" class="primary" style="margin-top:4px;" onclick="closeInstallModal()">Got It</button>
     </div>
   </div>
 
@@ -311,7 +355,7 @@
           <div class="logo-mark">RB</div>
           <div>
             <h1 id="t_title">RacketBuddy (RB)</h1>
-            <p id="t_subtitle">Shared Court Feed · 5 Playstyles · AI Consultant</p>
+            <p id="t_subtitle">Find your best racket as your buddy</p>
           </div>
         </div>
         <div class="header-actions">
@@ -319,6 +363,7 @@
             <button type="button" id="btn_en" class="lang-btn active" onclick="setLang('en')">EN</button>
             <button type="button" id="btn_bm" class="lang-btn" onclick="setLang('bm')">BM</button>
           </div>
+          <button type="button" id="app_installBtn" class="ghost" onclick="triggerAddToHomeScreen()">📲 Add to Home Screen</button>
           <button type="button" id="devToggleBtn" class="ghost" onclick="toggleDevMode()">Dev Mode</button>
           <button type="button" id="t_clearMine" class="ghost" onclick="clearMyPosts()">Clear My Posts</button>
           <button type="button" id="t_clearAll" class="danger-ghost" style="display:none;" onclick="clearEntireFeed()">Dev: Clear All Feed</button>
@@ -570,27 +615,47 @@
     const sbClient = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
 
     const DEV_PIN = "RBDEV2026";
+    const INACTIVE_DAYS_MS = 60 * 24 * 60 * 60 * 1000;
     let isDevMode = false;
     let currentLang = "en";
     let currentFeedFilter = "All";
+    let authMode = "register";
+    let deferredInstallPrompt = null;
+
+    window.addEventListener("beforeinstallprompt", (e) => {
+      e.preventDefault();
+      deferredInstallPrompt = e;
+    });
+
+    async function triggerAddToHomeScreen() {
+      if (deferredInstallPrompt) {
+        deferredInstallPrompt.prompt();
+        await deferredInstallPrompt.userChoice.catch(() => {});
+        deferredInstallPrompt = null;
+        return;
+      }
+      document.getElementById("installModal").classList.add("open");
+    }
+
+    function closeInstallModal() {
+      document.getElementById("installModal").classList.remove("open");
+    }
 
     const uiText = {
       en: {
-        heroTitle: "Real Court Feel From Real Players.",
-        heroSub: "Register your player account to join the shared RacketBuddy court feed, compare real racket specs vs. actual court feel, and consult the bilingual AI racket advisor.",
-        f1: "Shared cloud feed synced across phones via Supabase",
-        f2: "5 playstyles + search & filter across court feedback",
-        f3: "Member-only access — Guest Mode is disabled",
-        footerNote: "RacketBuddy (RB) · Add to Home Screen on iOS or Android for quick court access.",
-        formTitle: "Member Registration & Login",
-        formHint: "New players register automatically on first submit; returning players sign in with their handle and password.",
+        tagline: "Find your best racket as your buddy",
+        desc: "Compare real court feel from fellow players, post your racket setup, and ask the AI consultant. Accounts inactive for 60 days are automatically removed.",
+        installBtn: "📲 Add to Home Screen",
+        tabReg: "Register",
+        tabLog: "Login",
         lblHandle: "Player Handle or Email *",
         lblPass: "Password (min 4 chars) *",
         lblAge: "Age",
         lblStyle: "Main Playstyle",
-        submitGate: "Register & Enter RacketBuddy",
+        btnRegister: "Register Account",
+        btnLogin: "Login",
         title: "RacketBuddy (RB)",
-        subtitle: "Shared Court Feed · 5 Playstyles · AI Consultant",
+        subtitle: "Find your best racket as your buddy",
         clearMine: "Clear My Posts",
         clearAll: "Dev: Clear All Feed",
         logoutBtn: "Sign Out",
@@ -644,24 +709,24 @@
         missingFields: "Please enter both Racket Model and Honest Court Feedback before submitting.",
         postSaved: "Posted to shared RacketBuddy feed!",
         gateInvalid: "Please enter a handle/email and a password of at least 4 characters.",
-        gateWrongPass: "Incorrect password for this registered account."
+        gateExists: "This handle is already registered. Switch to Login instead.",
+        gateNotFound: "Account not found or expired after 60 days inactive. Please Register.",
+        gateWrongPass: "Incorrect password for this account."
       },
       bm: {
-        heroTitle: "Rasa Court Sebenar Dari Pemain Sebenar.",
-        heroSub: "Daftar akaun pemain untuk sertai feed bersama RacketBuddy, bandingkan spec vs rasa sebenar di court, dan rujuk penasihat AI dwibahasa.",
-        f1: "Feed awan dikongsi merentas telefon melalui Supabase",
-        f2: "5 gaya main + carian & tapisan pada feedback court",
-        f3: "Akses ahli sahaja — Mod Tetamu dinyahaktifkan",
-        footerNote: "RacketBuddy (RB) · Tambah ke Skrin Utama iOS atau Android untuk akses pantas.",
-        formTitle: "Daftar & Log Masuk Ahli",
-        formHint: "Pemain baharu didaftarkan automatik; pemain sedia ada log masuk dengan handle dan kata laluan.",
+        tagline: "Find your best racket as your buddy",
+        desc: "Bandingkan rasa sebenar di court daripada rakan pemain, kongsi setup raket anda, dan tanya AI. Akaun tidak aktif 60 hari dipadam automatik.",
+        installBtn: "📲 Tambah ke Skrin Utama",
+        tabReg: "Daftar",
+        tabLog: "Log Masuk",
         lblHandle: "Handle Pemain atau Emel *",
         lblPass: "Kata Laluan (min 4 aksara) *",
         lblAge: "Umur",
         lblStyle: "Gaya Main Utama",
-        submitGate: "Daftar & Masuk RacketBuddy",
+        btnRegister: "Daftar Akaun",
+        btnLogin: "Log Masuk",
         title: "RacketBuddy (RB)",
-        subtitle: "Feed Bersama · 5 Gaya Main · Penasihat AI",
+        subtitle: "Find your best racket as your buddy",
         clearMine: "Padam Post Saya",
         clearAll: "Dev: Kosongkan Semua Feed",
         logoutBtn: "Log Keluar",
@@ -715,7 +780,9 @@
         missingFields: "Sila isi Model Raket dan Feedback Jujur Di Court sebelum menghantar.",
         postSaved: "Berjaya dihantar ke feed bersama RacketBuddy!",
         gateInvalid: "Masukkan handle/emel dan kata laluan sekurang-kurangnya 4 aksara.",
-        gateWrongPass: "Kata laluan tidak sepadan untuk akaun berdaftar ini."
+        gateExists: "Handle ini sudah berdaftar. Sila pilih tab Log Masuk.",
+        gateNotFound: "Akaun tidak ditemui atau tamat selepas 60 hari tidak aktif. Sila Daftar.",
+        gateWrongPass: "Kata laluan tidak sepadan untuk akaun ini."
       }
     };
 
@@ -766,12 +833,114 @@
       }
     ];
 
-    let profile = JSON.parse(localStorage.getItem("rb_profile_v3")) || {
+    function pruneInactiveAccounts(accMap) {
+      const now = Date.now();
+      const next = {};
+      let changed = false;
+      Object.entries(accMap || {}).forEach(([k, v]) => {
+        const last = Number(v?.lastActiveAt || now);
+        if (now - last <= INACTIVE_DAYS_MS) {
+          next[k] = { ...v, lastActiveAt: last };
+        } else {
+          changed = true;
+        }
+      });
+      if (changed) {
+        localStorage.setItem("rb_accounts_v4", JSON.stringify(next));
+      }
+      return next;
+    }
+
+    function touchAccountActivity(handle) {
+      if (!handle || !accounts[handle]) return;
+      accounts[handle].lastActiveAt = Date.now();
+      localStorage.setItem("rb_accounts_v4", JSON.stringify(accounts));
+    }
+
+    let accounts = pruneInactiveAccounts(JSON.parse(localStorage.getItem("rb_accounts_v4")) || {});
+    let profile = JSON.parse(localStorage.getItem("rb_profile_v4")) || {
       handle: "", age: 24, years: 6, style: "Single (Control)", currentRacket: ""
     };
-    let currentSession = JSON.parse(localStorage.getItem("rb_session_v3")) || null;
-    let accounts = JSON.parse(localStorage.getItem("rb_accounts_v3")) || {};
-    let reviews = JSON.parse(localStorage.getItem("rb_reviews_v3")) || [];
+    let currentSession = JSON.parse(localStorage.getItem("rb_session_v4")) || null;
+    if (currentSession && !accounts[currentSession.handle]) {
+      currentSession = null;
+      localStorage.removeItem("rb_session_v4");
+    } else if (currentSession) {
+      touchAccountActivity(currentSession.handle);
+    }
+
+    let reviews = JSON.parse(localStorage.getItem("rb_reviews_v4")) || [];
+
+    function switchAuthTab(mode) {
+      authMode = mode;
+      document.getElementById("tabRegister").classList.toggle("active", mode === "register");
+      document.getElementById("tabLogin").classList.toggle("active", mode === "login");
+      document.getElementById("registerExtraFields").style.display = mode === "register" ? "grid" : "none";
+      document.getElementById("gateMsg").textContent = "";
+      applyLangLabels();
+    }
+
+    function submitGateAuth() {
+      accounts = pruneInactiveAccounts(accounts);
+      const t = uiText[currentLang];
+      const rawHandle = document.getElementById("gateHandle").value.trim();
+      const pass = document.getElementById("gatePass").value;
+      const msgEl = document.getElementById("gateMsg");
+
+      if (!rawHandle || pass.length < 4) {
+        msgEl.textContent = t.gateInvalid;
+        msgEl.className = "status-msg status-err";
+        return;
+      }
+
+      const normHandle = rawHandle.startsWith("@") ? rawHandle : "@" + rawHandle;
+      const existing = accounts[normHandle];
+
+      if (authMode === "register") {
+        if (existing) {
+          msgEl.textContent = t.gateExists;
+          msgEl.className = "status-msg status-err";
+          return;
+        }
+        const age = Number(document.getElementById("gateAge").value) || 24;
+        const style = document.getElementById("gateStyle").value;
+        accounts[normHandle] = {
+          pass,
+          lastActiveAt: Date.now(),
+          profile: { handle: normHandle, age, years: profile.years || 1, style, currentRacket: "" }
+        };
+        localStorage.setItem("rb_accounts_v4", JSON.stringify(accounts));
+        profile = { ...accounts[normHandle].profile };
+      } else {
+        if (!existing) {
+          msgEl.textContent = t.gateNotFound;
+          msgEl.className = "status-msg status-err";
+          return;
+        }
+        if (existing.pass !== pass) {
+          msgEl.textContent = t.gateWrongPass;
+          msgEl.className = "status-msg status-err";
+          return;
+        }
+        existing.lastActiveAt = Date.now();
+        localStorage.setItem("rb_accounts_v4", JSON.stringify(accounts));
+        profile = { ...(existing.profile || {}), handle: normHandle };
+      }
+
+      localStorage.setItem("rb_profile_v4", JSON.stringify(profile));
+      currentSession = { handle: normHandle };
+      localStorage.setItem("rb_session_v4", JSON.stringify(currentSession));
+      msgEl.textContent = "";
+      syncGateVisibility();
+    }
+
+    function signOutToGate() {
+      currentSession = null;
+      isDevMode = false;
+      localStorage.removeItem("rb_session_v4");
+      document.getElementById("gatePass").value = "";
+      syncGateVisibility();
+    }
 
     function normalizeRow(row) {
       return {
@@ -806,72 +975,23 @@
 
       if (!error && Array.isArray(data)) {
         reviews = data.map(normalizeRow);
-        localStorage.setItem("rb_reviews_v3", JSON.stringify(reviews));
+        localStorage.setItem("rb_reviews_v4", JSON.stringify(reviews));
       }
       renderFeed();
     }
 
     function syncGateVisibility() {
-      const loggedIn = Boolean(currentSession && currentSession.handle);
+      accounts = pruneInactiveAccounts(accounts);
+      const loggedIn = Boolean(currentSession && currentSession.handle && accounts[currentSession.handle]);
       document.getElementById("homeGate").style.display = loggedIn ? "none" : "flex";
       document.getElementById("mainApp").style.display = loggedIn ? "block" : "none";
       if (loggedIn) {
+        touchAccountActivity(currentSession.handle);
         applyProfileToInputs();
         updateAuthUI();
         updateModeUI();
         loadSharedPosts();
       }
-    }
-
-    function registerAndEnterApp() {
-      const t = uiText[currentLang];
-      const rawHandle = document.getElementById("gateHandle").value.trim();
-      const pass = document.getElementById("gatePass").value;
-      const age = Number(document.getElementById("gateAge").value) || 24;
-      const style = document.getElementById("gateStyle").value;
-      const msgEl = document.getElementById("gateMsg");
-
-      if (!rawHandle || pass.length < 4) {
-        msgEl.textContent = t.gateInvalid;
-        msgEl.className = "status-msg status-err";
-        return;
-      }
-
-      const normHandle = rawHandle.startsWith("@") ? rawHandle : "@" + rawHandle;
-      const existing = accounts[normHandle];
-      if (existing && existing.pass !== pass) {
-        msgEl.textContent = t.gateWrongPass;
-        msgEl.className = "status-msg status-err";
-        return;
-      }
-
-      if (!existing) {
-        accounts[normHandle] = {
-          pass,
-          profile: { handle: normHandle, age, years: profile.years || 1, style, currentRacket: "" }
-        };
-        localStorage.setItem("rb_accounts_v3", JSON.stringify(accounts));
-      } else {
-        accounts[normHandle].profile.age = age;
-        accounts[normHandle].profile.style = style;
-        localStorage.setItem("rb_accounts_v3", JSON.stringify(accounts));
-      }
-
-      profile = { ...accounts[normHandle].profile, handle: normHandle, age, style };
-      localStorage.setItem("rb_profile_v3", JSON.stringify(profile));
-      currentSession = { handle: normHandle };
-      localStorage.setItem("rb_session_v3", JSON.stringify(currentSession));
-      msgEl.textContent = "";
-      syncGateVisibility();
-    }
-
-    function signOutToGate() {
-      currentSession = null;
-      isDevMode = false;
-      localStorage.removeItem("rb_session_v3");
-      document.getElementById("gateHandle").value = "";
-      document.getElementById("gatePass").value = "";
-      syncGateVisibility();
     }
 
     function getActiveHandle() {
@@ -931,7 +1051,7 @@
         await loadSharedPosts();
       } else {
         reviews = reviews.filter(r => (r.author || "").toLowerCase() !== me);
-        localStorage.setItem("rb_reviews_v3", JSON.stringify(reviews));
+        localStorage.setItem("rb_reviews_v4", JSON.stringify(reviews));
         renderFeed();
       }
     }
@@ -949,7 +1069,7 @@
         await loadSharedPosts();
       } else {
         reviews = [];
-        localStorage.setItem("rb_reviews_v3", JSON.stringify(reviews));
+        localStorage.setItem("rb_reviews_v4", JSON.stringify(reviews));
         renderFeed();
       }
     }
@@ -969,7 +1089,7 @@
         await loadSharedPosts();
       } else {
         reviews = reviews.filter(r => r.id !== id);
-        localStorage.setItem("rb_reviews_v3", JSON.stringify(reviews));
+        localStorage.setItem("rb_reviews_v4", JSON.stringify(reviews));
         renderFeed();
       }
     }
@@ -1032,17 +1152,14 @@
       return "Other";
     }
 
-    function setLang(lang) {
-      currentLang = lang;
-      ["btn_en", "g_btn_en"].forEach(id => document.getElementById(id)?.classList.toggle("active", lang === "en"));
-      ["btn_bm", "g_btn_bm"].forEach(id => document.getElementById(id)?.classList.toggle("active", lang === "bm"));
-      const t = uiText[lang];
-
+    function applyLangLabels() {
+      const t = uiText[currentLang];
       const map = {
-        g_heroTitle: t.heroTitle, g_heroSub: t.heroSub, g_f1: t.f1, g_f2: t.f2, g_f3: t.f3,
-        g_footerNote: t.footerNote, g_formTitle: t.formTitle, g_formHint: t.formHint,
+        g_tagline: t.tagline, g_desc: t.desc, g_installBtn: t.installBtn, app_installBtn: t.installBtn,
+        tabRegister: t.tabReg, tabLogin: t.tabLog,
         g_lblHandle: t.lblHandle, g_lblPass: t.lblPass, g_lblAge: t.lblAge, g_lblStyle: t.lblStyle,
-        g_submitBtn: t.submitGate, t_title: t.title, t_subtitle: t.subtitle,
+        g_submitBtn: authMode === "register" ? t.btnRegister : t.btnLogin,
+        t_title: t.title, t_subtitle: t.subtitle,
         t_clearMine: t.clearMine, t_clearAll: t.clearAll, t_logoutBtn: t.logoutBtn,
         t_combTitle: t.combTitle, t_combHint: t.combHint, t_secPlayer: t.secPlayer,
         t_secRacket: t.secRacket, t_pHandle: t.pHandle, t_pAge: t.pAge, t_pYears: t.pYears,
@@ -1062,8 +1179,15 @@
 
       const searchEl = document.getElementById("feedSearchInput");
       if (searchEl) searchEl.placeholder = t.searchPlaceholder;
-      document.getElementById("nav_p1").textContent = lang === "bm" ? "1. Post & Feed" : "1. Post & Feed";
-      document.getElementById("nav_p2").textContent = lang === "bm" ? "2. Penasihat AI" : "2. AI Consultant";
+      document.getElementById("nav_p1").textContent = currentLang === "bm" ? "1. Post & Feed" : "1. Post & Feed";
+      document.getElementById("nav_p2").textContent = currentLang === "bm" ? "2. Penasihat AI" : "2. AI Consultant";
+    }
+
+    function setLang(lang) {
+      currentLang = lang;
+      ["btn_en", "g_btn_en"].forEach(id => document.getElementById(id)?.classList.toggle("active", lang === "en"));
+      ["btn_bm", "g_btn_bm"].forEach(id => document.getElementById(id)?.classList.toggle("active", lang === "bm"));
+      applyLangLabels();
       updateAuthUI();
       updateModeUI();
       renderFeed();
@@ -1091,10 +1215,11 @@
       const currentRacketVal = document.getElementById("pCurrentRacket").value.trim() || rawRacket;
 
       profile = { handle: handleVal, age: ageVal, years: yearsVal, style: styleVal, currentRacket: currentRacketVal };
-      localStorage.setItem("rb_profile_v3", JSON.stringify(profile));
+      localStorage.setItem("rb_profile_v4", JSON.stringify(profile));
       if (currentSession && accounts[currentSession.handle]) {
         accounts[currentSession.handle].profile = { ...profile };
-        localStorage.setItem("rb_accounts_v3", JSON.stringify(accounts));
+        accounts[currentSession.handle].lastActiveAt = Date.now();
+        localStorage.setItem("rb_accounts_v4", JSON.stringify(accounts));
       }
       document.getElementById("queryStyle").value = styleVal;
 
@@ -1134,7 +1259,7 @@
         await loadSharedPosts();
       } else {
         reviews.unshift(normalizeRow({ ...payload, id: Date.now() }));
-        localStorage.setItem("rb_reviews_v3", JSON.stringify(reviews));
+        localStorage.setItem("rb_reviews_v4", JSON.stringify(reviews));
         renderFeed();
       }
 
@@ -1152,7 +1277,7 @@
         await loadSharedPosts();
       } else {
         item.helpful = nextHelpful;
-        localStorage.setItem("rb_reviews_v3", JSON.stringify(reviews));
+        localStorage.setItem("rb_reviews_v4", JSON.stringify(reviews));
         renderFeed();
       }
     }
@@ -1355,6 +1480,7 @@
       document.getElementById("results").innerHTML = summary + cards;
     }
 
+    applyLangLabels();
     syncGateVisibility();
   </script>
 </body>
