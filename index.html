@@ -10,7 +10,6 @@
   <meta name="apple-mobile-web-app-title" content="RacketBuddy" />
   <meta name="description" content="RacketBuddy (RB) — Find your best racket as your buddy." />
   <title>RacketBuddy (RB) — Find your best racket as your buddy</title>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     :root {
       --bg: #e8f1ec;
@@ -108,7 +107,7 @@
       color: var(--muted);
       font-weight: 700;
       font-size: 0.86rem;
-      padding: 8px 10px;
+      padding: 9px 10px;
       border-radius: 9px;
       cursor: pointer;
     }
@@ -477,15 +476,15 @@
 
       <div class="home-top-controls">
         <div class="lang-pill">
-          <button type="button" id="g_btn_en" class="lang-btn active" onclick="setLang('en')">EN</button>
-          <button type="button" id="g_btn_bm" class="lang-btn" onclick="setLang('bm')">BM</button>
+          <button type="button" id="g_btn_en" class="lang-btn active">EN</button>
+          <button type="button" id="g_btn_bm" class="lang-btn">BM</button>
         </div>
-        <button type="button" id="g_installBtn" class="ghost" onclick="triggerAddToHomeScreen()">📲 Add to Home Screen</button>
+        <button type="button" id="g_installBtn" class="ghost">📲 Add to Home Screen</button>
       </div>
 
       <div class="auth-switch" role="tablist">
-        <button type="button" id="tabRegister" class="switch-btn active" onclick="switchAuthTab('register')">Register</button>
-        <button type="button" id="tabLogin" class="switch-btn" onclick="switchAuthTab('login')">Login</button>
+        <button type="button" id="tabRegister" class="switch-btn active">Register</button>
+        <button type="button" id="tabLogin" class="switch-btn">Login</button>
       </div>
 
       <!-- REGISTER FORM: USERNAME, EMAIL, NEW PASSWORD (MIN 8 CHARS), CONFIRM PASSWORD -->
@@ -524,7 +523,7 @@
           </div>
         </div>
 
-        <button type="button" class="primary" id="r_submitBtn" onclick="submitRegister()">Create Account</button>
+        <button type="button" class="primary" id="r_submitBtn">Create Account</button>
         <div id="regMsg" class="status-msg"></div>
       </div>
 
@@ -537,18 +536,18 @@
         <input id="loginPass" type="password" placeholder="Enter your password" />
 
         <div class="link-row">
-          <button type="button" class="link-btn" id="btnOpenForgot" onclick="openForgotModal()">Forgot Password?</button>
-          <button type="button" class="link-btn" id="btnOpenHelp" onclick="openRecoveryHelpModal()">Forgot username/email too?</button>
+          <button type="button" class="link-btn" id="btnOpenForgot">Forgot Password?</button>
+          <button type="button" class="link-btn" id="btnOpenHelp">Forgot username/email too?</button>
         </div>
 
-        <button type="button" class="primary" id="l_submitBtn" onclick="submitLogin()">Login</button>
+        <button type="button" class="primary" id="l_submitBtn">Login</button>
         <div id="loginMsg" class="status-msg"></div>
       </div>
     </div>
   </div>
 
   <!-- FORGOT PASSWORD MODAL (VERIFY USERNAME + EMAIL -> SET NEW PASSWORD MIN 8 CHARS) -->
-  <div id="forgotModal" class="modal-backdrop" onclick="handleBackdropClose(event, 'forgotModal')">
+  <div id="forgotModal" class="modal-backdrop">
     <div class="modal-card">
       <h2 style="margin:0 0 6px;" id="fp_title">Forgot Password — Reset Here</h2>
       <p class="hint" id="fp_desc" style="margin:0 0 10px;">
@@ -574,14 +573,14 @@
 
       <div id="fpMsg" class="status-msg"></div>
       <div class="row-2" style="margin-top:10px;">
-        <button type="button" class="ghost" style="padding:10px;" onclick="closeForgotModal()">Cancel</button>
-        <button type="button" class="primary" style="margin-top:0;" id="fp_btnReset" onclick="submitForgotPassword()">Reset Password</button>
+        <button type="button" class="ghost" style="padding:10px;" id="fp_btnCancel">Cancel</button>
+        <button type="button" class="primary" style="margin-top:0;" id="fp_btnReset">Reset Password</button>
       </div>
     </div>
   </div>
 
   <!-- PASSWORD RECOVERY TROUBLESHOOTING MODAL -->
-  <div id="recoveryHelpModal" class="modal-backdrop" onclick="handleBackdropClose(event, 'recoveryHelpModal')">
+  <div id="recoveryHelpModal" class="modal-backdrop">
     <div class="modal-card">
       <h2 style="margin:0 0 8px;" id="rh_title">Forgot Password Help</h2>
       <p class="hint" id="rh_body" style="margin:0 0 12px;">
@@ -589,12 +588,12 @@
         • <strong>Forgot your Email:</strong> Check any email address you usually use for badminton/apps, or ask a teammate to look up your exact <code>@username</code> in the RacketBuddy Feed.<br/>
         • <strong>Using a new device/browser:</strong> Accounts created in local browser storage stay on that device unless saved/synced. If your account is not found or was inactive for 60 days, register a new account with an unused username and email.
       </p>
-      <button type="button" class="primary" style="margin-top:4px;" onclick="closeRecoveryHelpModal()">Got It</button>
+      <button type="button" class="primary" style="margin-top:4px;" id="rh_btnClose">Got It</button>
     </div>
   </div>
 
   <!-- ADD TO HOME SCREEN GUIDE MODAL -->
-  <div id="installModal" class="modal-backdrop" onclick="handleBackdropClose(event, 'installModal')">
+  <div id="installModal" class="modal-backdrop">
     <div class="modal-card">
       <h2 style="margin:0 0 8px;" id="inst_title">Install RacketBuddy on Your Phone</h2>
       <p class="hint" id="inst_body" style="margin:0 0 12px;">
@@ -602,32 +601,32 @@
         • <strong>iPhone / iPad (Safari):</strong> Tap <strong>Share</strong> (square with up arrow) → tap <strong>Add to Home Screen</strong> → tap <strong>Add</strong>.<br/>
         • <strong>Android (Chrome):</strong> Tap the <strong>⋮ menu</strong> (top right) → tap <strong>Add to Home screen</strong> or <strong>Install app</strong>.
       </p>
-      <button type="button" class="primary" style="margin-top:4px;" onclick="closeInstallModal()">Got It</button>
+      <button type="button" class="primary" style="margin-top:4px;" id="inst_btnClose">Got It</button>
     </div>
   </div>
 
   <!-- RETRACTABLE SIDEBAR & BACKDROP -->
-  <div id="drawerBackdrop" class="drawer-backdrop" onclick="closeSidebar()"></div>
+  <div id="drawerBackdrop" class="drawer-backdrop"></div>
   <aside id="sideDrawer" class="side-drawer" aria-label="Menu Sidebar">
     <div class="drawer-head">
       <strong id="drawerTitle">RB Menu</strong>
-      <button type="button" class="ghost" onclick="closeSidebar()">✕</button>
+      <button type="button" class="ghost" id="drawerCloseBtn">✕</button>
     </div>
 
     <div>
       <label style="margin-top:0;" id="drawerLangLbl">Language / Bahasa</label>
       <div class="lang-pill">
-        <button type="button" id="btn_en" class="lang-btn active" onclick="setLang('en')">EN</button>
-        <button type="button" id="btn_bm" class="lang-btn" onclick="setLang('bm')">BM</button>
+        <button type="button" id="btn_en" class="lang-btn active">EN</button>
+        <button type="button" id="btn_bm" class="lang-btn">BM</button>
       </div>
     </div>
 
     <div class="drawer-stack">
-      <button type="button" id="app_installBtn" class="drawer-btn" onclick="closeSidebar(); triggerAddToHomeScreen();">📲 Add to Home Screen</button>
-      <button type="button" id="devToggleBtn" class="drawer-btn" onclick="toggleDevMode()">Dev Mode</button>
-      <button type="button" id="t_clearMine" class="drawer-btn" onclick="clearMyPosts()">Clear My Posts</button>
-      <button type="button" id="t_clearAll" class="drawer-btn danger" style="display:none;" onclick="clearEntireFeed()">Dev: Clear All Feed</button>
-      <button type="button" id="t_logoutBtn" class="drawer-btn" onclick="closeSidebar(); signOutToGate();">Sign Out</button>
+      <button type="button" id="app_installBtn" class="drawer-btn">📲 Add to Home Screen</button>
+      <button type="button" id="devToggleBtn" class="drawer-btn">Dev Mode</button>
+      <button type="button" id="t_clearMine" class="drawer-btn">Clear My Posts</button>
+      <button type="button" id="t_clearAll" class="drawer-btn danger" style="display:none;">Dev: Clear All Feed</button>
+      <button type="button" id="t_logoutBtn" class="drawer-btn">Sign Out</button>
     </div>
   </aside>
 
@@ -650,18 +649,18 @@
             <p id="t_subtitle">Find your best racket as your buddy</p>
           </div>
         </div>
-        <button type="button" class="menu-trigger" onclick="openSidebar()">☰ <span id="t_menuBtn">Menu</span></button>
+        <button type="button" class="menu-trigger" id="menuOpenBtn">☰ <span id="t_menuBtn">Menu</span></button>
       </div>
     </div>
 
     <div class="container">
       <div class="nav-bar">
         <div class="nav-tabs">
-          <button type="button" id="nav_p1" class="nav-btn active" onclick="showPage('page1')">1. Post & Feed</button>
-          <button type="button" id="nav_p2" class="nav-btn" onclick="showPage('page2')">2. Find Racket (Top 10)</button>
+          <button type="button" id="nav_p1" class="nav-btn active">1. Post & Feed</button>
+          <button type="button" id="nav_p2" class="nav-btn">2. Find Racket (Top 10)</button>
         </div>
         <div class="status-pills">
-          <div id="liveSyncBadge" class="auth-badge"><span class="live-dot"></span>Auto-Sync ON</div>
+          <div id="liveSyncBadge" class="auth-badge"><span class="live-dot"></span>Local & Session Ready</div>
           <div id="modeBadge" class="mode-badge">User Mode</div>
           <div id="userStatusBar" class="auth-badge">Member</div>
         </div>
@@ -692,7 +691,7 @@
 
             <div>
               <label id="t_pStyle">Main Playstyle</label>
-              <select id="pStyle" onchange="syncAdvisorStyleFromProfile()">
+              <select id="pStyle">
                 <option value="Double front (Speed)">Double front (Speed)</option>
                 <option value="Double backcourt (Hard hitter)">Double backcourt (Hard hitter)</option>
                 <option value="Single (Attacking)">Single (Attacking)</option>
@@ -795,7 +794,7 @@
             <label id="t_notes">Honest Court Feedback (BM / EN) *</label>
             <textarea id="notes" rows="3" placeholder="e.g. Fast swing, tak sakit wrist lepas main 2 jam..."></textarea>
 
-            <button type="button" class="primary" id="t_submitBtn" onclick="submitCombinedPost()">Submit Racket Post (+ Add More Anytime)</button>
+            <button type="button" class="primary" id="t_submitBtn">Submit Racket Post (+ Add More Anytime)</button>
             <div id="statusMsg" class="status-msg"></div>
           </div>
 
@@ -807,17 +806,16 @@
               id="feedSearchInput"
               class="search-box"
               type="search"
-              oninput="renderFeed()"
               placeholder="Search racket, brand, @player, string, or court feedback..."
             />
 
             <div class="filter-strip" id="feedFilters">
-              <button type="button" class="filter-chip active" onclick="setFeedFilter('All', this)">All</button>
-              <button type="button" class="filter-chip" onclick="setFeedFilter('Double front (Speed)', this)">Double front (Speed)</button>
-              <button type="button" class="filter-chip" onclick="setFeedFilter('Double backcourt (Hard hitter)', this)">Double backcourt (Hard hitter)</button>
-              <button type="button" class="filter-chip" onclick="setFeedFilter('Single (Attacking)', this)">Single (Attacking)</button>
-              <button type="button" class="filter-chip" onclick="setFeedFilter('Single (Control)', this)">Single (Control)</button>
-              <button type="button" class="filter-chip" onclick="setFeedFilter('Mixed', this)">Mixed</button>
+              <button type="button" class="filter-chip active" data-style="All">All</button>
+              <button type="button" class="filter-chip" data-style="Double front (Speed)">Double front (Speed)</button>
+              <button type="button" class="filter-chip" data-style="Double backcourt (Hard hitter)">Double backcourt (Hard hitter)</button>
+              <button type="button" class="filter-chip" data-style="Single (Attacking)">Single (Attacking)</button>
+              <button type="button" class="filter-chip" data-style="Single (Control)">Single (Control)</button>
+              <button type="button" class="filter-chip" data-style="Mixed">Mixed</button>
             </div>
             <div id="feed"></div>
           </div>
@@ -893,7 +891,7 @@
           <label id="t_qText">Ask in BM or English (e.g. "felet tai g", "nevow", "3k fence", "100zz", "limited edition", "8u ringan")</label>
           <input id="queryText" placeholder="Taip model atau gaya: tai g, nevow, woven, 100zz, limited edition, sakit wrist..." />
 
-          <button type="button" class="primary" id="t_advBtn" onclick="recommend()">Find Top 10 Rackets</button>
+          <button type="button" class="primary" id="t_advBtn">Find Top 10 Rackets</button>
           <div id="results" style="margin-top:14px;"></div>
         </div>
       </section>
@@ -901,19 +899,50 @@
   </div>
 
   <script>
-    const SUPABASE_URL = "https://xrpotytssefqnyhosrmi.supabase.co";
-    const SUPABASE_ANON_KEY = "sb_publishable_D2mCyVmZeJKTCPNSLySgCA_AMM0NN9x";
-    const sbClient = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
-
     const DEV_PIN = "RBDEV2026";
     const MIN_PASSWORD_LEN = 8;
     const INACTIVE_DAYS_MS = 60 * 24 * 60 * 60 * 1000;
+
+    // Safe storage wrapper in case browser blocks localStorage
+    const memoryFallback = {};
+    const safeStorage = {
+      getItem(key) {
+        try {
+          return window.localStorage.getItem(key);
+        } catch (e) {
+          return Object.prototype.hasOwnProperty.call(memoryFallback, key) ? memoryFallback[key] : null;
+        }
+      },
+      setItem(key, val) {
+        try {
+          window.localStorage.setItem(key, val);
+        } catch (e) {
+          memoryFallback[key] = String(val);
+        }
+      },
+      removeItem(key) {
+        try {
+          window.localStorage.removeItem(key);
+        } catch (e) {
+          delete memoryFallback[key];
+        }
+      }
+    };
+
+    function safeJsonParse(raw, fallback) {
+      if (!raw) return fallback;
+      try {
+        return JSON.parse(raw);
+      } catch (e) {
+        return fallback;
+      }
+    }
+
     let isDevMode = false;
     let currentLang = "en";
     let currentFeedFilter = "All";
     let authMode = "register";
     let deferredInstallPrompt = null;
-    let autoRefreshTimer = null;
 
     function handleBackdropClose(event, modalId) {
       if (event && event.target && event.target.id === modalId) {
@@ -929,42 +958,6 @@
     function closeSidebar() {
       document.getElementById("drawerBackdrop")?.classList.remove("open");
       document.getElementById("sideDrawer")?.classList.remove("open");
-    }
-
-    function setupAppManifestAndIcons() {
-      const iconSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
-        <rect width="120" height="120" rx="28" fill="#0f172a"/>
-        <g transform="rotate(-24 60 56)">
-          <ellipse cx="60" cy="40" rx="25" ry="31" stroke="#86efac" stroke-width="5" fill="#14532d"/>
-          <line x1="60" y1="71" x2="60" y2="96" stroke="#38bdf8" stroke-width="5" stroke-linecap="round"/>
-        </g>
-        <text x="60" y="71" text-anchor="middle" fill="#ffffff" stroke="#0f172a" stroke-width="6" paint-order="stroke fill" font-size="40" font-weight="900" font-family="sans-serif" letter-spacing="-1.5">RB</text>
-      </svg>`;
-      const iconDataUrl = "data:image/svg+xml;charset=UTF-8," + encodeURIComponent(iconSvg);
-
-      const appleLink = document.createElement("link");
-      appleLink.rel = "apple-touch-icon";
-      appleLink.href = iconDataUrl;
-      document.head.appendChild(appleLink);
-
-      const manifestObj = {
-        name: "RacketBuddy (RB)",
-        short_name: "RacketBuddy",
-        description: "Find your best racket as your buddy",
-        start_url: window.location.href,
-        display: "standalone",
-        background_color: "#e8f1ec",
-        theme_color: "#16a34a",
-        icons: [
-          { src: iconDataUrl, sizes: "192x192", type: "image/svg+xml", purpose: "any maskable" },
-          { src: iconDataUrl, sizes: "512x512", type: "image/svg+xml", purpose: "any maskable" }
-        ]
-      };
-      const blob = new Blob([JSON.stringify(manifestObj)], { type: "application/manifest+json" });
-      const manifestLink = document.createElement("link");
-      manifestLink.rel = "manifest";
-      manifestLink.href = URL.createObjectURL(blob);
-      document.head.appendChild(manifestLink);
     }
 
     window.addEventListener("beforeinstallprompt", (e) => {
@@ -1071,12 +1064,12 @@
         missingFields: "Please enter both Racket Model and Honest Court Feedback before submitting.",
         postSaved: "Racket posted! You can immediately enter and submit another racket below.",
         errUsernameReq: "Please enter a valid username (at least 2 characters).",
-        errEmailInvalid: "Please enter a valid email address.",
+        errEmailInvalid: "Please enter a valid email address (e.g. name@example.com).",
         errPassShort: "Password must be at least 8 characters.",
         errPassMismatch: "New Password and Confirm Password do not match.",
         errUsernameTaken: "That username is already taken. Please choose another username.",
         errEmailTaken: "This email is already registered to an account (one email = one account).",
-        errLoginInvalid: "Invalid username or password (or account inactive for 60+ days).",
+        errLoginInvalid: "Invalid username or password. Make sure you registered first on the Register tab.",
         errForgotMatch: "No account matches both that username and email.",
         resetSuccess: "Password reset! You can now log in with your new password.",
         confirmDeleteOne: "Delete this specific post/feedback only? Other posts will not be deleted."
@@ -1165,19 +1158,18 @@
         missingFields: "Sila isi Model Raket dan Feedback Jujur Di Court sebelum menghantar.",
         postSaved: "Raket berjaya dihantar! Anda boleh terus masukkan raket lain di bawah.",
         errUsernameReq: "Masukkan username yang sah (sekurang-kurangnya 2 aksara).",
-        errEmailInvalid: "Masukkan alamat emel yang sah.",
+        errEmailInvalid: "Masukkan alamat emel yang sah (cth: nama@example.com).",
         errPassShort: "Kata laluan mestilah sekurang-kurangnya 8 aksara.",
         errPassMismatch: "Kata Laluan Baru dan Sahkan Kata Laluan tidak sepadan.",
         errUsernameTaken: "Username tersebut sudah digunakan. Sila pilih username lain.",
         errEmailTaken: "Emel ini sudah didaftarkan untuk satu akaun (satu emel = satu akaun).",
-        errLoginInvalid: "Username atau kata laluan tidak sah (atau akaun tamat selepas 60 hari tidak aktif).",
+        errLoginInvalid: "Username atau kata laluan tidak sah. Pastikan anda mendaftar dahulu di tab Daftar.",
         errForgotMatch: "Tiada akaun yang sepadan dengan username dan emel tersebut.",
         resetSuccess: "Kata laluan berjaya dikemas kini! Sila log masuk dengan kata laluan baru.",
         confirmDeleteOne: "Padam post/feedback yang dipilih ini sahaja? Post lain tidak akan dipadam."
       }
     };
 
-    /* CURATED MALAYSIA MARKET STREET PRICES (SHOPEE / TIKTOK / PRO SHOP AVERAGE, 2025-2026) */
     const builtInCatalog = [
       {
         id: "felet-1", brand: "Felet", racket: "Felet Tai G", priceRm: 380, priceRange: "RM360–RM410", limited: false,
@@ -1201,81 +1193,11 @@
         aiNoteBm: "Karbon 3K Woven yang memberi kawalan tepat dan tahan tension tinggi pada harga pasaran RM340–RM395."
       },
       {
-        id: "felet-4", brand: "Felet", racket: "Felet Woven 8000", priceRm: 340, priceRange: "RM310–RM370", limited: false,
-        weightGrip: "4U G5", balance: "Even-Balance", paperFlex: "Medium", feelFlex: "Medium",
-        style: "Mixed", scores: { power: 4, control: 4, speed: 4, comfort: 4 },
-        aiNoteEn: "Popular Felet Woven series staple around RM310–RM370 online; reliable all-rounder for mixed doubles transitions.",
-        aiNoteBm: "Model popular siri Felet Woven sekitar RM310–RM370 di pasaran online; sangat seimbang untuk permainan mixed."
-      },
-      {
-        id: "felet-5", brand: "Felet", racket: "Felet Woven Eighty8 (88)", priceRm: 390, priceRange: "RM365–RM410", limited: false,
-        weightGrip: "4U G5", balance: "Head-Heavy", paperFlex: "Medium", feelFlex: "Medium",
-        style: "Single (Attacking)", scores: { power: 5, control: 4, speed: 4, comfort: 4 },
-        aiNoteEn: "Attacking Woven series frame in the RM365–RM410 street bracket with crisp repulsion for steep singles smashes.",
-        aiNoteBm: "Siri Woven berorientasikan serangan dalam julat RM365–RM410 dengan lantunan tajam untuk smash single."
-      },
-      {
-        id: "felet-6", brand: "Felet", racket: "Felet TJ Power Control / Speed", priceRm: 195, priceRange: "RM175–RM220", limited: false,
-        weightGrip: "4U G5", balance: "Even-Balance", paperFlex: "Medium", feelFlex: "Flexible",
-        style: "Mixed", scores: { power: 4, control: 4, speed: 4, comfort: 5 },
-        aiNoteEn: "High-value sub-RM220 Felet performer that is forgiving on the arm while handling up to 35 lbs tension.",
-        aiNoteBm: "Raket Felet bawah RM220 yang sangat berbaloi, selesa pada tangan dan tahan tension tinggi."
-      },
-      {
-        id: "felet-7", brand: "Felet", racket: "Felet Woven 999 Limited Edition", priceRm: 420, priceRange: "RM399–RM450", limited: true,
-        weightGrip: "4U G5", balance: "Head-Heavy", paperFlex: "Stiff", feelFlex: "Medium",
-        style: "Double backcourt (Hard hitter)", scores: { power: 5, control: 4, speed: 4, comfort: 4 },
-        aiNoteEn: "Limited cosmetic & woven carbon edition sitting around RM399–RM450 in local pro shops for rear-court power players.",
-        aiNoteBm: "Edisi terhad karbon woven sekitar RM399–RM450 di kedai badminton untuk pemain serangan belakang."
-      },
-      {
         id: "yonex-1", brand: "Yonex", racket: "Yonex Astrox 100ZZ", priceRm: 850, priceRange: "RM790–RM900", limited: false,
         weightGrip: "4U G5", balance: "Head-Heavy", paperFlex: "Stiff", feelFlex: "Stiff",
         style: "Single (Attacking)", scores: { power: 5, control: 5, speed: 4, comfort: 3 },
         aiNoteEn: "Hyper-slim shaft flagship in the RM790–RM900 Malaysia street range; explosive continuous smash power for advanced players.",
         aiNoteBm: "Flagship shaft ultra-nipis dalam julat RM790–RM900 pasaran Malaysia; kuasa smash bertubi-tubi untuk pemain mahir."
-      },
-      {
-        id: "yonex-2", brand: "Yonex", racket: "Yonex Astrox 100ZZ VA / Kurenai Limited Edition", priceRm: 960, priceRange: "RM900–RM1,080", limited: true,
-        weightGrip: "4U G5", balance: "Head-Heavy", paperFlex: "Stiff", feelFlex: "Stiff",
-        style: "Single (Attacking)", scores: { power: 5, control: 5, speed: 4, comfort: 3 },
-        aiNoteEn: "Collector Limited Edition colorway of the 100ZZ; trades around RM900–RM1,080 on Shopee/specialty stores with identical pro-tour head-heavy punch.",
-        aiNoteBm: "Edisi terhad warna khas 100ZZ; harga pasaran sekitar RM900–RM1,080 dengan kuasa serangan pro yang padu."
-      },
-      {
-        id: "yonex-3", brand: "Yonex", racket: "Yonex Astrox 88D Pro (3rd Gen)", priceRm: 770, priceRange: "RM720–RM830", limited: false,
-        weightGrip: "4U G5", balance: "Head-Heavy", paperFlex: "Stiff", feelFlex: "Stiff",
-        style: "Double backcourt (Hard hitter)", scores: { power: 5, control: 4, speed: 4, comfort: 3 },
-        aiNoteEn: "Rear-court doubles benchmark in the RM720–RM830 market range; breaks defenses with steep backcourt angles.",
-        aiNoteBm: "Rujukan utama pemain belakang beregu dalam julat RM720–RM830; smash tajam menembusi pertahanan lawan."
-      },
-      {
-        id: "yonex-4", brand: "Yonex", racket: "Yonex Astrox 88S Pro (3rd Gen)", priceRm: 760, priceRange: "RM710–RM820", limited: false,
-        weightGrip: "4U G5", balance: "Even-Balance", paperFlex: "Stiff", feelFlex: "Medium",
-        style: "Double front (Speed)", scores: { power: 4, control: 5, speed: 5, comfort: 4 },
-        aiNoteEn: "Front-court doubles control & interception specialist priced around RM710–RM820 in Malaysia pro shops.",
-        aiNoteBm: "Pakar kawalan depan net beregu dalam julat harga RM710–RM820 di kedai sukan Malaysia."
-      },
-      {
-        id: "yonex-5", brand: "Yonex", racket: "Yonex Nanoflare 1000Z", priceRm: 790, priceRange: "RM740–RM850", limited: false,
-        weightGrip: "4U G5", balance: "Head-Light", paperFlex: "Stiff", feelFlex: "Stiff",
-        style: "Double front (Speed)", scores: { power: 4, control: 4, speed: 5, comfort: 3 },
-        aiNoteEn: "Ultra-fast repulsive head-light pro frame (RM740–RM850 street price) for lightning flat drives and rapid defense.",
-        aiNoteBm: "Raket pro head-light ultra-pantas (harga pasaran RM740–RM850) untuk drive laju dan pertahanan kilat."
-      },
-      {
-        id: "yonex-6", brand: "Yonex", racket: "Yonex Arcsaber 11 Pro", priceRm: 780, priceRange: "RM730–RM860", limited: false,
-        weightGrip: "4U G5", balance: "Even-Balance", paperFlex: "Stiff", feelFlex: "Medium",
-        style: "Single (Control)", scores: { power: 4, control: 5, speed: 4, comfort: 4 },
-        aiNoteEn: "All-round control favorite in the RM730–RM860 bracket with extended shuttle pocketing and pinpoint accuracy.",
-        aiNoteBm: "Raket kawalan kegemaran dalam julat RM730–RM860 dengan pegangan bulu tangkis yang sangat tepat."
-      },
-      {
-        id: "yonex-7", brand: "Yonex", racket: "Yonex Astrox 77 Pro", priceRm: 680, priceRange: "RM630–RM730", limited: false,
-        weightGrip: "4U G5", balance: "Head-Heavy", paperFlex: "Medium", feelFlex: "Medium",
-        style: "Mixed", scores: { power: 4, control: 5, speed: 4, comfort: 5 },
-        aiNoteEn: "Most arm-friendly Yonex Pro series frame (RM630–RM730 street price); effortless power for mixed and all-court play.",
-        aiNoteBm: "Raket siri Yonex Pro paling selesa di tangan (pasaran RM630–RM730); mudah jana kuasa untuk mixed."
       },
       {
         id: "yonex-8", brand: "Yonex", racket: "Yonex Arcsaber 7 Play (Light Beige Limited Edition)", priceRm: 310, priceRange: "RM290–RM330", limited: true,
@@ -1301,39 +1223,11 @@
         aiNoteBm: "Raket serangan berat pada pasaran RM580–RM660 di Malaysia; smash tajam dengan keselesaan pemegang Free Core."
       },
       {
-        id: "victor-2", brand: "Victor", racket: "Victor Auraspeed 100X Ultra", priceRm: 735, priceRange: "RM690–RM790", limited: false,
-        weightGrip: "4U G5", balance: "Even-Balance", paperFlex: "Stiff", feelFlex: "Medium",
-        style: "Double front (Speed)", scores: { power: 4, control: 5, speed: 5, comfort: 4 },
-        aiNoteEn: "Flagship Auraspeed speed-control frame (~RM735 street price) built for blistering mid-court drives and counter-attacks.",
-        aiNoteBm: "Flagship Auraspeed (~RM735 harga pasaran) untuk drive tengah gelanggang super pantas dan serangan balas."
-      },
-      {
-        id: "victor-3", brand: "Victor", racket: "Victor X Ultraman Limited Edition (TK-UTMTIGA)", priceRm: 350, priceRange: "RM330–RM420", limited: true,
-        weightGrip: "4U G5", balance: "Head-Heavy", paperFlex: "Medium", feelFlex: "Medium",
-        style: "Mixed", scores: { power: 4, control: 4, speed: 4, comfort: 4 },
-        aiNoteEn: "Official Victor x Ultraman collaboration Limited Edition (~RM350 promo market price); collector graphic with playable medium-stiff punch.",
-        aiNoteBm: "Edisi terhad rasmi Victor x Ultraman (~RM350 harga promosi pasaran); grafik koleksi dengan kuasa serangan seimbang."
-      },
-      {
         id: "lining-1", brand: "Li-Ning", racket: "Li-Ning Axforce 90 New", priceRm: 820, priceRange: "RM760–RM880", limited: false,
         weightGrip: "4U G5", balance: "Head-Heavy", paperFlex: "Stiff", feelFlex: "Stiff",
         style: "Single (Attacking)", scores: { power: 5, control: 4, speed: 4, comfort: 3 },
         aiNoteEn: "Tour-level attacking frame (RM760–RM880 street range) engineered for lethal backcourt smashes and crisp repulsion.",
         aiNoteBm: "Raket serangan tahap jelajah (pasaran RM760–RM880) untuk smash belakang padu dan lantunan tajam."
-      },
-      {
-        id: "lining-2", brand: "Li-Ning", racket: "Li-Ning Halbertec 8000 / 9000", priceRm: 780, priceRange: "RM720–RM850", limited: false,
-        weightGrip: "4U G5", balance: "Even-Balance", paperFlex: "Medium", feelFlex: "Medium",
-        style: "Single (Control)", scores: { power: 4, control: 5, speed: 4, comfort: 5 },
-        aiNoteEn: "Flagship Li-Ning control series (~RM780 street price) prized for plush impact feel and surgical net/baseline accuracy.",
-        aiNoteBm: "Siri kawalan utama Li-Ning (~RM780 harga pasaran) dengan rasa hentaman lembut dan kawalan tepat."
-      },
-      {
-        id: "lining-3", brand: "Li-Ning", racket: "Li-Ning Axforce 60 CNY Limited Edition", priceRm: 888, priceRange: "RM820–RM920", limited: true,
-        weightGrip: "5U G5", balance: "Head-Heavy", paperFlex: "Flexible", feelFlex: "Flexible",
-        style: "Mixed", scores: { power: 4, control: 4, speed: 5, comfort: 5 },
-        aiNoteEn: "Chinese New Year Limited Edition box set (~RM888 market price); lightweight 5U whippy shaft that generates easy power without wrist strain.",
-        aiNoteBm: "Set kotak Edisi Terhad Tahun Baru Cina (~RM888); ringan 5U dengan shaft fleksibel yang mudah hasilkan kuasa."
       },
       {
         id: "maxbolt-1", brand: "Maxbolt", racket: "Maxbolt Gallant Sakiko", priceRm: 195, priceRange: "RM175–RM220", limited: false,
@@ -1343,53 +1237,11 @@
         aiNoteBm: "Raket Maxbolt paling laris (~RM195 di Shopee/TikTok); tahan tension tinggi sehingga 35 lbs dengan smash padu."
       },
       {
-        id: "maxbolt-2", brand: "Maxbolt", racket: "Maxbolt Superstar Nova Limited Edition", priceRm: 360, priceRange: "RM330–RM399", limited: true,
-        weightGrip: "4U G5", balance: "Even-Balance", paperFlex: "Medium", feelFlex: "Medium",
-        style: "Single (Control)", scores: { power: 4, control: 5, speed: 4, comfort: 4 },
-        aiNoteEn: "Limited Edition Superstar Nova (~RM330–RM399 online) offering upgraded woven frame stability and sharp all-round control.",
-        aiNoteBm: "Edisi Terhad Superstar Nova (~RM330–RM399 online) dengan kestabilan karbon woven dan kawalan menyeluruh."
-      },
-      {
         id: "kumpoo-1", brand: "Kumpoo", racket: "Kumpoo Power Control E58LS", priceRm: 185, priceRange: "RM165–RM210", limited: false,
         weightGrip: "6U G5", balance: "Even-Balance", paperFlex: "Flexible", feelFlex: "Flexible",
         style: "Double front (Speed)", scores: { power: 3, control: 4, speed: 5, comfort: 5 },
         aiNoteEn: "Ultra-light 6U Kumpoo (~RM185 on Shopee/TikTok) built for effortless wrist recovery and rapid net interceptions.",
         aiNoteBm: "Raket ultra-ringan 6U Kumpoo (~RM185 di Shopee/TikTok) untuk kawalan jaring pantas tanpa lenguh pergelangan tangan."
-      },
-      {
-        id: "kumpoo-2", brand: "Kumpoo", racket: "Kumpoo Houyi III", priceRm: 440, priceRange: "RM420–RM460", limited: false,
-        weightGrip: "4U G5", balance: "Head-Heavy", paperFlex: "Stiff", feelFlex: "Medium",
-        style: "Single (Attacking)", scores: { power: 5, control: 4, speed: 4, comfort: 4 },
-        aiNoteEn: "Higher-tier Kumpoo offensive frame (~RM440 in local Malaysia shops) delivering crisp rear-court power and solid stability.",
-        aiNoteBm: "Raket serangan peringkat tinggi Kumpoo (~RM440 di kedai Malaysia) dengan kuasa belakang gelanggang yang mantap."
-      },
-      {
-        id: "apacs-1", brand: "Apacs", racket: "Apacs Z-Ziggler", priceRm: 165, priceRange: "RM145–RM185", limited: false,
-        weightGrip: "4U G5", balance: "Head-Heavy", paperFlex: "Medium", feelFlex: "Medium",
-        style: "Double backcourt (Hard hitter)", scores: { power: 4, control: 4, speed: 4, comfort: 4 },
-        aiNoteEn: "Classic compact-frame budget smasher (~RM165 street price) well-loved for rear-court power under RM200.",
-        aiNoteBm: "Raket bajet frame kompak (~RM165 harga pasaran) yang terkenal untuk smash kuat bawah RM200."
-      },
-      {
-        id: "flexpower-1", brand: "Flexpower", racket: "Flexpower Nano Speed 900", priceRm: 170, priceRange: "RM150–RM195", limited: false,
-        weightGrip: "5U G5", balance: "Head-Light", paperFlex: "Medium", feelFlex: "Flexible",
-        style: "Mixed", scores: { power: 3, control: 4, speed: 5, comfort: 5 },
-        aiNoteEn: "Lightweight 5U Flexpower frame (~RM170 street price) for smooth flat drives and low arm fatigue.",
-        aiNoteBm: "Raket ringan 5U Flexpower (~RM170 harga pasaran) untuk drive laju dan kurang letih lengan."
-      },
-      {
-        id: "vaxe-1", brand: "Vaxe", racket: "Vaxe Featherlight 8U Pro", priceRm: 190, priceRange: "RM170–RM220", limited: false,
-        weightGrip: "8U G5", balance: "Head-Heavy", paperFlex: "Flexible", feelFlex: "Flexible",
-        style: "Double front (Speed)", scores: { power: 3, control: 4, speed: 5, comfort: 5 },
-        aiNoteEn: "Featherweight 8U (~62g) Vaxe frame (~RM190 online) delivering super-fast defense with slight head weight for clear depth.",
-        aiNoteBm: "Raket ultra-ringan 8U (~62g) Vaxe (~RM190 online) untuk pertahanan kilat dan lob selesa."
-      },
-      {
-        id: "hundred-1", brand: "Hundred", racket: "Hundred Battle 900 / Nitrix", priceRm: 250, priceRange: "RM220–RM290", limited: false,
-        weightGrip: "4U G5", balance: "Even-Balance", paperFlex: "Medium", feelFlex: "Medium",
-        style: "Single (Control)", scores: { power: 4, control: 5, speed: 4, comfort: 4 },
-        aiNoteEn: "Stable even-balance Hundred frame (~RM250 on Shopee/Sportsclick) built for crisp shuttle placement and all-round rally control.",
-        aiNoteBm: "Raket seimbang Hundred (~RM250 di Shopee/Sportsclick) untuk penempatan bulu tangkis tepat dan kawalan rally."
       }
     ];
 
@@ -1416,7 +1268,7 @@
         }
       });
       if (changed) {
-        localStorage.setItem("rb_accounts_v8", JSON.stringify(next));
+        safeStorage.setItem("rb_accounts_v9", JSON.stringify(next));
       }
       return next;
     }
@@ -1431,7 +1283,7 @@
       const key = findAccountKeyByUsername(username);
       if (!key || !accounts[key]) return;
       accounts[key].lastActiveAt = Date.now();
-      localStorage.setItem("rb_accounts_v8", JSON.stringify(accounts));
+      safeStorage.setItem("rb_accounts_v9", JSON.stringify(accounts));
     }
 
     function isEmailAlreadyUsed(rawEmail) {
@@ -1440,22 +1292,24 @@
       return Object.values(accounts).some(acc => normalizeEmail(acc?.email) === targetEmail);
     }
 
-    let accounts = pruneInactiveAccounts(JSON.parse(localStorage.getItem("rb_accounts_v8")) || {});
-    let profile = JSON.parse(localStorage.getItem("rb_profile_v8")) || {
+    let accounts = pruneInactiveAccounts(safeJsonParse(safeStorage.getItem("rb_accounts_v9"), {}));
+    let profile = safeJsonParse(safeStorage.getItem("rb_profile_v9"), {
       handle: "", age: 24, years: 6, style: "Single (Control)"
-    };
-    let currentSession = JSON.parse(localStorage.getItem("rb_session_v8")) || null;
+    });
+    let currentSession = safeJsonParse(safeStorage.getItem("rb_session_v9"), null);
     const sessionKey = currentSession ? findAccountKeyByUsername(currentSession.handle) : null;
     if (!sessionKey) {
       currentSession = null;
-      localStorage.removeItem("rb_session_v8");
+      safeStorage.removeItem("rb_session_v9");
     } else {
       currentSession.handle = sessionKey;
       touchAccountActivity(sessionKey);
     }
 
-    let reviews = JSON.parse(localStorage.getItem("rb_reviews_v8")) || [];
-    let userLikedMap = JSON.parse(localStorage.getItem("rb_user_likes_v8")) || {};
+    let reviews = safeJsonParse(safeStorage.getItem("rb_reviews_v9"), []);
+    if (!Array.isArray(reviews)) reviews = [];
+    let userLikedMap = safeJsonParse(safeStorage.getItem("rb_user_likes_v9"), {});
+    if (!userLikedMap || typeof userLikedMap !== "object") userLikedMap = {};
 
     function getUserLikesSet() {
       const me = getActiveHandle().toLowerCase();
@@ -1467,7 +1321,7 @@
       const me = getActiveHandle().toLowerCase();
       if (!me) return;
       userLikedMap[me] = Array.from(setObj);
-      localStorage.setItem("rb_user_likes_v8", JSON.stringify(userLikedMap));
+      safeStorage.setItem("rb_user_likes_v9", JSON.stringify(userLikedMap));
     }
 
     const avatarGradients = [
@@ -1476,11 +1330,7 @@
       "linear-gradient(135deg, #7c3aed, #2563eb)",
       "linear-gradient(135deg, #0d9488, #16a34a)",
       "linear-gradient(135deg, #d97706, #dc2626)",
-      "linear-gradient(135deg, #0284c7, #4f46e5)",
-      "linear-gradient(135deg, #059669, #0891b2)",
-      "linear-gradient(135deg, #c026d3, #7c3aed)",
-      "linear-gradient(135deg, #e11d48, #f97316)",
-      "linear-gradient(135deg, #2563eb, #06b6d4)"
+      "linear-gradient(135deg, #0284c7, #4f46e5)"
     ];
 
     function getAvatarGradient(handle) {
@@ -1494,12 +1344,20 @@
 
     function switchAuthTab(mode) {
       authMode = mode;
-      document.getElementById("tabRegister").classList.toggle("active", mode === "register");
-      document.getElementById("tabLogin").classList.toggle("active", mode === "login");
-      document.getElementById("registerForm").style.display = mode === "register" ? "block" : "none";
-      document.getElementById("loginForm").style.display = mode === "login" ? "block" : "none";
-      document.getElementById("regMsg").textContent = "";
-      document.getElementById("loginMsg").textContent = "";
+      const regTab = document.getElementById("tabRegister");
+      const logTab = document.getElementById("tabLogin");
+      const regForm = document.getElementById("registerForm");
+      const logForm = document.getElementById("loginForm");
+
+      if (regTab) regTab.classList.toggle("active", mode === "register");
+      if (logTab) logTab.classList.toggle("active", mode === "login");
+      if (regForm) regForm.style.display = mode === "register" ? "block" : "none";
+      if (logForm) logForm.style.display = mode === "login" ? "block" : "none";
+
+      const regMsg = document.getElementById("regMsg");
+      const loginMsg = document.getElementById("loginMsg");
+      if (regMsg) regMsg.textContent = "";
+      if (loginMsg) loginMsg.textContent = "";
     }
 
     function submitRegister() {
@@ -1553,12 +1411,12 @@
         lastActiveAt: Date.now(),
         profile: { handle: username, age, years: profile.years || 1, style }
       };
-      localStorage.setItem("rb_accounts_v8", JSON.stringify(accounts));
+      safeStorage.setItem("rb_accounts_v9", JSON.stringify(accounts));
 
       profile = { ...accounts[username].profile };
-      localStorage.setItem("rb_profile_v8", JSON.stringify(profile));
+      safeStorage.setItem("rb_profile_v9", JSON.stringify(profile));
       currentSession = { handle: username };
-      localStorage.setItem("rb_session_v8", JSON.stringify(currentSession));
+      safeStorage.setItem("rb_session_v9", JSON.stringify(currentSession));
 
       document.getElementById("regPass").value = "";
       document.getElementById("regConfirmPass").value = "";
@@ -1582,11 +1440,11 @@
       }
 
       accounts[key].lastActiveAt = Date.now();
-      localStorage.setItem("rb_accounts_v8", JSON.stringify(accounts));
+      safeStorage.setItem("rb_accounts_v9", JSON.stringify(accounts));
       profile = { ...(accounts[key].profile || {}), handle: key };
-      localStorage.setItem("rb_profile_v8", JSON.stringify(profile));
+      safeStorage.setItem("rb_profile_v9", JSON.stringify(profile));
       currentSession = { handle: key };
-      localStorage.setItem("rb_session_v8", JSON.stringify(currentSession));
+      safeStorage.setItem("rb_session_v9", JSON.stringify(currentSession));
 
       document.getElementById("loginPass").value = "";
       msgEl.textContent = "";
@@ -1643,8 +1501,9 @@
 
       accounts[key].pass = newPass;
       accounts[key].lastActiveAt = Date.now();
-      localStorage.setItem("rb_accounts_v8", JSON.stringify(accounts));
+      safeStorage.setItem("rb_accounts_v9", JSON.stringify(accounts));
 
+      switchAuthTab("login");
       document.getElementById("loginUsername").value = key;
       document.getElementById("loginPass").value = "";
       const loginMsg = document.getElementById("loginMsg");
@@ -1656,11 +1515,7 @@
     function signOutToGate() {
       currentSession = null;
       isDevMode = false;
-      if (autoRefreshTimer) {
-        clearInterval(autoRefreshTimer);
-        autoRefreshTimer = null;
-      }
-      localStorage.removeItem("rb_session_v8");
+      safeStorage.removeItem("rb_session_v9");
       document.getElementById("loginPass").value = "";
       switchAuthTab("login");
       syncGateVisibility();
@@ -1670,7 +1525,7 @@
       const brand = row.brand || detectBrand(row.racket || "");
       const racket = row.racket || "";
       return {
-        id: String(row.id ?? Date.now() + Math.random()),
+        id: String(row.id ?? (Date.now() + "_" + Math.random().toString(36).slice(2, 7))),
         brand,
         author: normalizeUsername(row.author || "@RBPlayer") || "@RBPlayer",
         age: row.age ?? 24,
@@ -1689,38 +1544,6 @@
       };
     }
 
-    async function loadSharedPosts() {
-      if (!sbClient) {
-        renderFeed();
-        return;
-      }
-      const { data, error } = await sbClient
-        .from("rb_posts")
-        .select("*")
-        .order("created_at", { ascending: false });
-
-      if (!error && Array.isArray(data)) {
-        reviews = data.map(normalizeRow);
-        localStorage.setItem("rb_reviews_v8", JSON.stringify(reviews));
-      }
-      renderFeed();
-    }
-
-    function startAutoRefreshLoop() {
-      if (autoRefreshTimer) clearInterval(autoRefreshTimer);
-      autoRefreshTimer = setInterval(() => {
-        if (!document.hidden && currentSession) {
-          loadSharedPosts();
-        }
-      }, 15000);
-    }
-
-    document.addEventListener("visibilitychange", () => {
-      if (!document.hidden && currentSession) {
-        loadSharedPosts();
-      }
-    });
-
     function syncGateVisibility() {
       accounts = pruneInactiveAccounts(accounts);
       const loggedIn = Boolean(currentSession && currentSession.handle && accounts[currentSession.handle]);
@@ -1731,8 +1554,7 @@
         applyProfileToInputs();
         updateAuthUI();
         updateModeUI();
-        loadSharedPosts();
-        startAutoRefreshLoop();
+        renderFeed();
       }
     }
 
@@ -1775,7 +1597,7 @@
       }
     }
 
-    async function clearMyPosts() {
+    function clearMyPosts() {
       const me = getActiveHandle().toLowerCase();
       if (!me) return;
       const mineCount = reviews.filter(r => normalizeUsername(r.author).toLowerCase() === me).length;
@@ -1788,43 +1610,25 @@
         : `Delete ${mineCount} post(s) belonging to ${getActiveHandle()} only? (Other users' posts stay intact)`;
       if (!confirm(msg)) return;
 
-      if (sbClient) {
-        const { error } = await sbClient.from("rb_posts").delete().ilike("author", getActiveHandle());
-        if (error) {
-          alert(error.message);
-          return;
-        }
-        await loadSharedPosts();
-      } else {
-        reviews = reviews.filter(r => normalizeUsername(r.author).toLowerCase() !== me);
-        localStorage.setItem("rb_reviews_v8", JSON.stringify(reviews));
-        renderFeed();
-      }
+      reviews = reviews.filter(r => normalizeUsername(r.author).toLowerCase() !== me);
+      safeStorage.setItem("rb_reviews_v9", JSON.stringify(reviews));
+      renderFeed();
     }
 
-    async function clearEntireFeed() {
+    function clearEntireFeed() {
       if (!isDevMode) {
         alert(currentLang === "bm" ? "Hanya Developer Mode boleh mengosongkan keseluruhan feed." : "Only Developer Mode can clear the entire feed.");
         return;
       }
-      const msg = currentLang === "bm" ? "[DEV] Kosongkan SEMUA post dalam feed bersama?" : "[DEV] Clear ALL posts across the shared feed?";
+      const msg = currentLang === "bm" ? "[DEV] Kosongkan SEMUA post dalam feed?" : "[DEV] Clear ALL posts in the feed?";
       if (!confirm(msg)) return;
 
-      if (sbClient) {
-        const { error } = await sbClient.from("rb_posts").delete().not("id", "is", null);
-        if (error) {
-          alert(error.message);
-          return;
-        }
-        await loadSharedPosts();
-      } else {
-        reviews = [];
-        localStorage.setItem("rb_reviews_v8", JSON.stringify(reviews));
-        renderFeed();
-      }
+      reviews = [];
+      safeStorage.setItem("rb_reviews_v9", JSON.stringify(reviews));
+      renderFeed();
     }
 
-    async function deleteSinglePost(id) {
+    function deleteSinglePost(id) {
       const targetId = String(id);
       const target = reviews.find(r => String(r.id) === targetId);
       if (!target) return;
@@ -1838,18 +1642,9 @@
 
       if (!confirm(uiText[currentLang].confirmDeleteOne)) return;
 
-      if (sbClient) {
-        const { error } = await sbClient.from("rb_posts").delete().eq("id", target.id);
-        if (error) {
-          alert(error.message);
-          return;
-        }
-        await loadSharedPosts();
-      } else {
-        reviews = reviews.filter(r => String(r.id) !== targetId);
-        localStorage.setItem("rb_reviews_v8", JSON.stringify(reviews));
-        renderFeed();
-      }
+      reviews = reviews.filter(r => String(r.id) !== targetId);
+      safeStorage.setItem("rb_reviews_v9", JSON.stringify(reviews));
+      renderFeed();
     }
 
     function getInitials(handle) {
@@ -1859,11 +1654,11 @@
 
     function escapeHtml(str) {
       return String(str ?? "")
-        .replace(/&/g, "&")
-        .replace(/</g, "<")
-        .replace(/>/g, ">")
-        .replace(/"/g, """)
-        .replace(/'/g, "'");
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
     }
 
     function showPage(pageId) {
@@ -1927,38 +1722,11 @@
       const low = racketName.toLowerCase();
       const catHit = builtInCatalog.find(c =>
         c.racket.toLowerCase() === low ||
-        c.racket.toLowerCase().includes(low) ||
-        low.includes(c.racket.toLowerCase().replace(/^(yonex|victor|li-ning|felet|apacs|maxbolt|kumpoo|flexpower|vaxe|hundred)\s+/i, ""))
+        c.racket.toLowerCase().includes(low)
       );
       if (catHit) return catHit.priceRm;
-
-      if (brand === "Felet") {
-        if (/nevow/.test(low)) return 430;
-        if (/tai\s*g/.test(low)) return 380;
-        if (/woven|3k\s*fence/.test(low)) return 355;
-        if (/tj/.test(low)) return 195;
-        return 260;
-      }
-      if (brand === "Yonex") {
-        if (/limited|va\b|kurenai|bps|lin\s*dan|lee\s*chong/.test(low) && /pro|zz|1000z/.test(low)) return 950;
-        if (/100zz|1000z|88d\s*pro|88s\s*pro|11\s*pro|77\s*pro|pro\b/.test(low)) return 780;
-        if (/tour\b/.test(low)) return 460;
-        if (/game\b/.test(low)) return 330;
-        if (/play\b|ability|feel|clear/.test(low)) return 225;
-        return 420;
-      }
-      if (brand === "Victor") {
-        if (/limited|ultraman|capsule|sudirman/.test(low)) return 520;
-        if (/pro|ultra|100x|ryuga|fantome|12\b/.test(low)) return 660;
-        return 350;
-      }
-      if (brand === "Li-Ning") {
-        if (/cny|limited/.test(low)) return 888;
-        if (/90|80|100|9000|8000|7000/.test(low)) return 780;
-        if (/cannon|blast|30\b/.test(low)) return 270;
-        return 380;
-      }
       const brandStreetAvg = {
+        "Felet": 350, "Yonex": 650, "Victor": 550, "Li-Ning": 680,
         "Apacs": 165, "Maxbolt": 210, "Kumpoo": 220, "Flexpower": 170,
         "Vaxe": 190, "Hundred": 240, "Other": 220
       };
@@ -2016,7 +1784,7 @@
       el.className = "status-msg " + (isError ? "status-err" : "status-ok");
     }
 
-    async function submitCombinedPost() {
+    function submitCombinedPost() {
       const t = uiText[currentLang];
       const rawRacket = document.getElementById("racket").value.trim();
       const notes = document.getElementById("notes").value.trim();
@@ -2031,11 +1799,11 @@
       const styleVal = document.getElementById("pStyle").value;
 
       profile = { handle: handleVal, age: ageVal, years: yearsVal, style: styleVal };
-      localStorage.setItem("rb_profile_v8", JSON.stringify(profile));
+      safeStorage.setItem("rb_profile_v9", JSON.stringify(profile));
       if (currentSession && accounts[currentSession.handle]) {
         accounts[currentSession.handle].profile = { ...profile };
         accounts[currentSession.handle].lastActiveAt = Date.now();
-        localStorage.setItem("rb_accounts_v8", JSON.stringify(accounts));
+        safeStorage.setItem("rb_accounts_v9", JSON.stringify(accounts));
       }
       document.getElementById("queryStyle").value = styleVal;
 
@@ -2043,7 +1811,8 @@
       const brand = chosenBrand === "Auto" ? detectBrand(rawRacket) : chosenBrand;
       const racket = (brand !== "Other" && !rawRacket.toLowerCase().startsWith(brand.toLowerCase())) ? `${brand} ${rawRacket}` : rawRacket;
 
-      const payload = {
+      const newPost = normalizeRow({
+        id: "post_" + Date.now() + "_" + Math.random().toString(36).slice(2, 6),
         author: handleVal,
         age: ageVal,
         exp_years: yearsVal,
@@ -2064,25 +1833,11 @@
         },
         notes,
         helpful: 0
-      };
+      });
 
-      if (sbClient) {
-        const { data, error } = await sbClient.from("rb_posts").insert([payload]).select();
-        if (error) {
-          setStatusMsg(error.message, true);
-          return;
-        }
-        if (Array.isArray(data) && data[0]) {
-          reviews.unshift(normalizeRow(data[0]));
-          localStorage.setItem("rb_reviews_v8", JSON.stringify(reviews));
-          renderFeed();
-        }
-        await loadSharedPosts();
-      } else {
-        reviews.unshift(normalizeRow({ ...payload, id: String(Date.now()) }));
-        localStorage.setItem("rb_reviews_v8", JSON.stringify(reviews));
-        renderFeed();
-      }
+      reviews.unshift(newPost);
+      safeStorage.setItem("rb_reviews_v9", JSON.stringify(reviews));
+      renderFeed();
 
       document.getElementById("racket").value = "";
       document.getElementById("stringSetup").value = "";
@@ -2090,7 +1845,7 @@
       setStatusMsg(t.postSaved, false);
     }
 
-    async function toggleLikePost(id) {
+    function toggleLikePost(id) {
       const targetId = String(id);
       const item = reviews.find(r => String(r.id) === targetId);
       if (!item) return;
@@ -2107,18 +1862,9 @@
       }
       saveUserLikesSet(likesSet);
 
-      if (sbClient) {
-        const { error } = await sbClient.from("rb_posts").update({ helpful: nextHelpful }).eq("id", item.id);
-        if (error) {
-          alert(error.message);
-          return;
-        }
-        await loadSharedPosts();
-      } else {
-        item.helpful = nextHelpful;
-        localStorage.setItem("rb_reviews_v8", JSON.stringify(reviews));
-        renderFeed();
-      }
+      item.helpful = nextHelpful;
+      safeStorage.setItem("rb_reviews_v9", JSON.stringify(reviews));
+      renderFeed();
     }
 
     function renderFeed() {
@@ -2374,7 +2120,64 @@
       document.getElementById("results").innerHTML = summary + cards;
     }
 
-    setupAppManifestAndIcons();
+    function bindAllEvents() {
+      document.getElementById("g_btn_en")?.addEventListener("click", () => setLang("en"));
+      document.getElementById("g_btn_bm")?.addEventListener("click", () => setLang("bm"));
+      document.getElementById("btn_en")?.addEventListener("click", () => setLang("en"));
+      document.getElementById("btn_bm")?.addEventListener("click", () => setLang("bm"));
+
+      document.getElementById("g_installBtn")?.addEventListener("click", triggerAddToHomeScreen);
+      document.getElementById("app_installBtn")?.addEventListener("click", () => {
+        closeSidebar();
+        triggerAddToHomeScreen();
+      });
+
+      document.getElementById("tabRegister")?.addEventListener("click", () => switchAuthTab("register"));
+      document.getElementById("tabLogin")?.addEventListener("click", () => switchAuthTab("login"));
+
+      document.getElementById("r_submitBtn")?.addEventListener("click", submitRegister);
+      document.getElementById("l_submitBtn")?.addEventListener("click", submitLogin);
+      document.getElementById("btnOpenForgot")?.addEventListener("click", openForgotModal);
+      document.getElementById("btnOpenHelp")?.addEventListener("click", openRecoveryHelpModal);
+
+      document.getElementById("forgotModal")?.addEventListener("click", (e) => handleBackdropClose(e, "forgotModal"));
+      document.getElementById("fp_btnCancel")?.addEventListener("click", closeForgotModal);
+      document.getElementById("fp_btnReset")?.addEventListener("click", submitForgotPassword);
+
+      document.getElementById("recoveryHelpModal")?.addEventListener("click", (e) => handleBackdropClose(e, "recoveryHelpModal"));
+      document.getElementById("rh_btnClose")?.addEventListener("click", closeRecoveryHelpModal);
+
+      document.getElementById("installModal")?.addEventListener("click", (e) => handleBackdropClose(e, "installModal"));
+      document.getElementById("inst_btnClose")?.addEventListener("click", closeInstallModal);
+
+      document.getElementById("menuOpenBtn")?.addEventListener("click", openSidebar);
+      document.getElementById("drawerBackdrop")?.addEventListener("click", closeSidebar);
+      document.getElementById("drawerCloseBtn")?.addEventListener("click", closeSidebar);
+
+      document.getElementById("devToggleBtn")?.addEventListener("click", toggleDevMode);
+      document.getElementById("t_clearMine")?.addEventListener("click", clearMyPosts);
+      document.getElementById("t_clearAll")?.addEventListener("click", clearEntireFeed);
+      document.getElementById("t_logoutBtn")?.addEventListener("click", () => {
+        closeSidebar();
+        signOutToGate();
+      });
+
+      document.getElementById("nav_p1")?.addEventListener("click", () => showPage("page1"));
+      document.getElementById("nav_p2")?.addEventListener("click", () => showPage("page2"));
+      document.getElementById("pStyle")?.addEventListener("change", syncAdvisorStyleFromProfile);
+      document.getElementById("t_submitBtn")?.addEventListener("click", submitCombinedPost);
+      document.getElementById("feedSearchInput")?.addEventListener("input", renderFeed);
+
+      document.querySelectorAll("#feedFilters .filter-chip").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          setFeedFilter(btn.getAttribute("data-style") || "All", btn);
+        });
+      });
+
+      document.getElementById("t_advBtn")?.addEventListener("click", recommend);
+    }
+
+    bindAllEvents();
     applyLangLabels();
     syncGateVisibility();
   </script>
