@@ -4,7 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#16a34a" />
+  <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="RacketBuddy" />
   <meta name="description" content="RacketBuddy (RB) — Find your best racket as your buddy." />
   <title>RacketBuddy (RB) — Find your best racket as your buddy</title>
@@ -29,7 +31,7 @@
     * { box-sizing: border-box; font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
     body { margin: 0; background: var(--bg); color: var(--text); padding: 0 0 40px; }
 
-    /* CENTERED HOME PAGE (NO UPPER BANNER) */
+    /* CENTERED HOME PAGE */
     .home-center {
       min-height: 100vh;
       display: flex;
@@ -37,7 +39,7 @@
       justify-content: center;
       padding: 28px 16px;
       background:
-        radial-gradient(circle at 50% 0%, rgba(22, 163, 74, 0.14), transparent 55%),
+        radial-gradient(circle at 50% 0%, rgba(22, 163, 74, 0.16), transparent 55%),
         var(--bg);
     }
     .home-card {
@@ -50,19 +52,16 @@
       box-shadow: 0 16px 36px rgba(15, 23, 42, 0.08);
       text-align: center;
     }
-    .big-rb-logo {
-      width: 88px;
-      height: 88px;
+    .big-rb-emblem {
+      width: 104px;
+      height: 104px;
       margin: 0 auto 14px;
-      border-radius: 24px;
-      background: linear-gradient(135deg, #16a34a 0%, #059669 52%, #0284c7 100%);
-      color: #ffffff;
-      font-size: 2.25rem;
-      font-weight: 900;
-      letter-spacing: -0.03em;
+      border-radius: 28px;
+      background: linear-gradient(145deg, #0f172a 0%, #14532d 58%, #0284c7 100%);
       display: grid;
       place-items: center;
-      box-shadow: 0 12px 24px rgba(22, 163, 74, 0.28);
+      box-shadow: 0 14px 28px rgba(15, 23, 42, 0.22);
+      border: 2px solid rgba(134, 239, 172, 0.35);
     }
     .home-brand { margin: 0; font-size: 1.65rem; font-weight: 800; letter-spacing: -0.02em; }
     .home-tagline {
@@ -123,11 +122,15 @@
       display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;
     }
     .brand-logo { display: flex; align-items: center; gap: 10px; }
-    .logo-mark {
-      width: 38px; height: 38px; border-radius: 12px;
-      background: linear-gradient(135deg, #16a34a, #0ea5e9);
-      color: #fff; font-weight: 800; font-size: 0.95rem; letter-spacing: 0.02em;
-      display: grid; place-items: center;
+    .mini-rb-emblem {
+      width: 44px;
+      height: 44px;
+      border-radius: 13px;
+      background: linear-gradient(145deg, #0f172a 0%, #14532d 60%, #0284c7 100%);
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+      border: 1.5px solid rgba(134, 239, 172, 0.4);
     }
     .brand-logo h1 { margin: 0; font-size: 1.2rem; letter-spacing: -0.02em; }
     .brand-logo p { margin: 0; font-size: 0.78rem; color: var(--muted); }
@@ -274,17 +277,39 @@
     }
     .modal-backdrop.open { display: flex; }
     .modal-card {
-      max-width: 400px; width: 100%; background: var(--surface); border: 1px solid var(--border);
+      max-width: 420px; width: 100%; background: var(--surface); border: 1px solid var(--border);
       border-radius: 18px; padding: 20px; box-shadow: 0 20px 40px rgba(15, 23, 42, 0.2);
       text-align: left;
     }
   </style>
 </head>
 <body>
-  <!-- CENTERED HOME PAGE: BIG RB LOGO + TAGLINE + SEPARATE REGISTER & LOGIN -->
+  <!-- CENTERED HOME PAGE: BADMINTON RACKET + RB LOGO + TAGLINE + SEPARATE REGISTER & LOGIN -->
   <div id="homeGate" class="home-center">
     <div class="home-card">
-      <div class="big-rb-logo" aria-label="RB Logo">RB</div>
+      <div class="big-rb-emblem" aria-label="RacketBuddy RB Badminton Emblem">
+        <svg width="78" height="78" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Badminton Racket Frame & Shaft Behind RB -->
+          <g transform="rotate(-24 60 56)">
+            <ellipse cx="60" cy="40" rx="25" ry="31" stroke="#86efac" stroke-width="4.5" fill="rgba(22,163,74,0.16)" />
+            <!-- String Bed Mesh -->
+            <line x1="42" y1="40" x2="78" y2="40" stroke="rgba(255,255,255,0.45)" stroke-width="1.3" />
+            <line x1="45" y1="28" x2="75" y2="28" stroke="rgba(255,255,255,0.35)" stroke-width="1.2" />
+            <line x1="45" y1="52" x2="75" y2="52" stroke="rgba(255,255,255,0.35)" stroke-width="1.2" />
+            <line x1="52" y1="13" x2="52" y2="67" stroke="rgba(255,255,255,0.35)" stroke-width="1.2" />
+            <line x1="60" y1="10" x2="60" y2="70" stroke="rgba(255,255,255,0.45)" stroke-width="1.3" />
+            <line x1="68" y1="13" x2="68" y2="67" stroke="rgba(255,255,255,0.35)" stroke-width="1.2" />
+            <!-- Racket Shaft & Grip -->
+            <line x1="60" y1="71" x2="60" y2="96" stroke="#38bdf8" stroke-width="4.5" stroke-linecap="round" />
+            <rect x="55.5" y="94" width="9" height="17" rx="3" fill="#f8fafc" />
+          </g>
+          <!-- Shuttlecock Accent Top-Right -->
+          <path d="M92 18L102 28M94 15L105 22M89 20L98 31" stroke="#fde047" stroke-width="2" stroke-linecap="round" />
+          <!-- Bold RB Lettering Foreground -->
+          <text x="60" y="69" text-anchor="middle" fill="#ffffff" stroke="#0f172a" stroke-width="5" paint-order="stroke fill" font-size="38" font-weight="900" font-family="system-ui, -apple-system, sans-serif" letter-spacing="-1.5">RB</text>
+        </svg>
+      </div>
+
       <h1 class="home-brand">RacketBuddy</h1>
       <div class="home-tagline" id="g_tagline">Find your best racket as your buddy</div>
       <p class="home-desc" id="g_desc">
@@ -337,10 +362,10 @@
   <!-- ADD TO HOME SCREEN GUIDE MODAL -->
   <div id="installModal" class="modal-backdrop">
     <div class="modal-card">
-      <h2 style="margin:0 0 8px;" id="inst_title">Add RacketBuddy to Home Screen</h2>
+      <h2 style="margin:0 0 8px;" id="inst_title">Install RacketBuddy on Your Phone</h2>
       <p class="hint" id="inst_body" style="margin:0 0 12px;">
-        Open this page in Safari (iPhone/iPad) or Chrome (Android):<br/>
-        • <strong>iPhone / iPad (Safari):</strong> Tap <strong>Share</strong> (square with arrow) → scroll down → tap <strong>Add to Home Screen</strong>.<br/>
+        Browsers block silent auto-install unless triggered manually from the browser menu:<br/>
+        • <strong>iPhone / iPad (Safari):</strong> Tap <strong>Share</strong> (square with up arrow) → tap <strong>Add to Home Screen</strong> → tap <strong>Add</strong>.<br/>
         • <strong>Android (Chrome):</strong> Tap the <strong>⋮ menu</strong> (top right) → tap <strong>Add to Home screen</strong> or <strong>Install app</strong>.
       </p>
       <button type="button" class="primary" style="margin-top:4px;" onclick="closeInstallModal()">Got It</button>
@@ -352,7 +377,15 @@
     <div class="topbar">
       <div class="topbar-inner">
         <div class="brand-logo">
-          <div class="logo-mark">RB</div>
+          <div class="mini-rb-emblem" aria-label="RB Emblem">
+            <svg width="32" height="32" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <g transform="rotate(-24 60 56)">
+                <ellipse cx="60" cy="40" rx="25" ry="31" stroke="#86efac" stroke-width="5" fill="rgba(22,163,74,0.18)" />
+                <line x1="60" y1="71" x2="60" y2="96" stroke="#38bdf8" stroke-width="5" stroke-linecap="round" />
+              </g>
+              <text x="60" y="71" text-anchor="middle" fill="#ffffff" stroke="#0f172a" stroke-width="6" paint-order="stroke fill" font-size="40" font-weight="900" font-family="system-ui, -apple-system, sans-serif" letter-spacing="-1.5">RB</text>
+            </svg>
+          </div>
           <div>
             <h1 id="t_title">RacketBuddy (RB)</h1>
             <p id="t_subtitle">Find your best racket as your buddy</p>
@@ -621,6 +654,42 @@
     let currentFeedFilter = "All";
     let authMode = "register";
     let deferredInstallPrompt = null;
+
+    function setupAppManifestAndIcons() {
+      const iconSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
+        <rect width="120" height="120" rx="28" fill="#0f172a"/>
+        <g transform="rotate(-24 60 56)">
+          <ellipse cx="60" cy="40" rx="25" ry="31" stroke="#86efac" stroke-width="5" fill="#14532d"/>
+          <line x1="60" y1="71" x2="60" y2="96" stroke="#38bdf8" stroke-width="5" stroke-linecap="round"/>
+        </g>
+        <text x="60" y="71" text-anchor="middle" fill="#ffffff" stroke="#0f172a" stroke-width="6" paint-order="stroke fill" font-size="40" font-weight="900" font-family="sans-serif" letter-spacing="-1.5">RB</text>
+      </svg>`;
+      const iconDataUrl = "data:image/svg+xml;charset=UTF-8," + encodeURIComponent(iconSvg);
+
+      const appleLink = document.createElement("link");
+      appleLink.rel = "apple-touch-icon";
+      appleLink.href = iconDataUrl;
+      document.head.appendChild(appleLink);
+
+      const manifestObj = {
+        name: "RacketBuddy (RB)",
+        short_name: "RacketBuddy",
+        description: "Find your best racket as your buddy",
+        start_url: window.location.href,
+        display: "standalone",
+        background_color: "#f1f5f9",
+        theme_color: "#16a34a",
+        icons: [
+          { src: iconDataUrl, sizes: "192x192", type: "image/svg+xml", purpose: "any maskable" },
+          { src: iconDataUrl, sizes: "512x512", type: "image/svg+xml", purpose: "any maskable" }
+        ]
+      };
+      const blob = new Blob([JSON.stringify(manifestObj)], { type: "application/manifest+json" });
+      const manifestLink = document.createElement("link");
+      manifestLink.rel = "manifest";
+      manifestLink.href = URL.createObjectURL(blob);
+      document.head.appendChild(manifestLink);
+    }
 
     window.addEventListener("beforeinstallprompt", (e) => {
       e.preventDefault();
@@ -1480,6 +1549,7 @@
       document.getElementById("results").innerHTML = summary + cards;
     }
 
+    setupAppManifestAndIcons();
     applyLangLabels();
     syncGateVisibility();
   </script>
