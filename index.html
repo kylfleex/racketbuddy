@@ -491,22 +491,22 @@
         <button type="button" id="tabLogin" class="switch-btn" data-auth-tab="login">Login</button>
       </div>
 
-      <!-- REGISTER FORM: USERNAME, EMAIL, NEW PASSWORD (MIN 8 CHARS), CONFIRM PASSWORD -->
-      <div id="registerForm" class="form-align">
+      <!-- REGISTER FORM -->
+      <form id="registerForm" class="form-align" novalidate>
         <label for="regUsername" id="r_lblUsername">Username (Unique — cannot be same) *</label>
-        <input id="regUsername" placeholder="e.g. @AimanCourt or AimanCourt" />
+        <input id="regUsername" placeholder="e.g. @AimanCourt or AimanCourt" autocomplete="username" />
 
         <label for="regEmail" id="r_lblEmail">Email (One email = One account) *</label>
-        <input id="regEmail" type="email" placeholder="e.g. aiman@example.com" />
+        <input id="regEmail" type="email" placeholder="e.g. aiman@example.com" autocomplete="email" />
 
         <div class="row-2">
           <div>
             <label for="regPass" id="r_lblPass">New Password (min 8 chars) *</label>
-            <input id="regPass" type="password" minlength="8" placeholder="Min 8 characters" />
+            <input id="regPass" type="password" minlength="8" placeholder="Min 8 characters" autocomplete="new-password" />
           </div>
           <div>
             <label for="regConfirmPass" id="r_lblConfirm">Confirm Password *</label>
-            <input id="regConfirmPass" type="password" minlength="8" placeholder="Repeat password" />
+            <input id="regConfirmPass" type="password" minlength="8" placeholder="Repeat password" autocomplete="new-password" />
           </div>
         </div>
 
@@ -527,30 +527,30 @@
           </div>
         </div>
 
-        <button type="button" class="primary" id="r_submitBtn" data-action="register">Create Account</button>
+        <button type="submit" class="primary" id="r_submitBtn" data-action="register">Create Account</button>
         <div id="regMsg" class="status-msg" role="status" aria-live="polite"></div>
-      </div>
+      </form>
 
-      <!-- LOGIN FORM: ONLY USERNAME AND PASSWORD -->
-      <div id="loginForm" class="form-align" style="display:none;">
+      <!-- LOGIN FORM -->
+      <form id="loginForm" class="form-align" style="display:none;" novalidate>
         <label for="loginUsername" id="l_lblUsername">Username *</label>
-        <input id="loginUsername" placeholder="e.g. @AimanCourt" />
+        <input id="loginUsername" placeholder="e.g. @AimanCourt" autocomplete="username" />
 
         <label for="loginPass" id="l_lblPass">Password *</label>
-        <input id="loginPass" type="password" placeholder="Enter your password" />
+        <input id="loginPass" type="password" placeholder="Enter your password" autocomplete="current-password" />
 
         <div class="link-row">
           <button type="button" class="link-btn" id="btnOpenForgot" data-action="open-forgot">Forgot Password?</button>
           <button type="button" class="link-btn" id="btnOpenHelp" data-action="open-help">Forgot username/email too?</button>
         </div>
 
-        <button type="button" class="primary" id="l_submitBtn" data-action="login">Login</button>
+        <button type="submit" class="primary" id="l_submitBtn" data-action="login">Login</button>
         <div id="loginMsg" class="status-msg" role="status" aria-live="polite"></div>
-      </div>
+      </form>
     </div>
   </div>
 
-  <!-- FORGOT PASSWORD MODAL (VERIFY USERNAME + EMAIL -> SET NEW PASSWORD MIN 8 CHARS) -->
+  <!-- FORGOT PASSWORD MODAL -->
   <div id="forgotModal" class="modal-backdrop">
     <div class="modal-card">
       <h2 style="margin:0 0 6px;" id="fp_title">Forgot Password — Reset Here</h2>
@@ -670,7 +670,7 @@
         </div>
       </div>
 
-      <!-- PAGE 1: COMBINED PLAYER + RACKET + FEEDBACK FORM + SOCIAL FEED -->
+      <!-- PAGE 1 -->
       <section id="page1">
         <div class="grid-2">
           <div class="card">
@@ -802,7 +802,6 @@
             <div id="statusMsg" class="status-msg"></div>
           </div>
 
-          <!-- SOCIAL FEED COLUMN WITH SEARCH BAR -->
           <div class="card feed-card">
             <h2><span id="t_feedTitle">RacketBuddy Feed</span> (<span id="count">0</span>)</h2>
 
@@ -826,7 +825,7 @@
         </div>
       </section>
 
-      <!-- PAGE 2: FIND RACKET (FLEXIBLE SEARCH + COMMUNITY REVIEWS + MULTI-BRAND CATALOGUE) -->
+      <!-- PAGE 2 -->
       <section id="page2" style="display:none;">
         <div class="card">
           <h2 id="t_advTitle">Find Racket — Top 10 Suggested (Shopee / TikTok / Pro Shop Market Range)</h2>
@@ -911,24 +910,22 @@
     const safeStorage = {
       getItem(key) {
         try {
-          return window.localStorage.getItem(key);
-        } catch (e) {
-          return Object.prototype.hasOwnProperty.call(memoryFallback, key) ? memoryFallback[key] : null;
-        }
+          if (window.localStorage) return window.localStorage.getItem(key);
+        } catch (e) {}
+        return Object.prototype.hasOwnProperty.call(memoryFallback, key) ? memoryFallback[key] : null;
       },
       setItem(key, val) {
+        const strVal = String(val);
+        memoryFallback[key] = strVal;
         try {
-          window.localStorage.setItem(key, val);
-        } catch (e) {
-          memoryFallback[key] = String(val);
-        }
+          if (window.localStorage) window.localStorage.setItem(key, strVal);
+        } catch (e) {}
       },
       removeItem(key) {
+        delete memoryFallback[key];
         try {
-          window.localStorage.removeItem(key);
-        } catch (e) {
-          delete memoryFallback[key];
-        }
+          if (window.localStorage) window.localStorage.removeItem(key);
+        } catch (e) {}
       }
     };
 
@@ -946,12 +943,6 @@
     let currentFeedFilter = "All";
     let authMode = "register";
     let deferredInstallPrompt = null;
-
-    function handleBackdropClose(event, modalId) {
-      if (event && event.target && event.target.id === modalId) {
-        document.getElementById(modalId)?.classList.remove("open");
-      }
-    }
 
     function openSidebar() {
       document.getElementById("drawerBackdrop")?.classList.add("open");
@@ -1074,8 +1065,7 @@
         errEmailTaken: "This email is already registered to an account (one email = one account).",
         errLoginInvalid: "Invalid username or password. Make sure you registered first on the Register tab.",
         errForgotMatch: "No account matches both that username and email.",
-        resetSuccess: "Password reset! You can now log in with your new password.",
-        confirmDeleteOne: "Delete this specific post/feedback only? Other posts will not be deleted."
+        resetSuccess: "Password reset! You can now log in with your new password."
       },
       bm: {
         tagline: "Find your best racket as your buddy",
@@ -1168,13 +1158,11 @@
         errEmailTaken: "Emel ini sudah didaftarkan untuk satu akaun (satu emel = satu akaun).",
         errLoginInvalid: "Username atau kata laluan tidak sah. Pastikan anda mendaftar dahulu di tab Daftar.",
         errForgotMatch: "Tiada akaun yang sepadan dengan username dan emel tersebut.",
-        resetSuccess: "Kata laluan berjaya dikemas kini! Sila log masuk dengan kata laluan baru.",
-        confirmDeleteOne: "Padam post/feedback yang dipilih ini sahaja? Post lain tidak akan dipadam."
+        resetSuccess: "Kata laluan berjaya dikemas kini! Sila log masuk dengan kata laluan baru."
       }
     };
 
     const builtInCatalog = [
-      // FELET MODELS
       {
         id: "felet-nevow-tj1000", brand: "Felet", racket: "Felet Nevow TJ 1000", priceRm: 560, priceRange: "RM550–RM799", limited: false,
         weightGrip: "4U G5", balance: "Head-Heavy", paperFlex: "Medium", feelFlex: "Medium",
@@ -1273,8 +1261,6 @@
         aiNoteEn: "Fast-handling N-8 Nitro frame designed for quick defense and snappy front-court exchanges.",
         aiNoteBm: "Frame N-8 Nitro yang pantas untuk bertahan laju dan pertukaran bola depan court."
       },
-
-      // YONEX MODELS
       {
         id: "yonex-100zz", brand: "Yonex", racket: "Yonex Astrox 100ZZ", priceRm: 850, priceRange: "RM790–RM900", limited: false,
         weightGrip: "4U G5", balance: "Head-Heavy", paperFlex: "Stiff", feelFlex: "Stiff",
@@ -1312,8 +1298,6 @@
         aiNoteBm: "Frame laju ringan untuk hayunan pantas, drive mendatar, dan keselesaan pergelangan tangan.",
         imgUrl: "https://www.yonex.com/media/catalog/product/n/a/nanoflare_1000play.png?quality=80&bg-color=248,248,248,0.75&fit=bounds&height=819&width=600&canvas=600:819"
       },
-
-      // VICTOR MODELS
       {
         id: "victor-ryuga-2-pro", brand: "Victor", racket: "Victor Thruster K Ryuga II Pro", priceRm: 605, priceRange: "RM580–RM660", limited: false,
         weightGrip: "4U G5", balance: "Head-Heavy", paperFlex: "Stiff", feelFlex: "Stiff",
@@ -1335,8 +1319,6 @@
         aiNoteEn: "Versatile all-around DriveX racket offering steady shuttle placement and reliable defense.",
         aiNoteBm: "Raket DriveX serba boleh untuk penempatan bulu tangkis yang stabil dan bertahan yang kemas."
       },
-
-      // LI-NING MODELS
       {
         id: "lining-axforce-90-new", brand: "Li-Ning", racket: "Li-Ning Axforce 90 New", priceRm: 820, priceRange: "RM760–RM880", limited: false,
         weightGrip: "4U G5", balance: "Head-Heavy", paperFlex: "Stiff", feelFlex: "Stiff",
@@ -1358,8 +1340,6 @@
         aiNoteEn: "Control-oriented Halbertec model providing clean shuttle feel and balanced rally play.",
         aiNoteBm: "Model Halbertec berfokus kawalan untuk rasa bulu tangkis yang bersih dan rali seimbang."
       },
-
-      // APACS, MAXBOLT & KUMPOO MODELS
       {
         id: "apacs-braid-woven", brand: "Apacs", racket: "Apacs Braid Woven", priceRm: 165, priceRange: "RM125–RM299", limited: false,
         weightGrip: "4U G5", balance: "Even-Balance", paperFlex: "Medium", feelFlex: "Medium",
@@ -1384,7 +1364,7 @@
     ];
 
     function normalizeUsername(raw) {
-      const cleaned = (raw || "").trim().replace(/\s+/g, "");
+      const cleaned = (raw || "").trim().replace(/\s+/g, "").toLowerCase();
       if (!cleaned) return "";
       return cleaned.startsWith("@") ? cleaned : "@" + cleaned;
     }
@@ -1398,21 +1378,22 @@
       const next = {};
       let changed = false;
       Object.entries(accMap || {}).forEach(([k, v]) => {
-        const last = Number(v?.lastActiveAt || now);
+        if (!v || typeof v !== "object") return;
+        const last = Number(v.lastActiveAt || now);
         if (now - last <= INACTIVE_DAYS_MS) {
-          next[k] = { ...v, lastActiveAt: last };
+          next[k.toLowerCase()] = { ...v, lastActiveAt: last };
         } else {
           changed = true;
         }
       });
       if (changed) {
-        safeStorage.setItem("rb_accounts_v9", JSON.stringify(next));
+        safeStorage.setItem("rb_accounts_v10", JSON.stringify(next));
       }
       return next;
     }
 
     function findAccountKeyByUsername(rawUsername) {
-      const target = normalizeUsername(rawUsername).toLowerCase();
+      const target = normalizeUsername(rawUsername);
       if (!target) return null;
       return Object.keys(accounts).find(k => k.toLowerCase() === target) || null;
     }
@@ -1421,7 +1402,7 @@
       const key = findAccountKeyByUsername(username);
       if (!key || !accounts[key]) return;
       accounts[key].lastActiveAt = Date.now();
-      safeStorage.setItem("rb_accounts_v9", JSON.stringify(accounts));
+      safeStorage.setItem("rb_accounts_v10", JSON.stringify(accounts));
     }
 
     function isEmailAlreadyUsed(rawEmail) {
@@ -1430,36 +1411,40 @@
       return Object.values(accounts).some(acc => normalizeEmail(acc?.email) === targetEmail);
     }
 
-    let accounts = pruneInactiveAccounts(safeJsonParse(safeStorage.getItem("rb_accounts_v9"), {}));
-    let profile = safeJsonParse(safeStorage.getItem("rb_profile_v9"), {
+    let accounts = pruneInactiveAccounts(safeJsonParse(safeStorage.getItem("rb_accounts_v10"), {}));
+    let profile = safeJsonParse(safeStorage.getItem("rb_profile_v10"), {
       handle: "", age: 24, years: 6, style: "Single (Control)"
     });
-    let currentSession = safeJsonParse(safeStorage.getItem("rb_session_v9"), null);
+    let currentSession = safeJsonParse(safeStorage.getItem("rb_session_v10"), null);
     const sessionKey = currentSession ? findAccountKeyByUsername(currentSession.handle) : null;
     if (!sessionKey) {
       currentSession = null;
-      safeStorage.removeItem("rb_session_v9");
+      safeStorage.removeItem("rb_session_v10");
     } else {
       currentSession.handle = sessionKey;
       touchAccountActivity(sessionKey);
     }
 
-    let reviews = safeJsonParse(safeStorage.getItem("rb_reviews_v9"), []);
+    let reviews = safeJsonParse(safeStorage.getItem("rb_reviews_v10"), []);
     if (!Array.isArray(reviews)) reviews = [];
-    let userLikedMap = safeJsonParse(safeStorage.getItem("rb_user_likes_v9"), {});
+    let userLikedMap = safeJsonParse(safeStorage.getItem("rb_user_likes_v10"), {});
     if (!userLikedMap || typeof userLikedMap !== "object") userLikedMap = {};
 
+    function getActiveHandle() {
+      return normalizeUsername(currentSession?.handle || document.getElementById("pHandle")?.value || profile.handle || "");
+    }
+
     function getUserLikesSet() {
-      const me = getActiveHandle().toLowerCase();
+      const me = getActiveHandle();
       if (!me) return new Set();
       return new Set((userLikedMap[me] || []).map(String));
     }
 
     function saveUserLikesSet(setObj) {
-      const me = getActiveHandle().toLowerCase();
+      const me = getActiveHandle();
       if (!me) return;
       userLikedMap[me] = Array.from(setObj);
-      safeStorage.setItem("rb_user_likes_v9", JSON.stringify(userLikedMap));
+      safeStorage.setItem("rb_user_likes_v10", JSON.stringify(userLikedMap));
     }
 
     const avatarGradients = [
@@ -1472,7 +1457,7 @@
     ];
 
     function getAvatarGradient(handle) {
-      const str = (handle || "@RBPlayer").toLowerCase();
+      const str = (handle || "@rbplayer").toLowerCase();
       let hash = 0;
       for (let i = 0; i < str.length; i++) {
         hash = (hash * 31 + str.charCodeAt(i)) >>> 0;
@@ -1561,12 +1546,12 @@
         lastActiveAt: Date.now(),
         profile: { handle: username, age, years: profile.years || 1, style }
       };
-      safeStorage.setItem("rb_accounts_v9", JSON.stringify(accounts));
+      safeStorage.setItem("rb_accounts_v10", JSON.stringify(accounts));
 
       profile = { ...accounts[username].profile };
-      safeStorage.setItem("rb_profile_v9", JSON.stringify(profile));
+      safeStorage.setItem("rb_profile_v10", JSON.stringify(profile));
       currentSession = { handle: username };
-      safeStorage.setItem("rb_session_v9", JSON.stringify(currentSession));
+      safeStorage.setItem("rb_session_v10", JSON.stringify(currentSession));
 
       if (document.getElementById("regPass")) document.getElementById("regPass").value = "";
       if (document.getElementById("regConfirmPass")) document.getElementById("regConfirmPass").value = "";
@@ -1592,11 +1577,11 @@
       }
 
       accounts[key].lastActiveAt = Date.now();
-      safeStorage.setItem("rb_accounts_v9", JSON.stringify(accounts));
+      safeStorage.setItem("rb_accounts_v10", JSON.stringify(accounts));
       profile = { ...(accounts[key].profile || {}), handle: key };
-      safeStorage.setItem("rb_profile_v9", JSON.stringify(profile));
+      safeStorage.setItem("rb_profile_v10", JSON.stringify(profile));
       currentSession = { handle: key };
-      safeStorage.setItem("rb_session_v9", JSON.stringify(currentSession));
+      safeStorage.setItem("rb_session_v10", JSON.stringify(currentSession));
 
       if (document.getElementById("loginPass")) document.getElementById("loginPass").value = "";
       if (msgEl) msgEl.textContent = "";
@@ -1662,7 +1647,7 @@
 
       accounts[key].pass = newPass;
       accounts[key].lastActiveAt = Date.now();
-      safeStorage.setItem("rb_accounts_v9", JSON.stringify(accounts));
+      safeStorage.setItem("rb_accounts_v10", JSON.stringify(accounts));
 
       switchAuthTab("login");
       if (document.getElementById("loginUsername")) document.getElementById("loginUsername").value = key;
@@ -1678,7 +1663,7 @@
     function signOutToGate() {
       currentSession = null;
       isDevMode = false;
-      safeStorage.removeItem("rb_session_v9");
+      safeStorage.removeItem("rb_session_v10");
       if (document.getElementById("loginPass")) document.getElementById("loginPass").value = "";
       switchAuthTab("login");
       syncGateVisibility();
@@ -1690,7 +1675,7 @@
       return {
         id: String(row.id ?? (Date.now() + "_" + Math.random().toString(36).slice(2, 7))),
         brand,
-        author: normalizeUsername(row.author || "@RBPlayer") || "@RBPlayer",
+        author: normalizeUsername(row.author || "@rbplayer") || "@rbplayer",
         age: row.age ?? 24,
         expYears: row.exp_years ?? row.expYears ?? 1,
         racket,
@@ -1721,10 +1706,6 @@
         updateModeUI();
         renderFeed();
       }
-    }
-
-    function getActiveHandle() {
-      return normalizeUsername(currentSession?.handle || document.getElementById("pHandle")?.value || profile.handle || "");
     }
 
     function toggleDevMode() {
@@ -1772,11 +1753,11 @@
     }
 
     function clearMyPosts() {
-      const me = getActiveHandle().toLowerCase();
+      const me = getActiveHandle();
       if (!me) return;
       const beforeLen = reviews.length;
-      reviews = reviews.filter(r => normalizeUsername(r.author).toLowerCase() !== me);
-      safeStorage.setItem("rb_reviews_v9", JSON.stringify(reviews));
+      reviews = reviews.filter(r => normalizeUsername(r.author) !== me);
+      safeStorage.setItem("rb_reviews_v10", JSON.stringify(reviews));
       renderFeed();
       const removed = beforeLen - reviews.length;
       setStatusMsg(
@@ -1793,7 +1774,7 @@
         return;
       }
       reviews = [];
-      safeStorage.setItem("rb_reviews_v9", JSON.stringify(reviews));
+      safeStorage.setItem("rb_reviews_v10", JSON.stringify(reviews));
       renderFeed();
       setStatusMsg(currentLang === "bm" ? "[DEV] Semua post feed telah dikosongkan." : "[DEV] All feed posts cleared.", false);
     }
@@ -1803,15 +1784,15 @@
       const target = reviews.find(r => String(r.id) === targetId);
       if (!target) return;
 
-      const me = getActiveHandle().toLowerCase();
-      const isOwner = normalizeUsername(target.author).toLowerCase() === me;
+      const me = getActiveHandle();
+      const isOwner = normalizeUsername(target.author) === me;
       if (!isOwner && !isDevMode) {
         setStatusMsg(currentLang === "bm" ? "Dalam User Mode, anda hanya boleh memadam post anda sendiri." : "In User Mode, you can only delete your own posts.", true);
         return;
       }
 
       reviews = reviews.filter(r => String(r.id) !== targetId);
-      safeStorage.setItem("rb_reviews_v9", JSON.stringify(reviews));
+      safeStorage.setItem("rb_reviews_v10", JSON.stringify(reviews));
       renderFeed();
     }
 
@@ -1822,11 +1803,11 @@
 
     function escapeHtml(str) {
       return String(str ?? "")
-        .replace(/&/g, "&")
-        .replace(/</g, "<")
-        .replace(/>/g, ">")
-        .replace(/"/g, """)
-        .replace(/'/g, "'");
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
     }
 
     function showPage(pageId) {
@@ -1976,17 +1957,17 @@
         return;
       }
 
-      const handleVal = getActiveHandle() || "@RBPlayer";
+      const handleVal = getActiveHandle() || "@rbplayer";
       const ageVal = Number(document.getElementById("pAge").value) || 24;
       const yearsVal = Number(document.getElementById("pYears").value) || 6;
       const styleVal = document.getElementById("pStyle").value;
 
       profile = { handle: handleVal, age: ageVal, years: yearsVal, style: styleVal };
-      safeStorage.setItem("rb_profile_v9", JSON.stringify(profile));
+      safeStorage.setItem("rb_profile_v10", JSON.stringify(profile));
       if (currentSession && accounts[currentSession.handle]) {
         accounts[currentSession.handle].profile = { ...profile };
         accounts[currentSession.handle].lastActiveAt = Date.now();
-        safeStorage.setItem("rb_accounts_v9", JSON.stringify(accounts));
+        safeStorage.setItem("rb_accounts_v10", JSON.stringify(accounts));
       }
       document.getElementById("queryStyle").value = styleVal;
 
@@ -2019,7 +2000,7 @@
       });
 
       reviews.unshift(newPost);
-      safeStorage.setItem("rb_reviews_v9", JSON.stringify(reviews));
+      safeStorage.setItem("rb_reviews_v10", JSON.stringify(reviews));
       renderFeed();
 
       document.getElementById("racket").value = "";
@@ -2046,13 +2027,13 @@
       saveUserLikesSet(likesSet);
 
       item.helpful = nextHelpful;
-      safeStorage.setItem("rb_reviews_v9", JSON.stringify(reviews));
+      safeStorage.setItem("rb_reviews_v10", JSON.stringify(reviews));
       renderFeed();
     }
 
     function renderFeed() {
       const t = uiText[currentLang];
-      const me = getActiveHandle().toLowerCase();
+      const me = getActiveHandle();
       const likesSet = getUserLikesSet();
       const q = normalizeSearchText(document.getElementById("feedSearchInput")?.value || "");
 
@@ -2073,7 +2054,7 @@
 
       feed.innerHTML = filtered.map(r => {
         const brand = r.brand || detectBrand(r.racket);
-        const canDelete = isDevMode || normalizeUsername(r.author).toLowerCase() === me;
+        const canDelete = isDevMode || normalizeUsername(r.author) === me;
         const isLiked = likesSet.has(String(r.id));
         const avatarBg = getAvatarGradient(r.author);
         const safeIdArg = JSON.stringify(String(r.id));
@@ -2323,7 +2304,17 @@
       document.getElementById("results").innerHTML = summary + cards;
     }
 
-    function bindDelegatedEvents() {
+    function bindAllEvents() {
+      document.getElementById("registerForm")?.addEventListener("submit", (e) => {
+        e.preventDefault();
+        submitRegister();
+      });
+
+      document.getElementById("loginForm")?.addEventListener("submit", (e) => {
+        e.preventDefault();
+        submitLogin();
+      });
+
       document.addEventListener("click", (event) => {
         const target = event.target instanceof Element ? event.target : null;
         if (!target) return;
@@ -2368,9 +2359,7 @@
         const actionEl = target.closest("[data-action]");
         if (!actionEl) return;
         const action = actionEl.getAttribute("data-action");
-        if (action === "register") submitRegister();
-        else if (action === "login") submitLogin();
-        else if (action === "open-forgot") openForgotModal();
+        if (action === "open-forgot") openForgotModal();
         else if (action === "close-forgot") closeForgotModal();
         else if (action === "reset-password") submitForgotPassword();
         else if (action === "open-help") openRecoveryHelpModal();
@@ -2393,29 +2382,11 @@
         else if (action === "recommend") recommend();
       });
 
-      document.addEventListener("keydown", (event) => {
-        if (event.key !== "Enter") return;
-        const activeId = document.activeElement?.id || "";
-        if (["regUsername", "regEmail", "regPass", "regConfirmPass", "gateAge"].includes(activeId)) {
-          event.preventDefault();
-          submitRegister();
-        } else if (["loginUsername", "loginPass"].includes(activeId)) {
-          event.preventDefault();
-          submitLogin();
-        } else if (["fpUsername", "fpEmail", "fpNewPass", "fpConfirmPass"].includes(activeId)) {
-          event.preventDefault();
-          submitForgotPassword();
-        } else if (activeId === "queryText") {
-          event.preventDefault();
-          recommend();
-        }
-      });
-
       document.getElementById("pStyle")?.addEventListener("change", syncAdvisorStyleFromProfile);
       document.getElementById("feedSearchInput")?.addEventListener("input", renderFeed);
     }
 
-    bindDelegatedEvents();
+    bindAllEvents();
     applyLangLabels();
     syncGateVisibility();
   </script>
