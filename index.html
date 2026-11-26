@@ -337,6 +337,10 @@
       display: inline-block; background: var(--brand-bg); border: 1px solid var(--brand-border);
       color: var(--brand-text); padding: 2px 9px; border-radius: 999px; font-size: 0.74rem; font-weight: 700;
     }
+    .price-pill {
+      display: inline-block; background: #fef3c7; border: 1px solid #fcd34d;
+      color: #92400e; padding: 2px 9px; border-radius: 999px; font-size: 0.75rem; font-weight: 800;
+    }
     .meta-tag {
       display: inline-block; background: var(--surface-soft); border: 1px solid var(--border);
       color: #334155; padding: 3px 8px; border-radius: 999px; font-size: 0.74rem; margin: 4px 4px 0 0; font-weight: 500;
@@ -578,23 +582,32 @@
                   <option value="Li-Ning">Li-Ning</option>
                   <option value="Felet">Felet</option>
                   <option value="Apacs">Apacs</option>
+                  <option value="Maxbolt">Maxbolt</option>
+                  <option value="Kumpoo">Kumpoo</option>
+                  <option value="Flexpower">Flexpower</option>
+                  <option value="Vaxe">Vaxe</option>
+                  <option value="Hundred">Hundred</option>
                   <option value="Other">Other</option>
                 </select>
               </div>
               <div>
                 <label id="t_racket">Racket Model *</label>
-                <input id="racket" placeholder="e.g. Nanoflare 1000 Play" />
+                <input id="racket" placeholder="e.g. Nanoflare 1000 Play / Maxbolt Gallant" />
               </div>
             </div>
 
             <div class="row-3">
               <div>
-                <label id="t_weightGrip">Weight & Grip</label>
+                <label id="t_weightGrip">Weight & Grip (3U–9U)</label>
                 <select id="weightGrip">
                   <option value="3U G5">3U G5</option>
                   <option value="4U G5" selected>4U G5</option>
                   <option value="4U G6">4U G6</option>
                   <option value="5U G5">5U G5</option>
+                  <option value="6U G5">6U G5</option>
+                  <option value="7U G5">7U G5</option>
+                  <option value="8U G5">8U G5</option>
+                  <option value="9U G5">9U G5</option>
                 </select>
               </div>
               <div>
@@ -697,6 +710,11 @@
                 <option value="Li-Ning">Li-Ning</option>
                 <option value="Felet">Felet</option>
                 <option value="Apacs">Apacs</option>
+                <option value="Maxbolt">Maxbolt</option>
+                <option value="Kumpoo">Kumpoo</option>
+                <option value="Flexpower">Flexpower</option>
+                <option value="Vaxe">Vaxe</option>
+                <option value="Hundred">Hundred</option>
                 <option value="Other">Other / Lain-lain</option>
               </select>
             </div>
@@ -718,12 +736,16 @@
 
           <div class="row-2">
             <div>
-              <label id="t_qWeight">Preferred Weight</label>
+              <label id="t_qWeight">Preferred Weight (3U–9U)</label>
               <select id="queryWeight">
                 <option value="Any">Any Weight / Mana-mana</option>
                 <option value="3U">3U</option>
                 <option value="4U">4U</option>
                 <option value="5U">5U</option>
+                <option value="6U">6U</option>
+                <option value="7U">7U</option>
+                <option value="8U">8U</option>
+                <option value="9U">9U</option>
               </select>
             </div>
             <div>
@@ -738,8 +760,8 @@
             </div>
           </div>
 
-          <label id="t_qText">Ask in BM or English (e.g. "nanoflare 1000 play", "sakit wrist", "smash padu")</label>
-          <input id="queryText" placeholder="Taip soalan atau model raket: nanoflare 1000 play, sakit wrist..." />
+          <label id="t_qText">Ask in BM or English (e.g. "maxbolt", "kumpoo", "8u ringan", "sakit wrist", "smash padu")</label>
+          <input id="queryText" placeholder="Taip soalan atau model raket: maxbolt, kumpoo, hundred, 7u ringan..." />
 
           <button type="button" class="primary" id="t_advBtn" onclick="recommend()">Find Racket</button>
           <div id="results" style="margin-top:14px;"></div>
@@ -859,7 +881,7 @@
         pStyle: "Main Playstyle",
         brandLabel: "Brand",
         racket: "Racket Model *",
-        weightGrip: "Weight & Grip",
+        weightGrip: "Weight & Grip (3U–9U)",
         balance: "Balance",
         stringSetup: "String & Tension",
         paperFlex: "Paper Flex",
@@ -877,9 +899,9 @@
         qBrand: "Brand",
         qStyle: "Playstyle",
         qBudget: "Max Budget (RM)",
-        qWeight: "Preferred Weight",
+        qWeight: "Preferred Weight (3U–9U)",
         qPriority: "Top Court Priority",
-        qText: "Ask in BM or English (e.g. \"nanoflare 1000 play\", \"sakit wrist\", \"smash padu\")",
+        qText: "Ask in BM or English (e.g. \"maxbolt\", \"kumpoo\", \"8u ringan\", \"sakit wrist\", \"smash padu\")",
         advBtn: "Find Racket",
         yrs: "yrs",
         ageLabel: "age",
@@ -889,6 +911,7 @@
         copied: "Copied!",
         matchLabel: "RB AI PICK",
         scoreLabel: "Match Score",
+        estPriceLabel: "Est. Price",
         specsLabel: "Specs",
         proofLabel: "Evidence & Reasoning",
         citedFrom: "Player log by",
@@ -933,7 +956,7 @@
         pStyle: "Gaya Main Utama",
         brandLabel: "Jenama",
         racket: "Model Raket *",
-        weightGrip: "Berat & Grip",
+        weightGrip: "Berat & Grip (3U–9U)",
         balance: "Imbangan",
         stringSetup: "Tali & Tension",
         paperFlex: "Flex Kertas",
@@ -951,9 +974,9 @@
         qBrand: "Jenama",
         qStyle: "Gaya Main",
         qBudget: "Bajet Maksimum (RM)",
-        qWeight: "Pilihan Berat",
+        qWeight: "Pilihan Berat (3U–9U)",
         qPriority: "Keutamaan Utama",
-        qText: "Tanya dalam BM atau English (cth: \"nanoflare 1000 play\", \"sakit wrist\", \"smash padu\")",
+        qText: "Tanya dalam BM atau English (cth: \"maxbolt\", \"kumpoo\", \"8u ringan\", \"sakit wrist\", \"smash padu\")",
         advBtn: "Cari Raket",
         yrs: "thn",
         ageLabel: "umur",
@@ -963,6 +986,7 @@
         copied: "Disalin!",
         matchLabel: "PILIHAN AI RB",
         scoreLabel: "Skor Padanan",
+        estPriceLabel: "Anggaran Harga",
         specsLabel: "Spesifikasi",
         proofLabel: "Bukti & Huraian AI",
         citedFrom: "Log pemain oleh",
@@ -1021,6 +1045,41 @@
         style: "Double backcourt (Hard hitter)", scores: { power: 4, control: 4, speed: 4, comfort: 4 },
         aiNoteEn: "Budget-friendly head-heavy option for backcourt power at a lower price point.",
         aiNoteBm: "Pilihan bajet berat kepala untuk hentakan belakang gelanggang pada harga lebih mesra."
+      },
+      {
+        id: "cat-7", brand: "Maxbolt", racket: "Maxbolt Gallant Sakiko", priceRm: 195,
+        weightGrip: "4U G5", balance: "Head-Heavy", paperFlex: "Medium", feelFlex: "Medium",
+        style: "Double backcourt (Hard hitter)", scores: { power: 5, control: 4, speed: 4, comfort: 4 },
+        aiNoteEn: "High-tension capable Maxbolt frame with crisp smash punch and accessible medium flex for club attackers.",
+        aiNoteBm: "Raket Maxbolt tahan tension tinggi dengan smash padu serta flex sederhana yang mesra tangan pemain kelab."
+      },
+      {
+        id: "cat-8", brand: "Kumpoo", racket: "Kumpoo Power Control E58LS", priceRm: 180,
+        weightGrip: "6U G5", balance: "Even-Balance", paperFlex: "Flexible", feelFlex: "Flexible",
+        style: "Double front (Speed)", scores: { power: 3, control: 4, speed: 5, comfort: 5 },
+        aiNoteEn: "Ultra-light 6U Kumpoo control frame engineered for effortless swing recovery, wrist comfort, and fast net interceptions.",
+        aiNoteBm: "Raket ultra-ringan 6U Kumpoo yang sangat selesa di pergelangan tangan serta pantas memintas bola di jaring."
+      },
+      {
+        id: "cat-9", brand: "Flexpower", racket: "Flexpower Nano Speed 900", priceRm: 170,
+        weightGrip: "5U G5", balance: "Head-Light", paperFlex: "Medium", feelFlex: "Flexible",
+        style: "Mixed", scores: { power: 3, control: 4, speed: 5, comfort: 5 },
+        aiNoteEn: "Lightweight 5U aerodynamic frame giving smooth flat-drive transitions and low shoulder fatigue in long doubles sets.",
+        aiNoteBm: "Raket ringan 5U aerodinamik yang memudahkan transisi drive laju dan mengurangkan lenguh bahu semasa bermain lama."
+      },
+      {
+        id: "cat-10", brand: "Vaxe", racket: "Vaxe Featherlight 8U Pro", priceRm: 190,
+        weightGrip: "8U G5", balance: "Head-Heavy", paperFlex: "Flexible", feelFlex: "Flexible",
+        style: "Double front (Speed)", scores: { power: 3, control: 4, speed: 5, comfort: 5 },
+        aiNoteEn: "Featherweight 8U (~62g) Vaxe design offering lightning-fast defensive reaction while keeping slight head weight for clear depth.",
+        aiNoteBm: "Reka bentuk ultra-ringan 8U (~62g) Vaxe untuk tindak balas defend super pantas dengan bantuan berat kepala untuk lob."
+      },
+      {
+        id: "cat-11", brand: "Hundred", racket: "Hundred Battle 900", priceRm: 260,
+        weightGrip: "4U G5", balance: "Even-Balance", paperFlex: "Medium", feelFlex: "Medium",
+        style: "Single (Control)", scores: { power: 4, control: 5, speed: 4, comfort: 4 },
+        aiNoteEn: "Stable even-balance Hundred frame built for crisp shuttle placement, solid torsional stability, and all-round rally control.",
+        aiNoteBm: "Raket Hundred seimbang yang stabil untuk kawalan penempatan bulu tangkis tepat dan permainan rally serba boleh."
       }
     ];
 
@@ -1141,6 +1200,7 @@
         age: row.age ?? 24,
         expYears: row.exp_years ?? row.expYears ?? 1,
         racket: row.racket || "",
+        priceRm: row.price_rm ?? row.priceRm ?? 250,
         weightGrip: row.weight_grip ?? row.weightGrip ?? "4U G5",
         balance: row.balance || "Even-Balance",
         paperFlex: row.paper_flex ?? row.paperFlex ?? "Medium",
@@ -1350,6 +1410,11 @@
       if (/li-ning|lining|halbertec|bladex|axforce/.test(low)) return "Li-Ning";
       if (/felet|woven|tj\s*power|tj\s*1000/.test(low)) return "Felet";
       if (/apacs|lethal|tantrum|z-ziggler/.test(low)) return "Apacs";
+      if (/maxbolt|gallant|sakiko|black\s*woven|superstar/.test(low)) return "Maxbolt";
+      if (/kumpoo|e58|power\s*control/.test(low)) return "Kumpoo";
+      if (/flexpower|flex\s*power/.test(low)) return "Flexpower";
+      if (/vaxe|featherlight/.test(low)) return "Vaxe";
+      if (/hundred|battle\s*900|nitrix/.test(low)) return "Hundred";
       return "Other";
     }
 
@@ -1400,6 +1465,20 @@
       el.className = "status-msg " + (isError ? "status-err" : "status-ok");
     }
 
+    function estimateRacketPriceRm(brand, racketName) {
+      const catHit = builtInCatalog.find(c =>
+        c.racket.toLowerCase().includes(racketName.toLowerCase()) ||
+        racketName.toLowerCase().includes(c.racket.toLowerCase().replace(/^(yonex|victor|li-ning|felet|apacs|maxbolt|kumpoo|flexpower|vaxe|hundred)\s+/i, ""))
+      );
+      if (catHit) return catHit.priceRm;
+      const brandAvg = {
+        "Yonex": 420, "Victor": 400, "Li-Ning": 390, "Felet": 260,
+        "Apacs": 170, "Maxbolt": 200, "Kumpoo": 190, "Flexpower": 175,
+        "Vaxe": 185, "Hundred": 230, "Other": 220
+      };
+      return brandAvg[brand] || 240;
+    }
+
     async function submitCombinedPost() {
       const t = uiText[currentLang];
       const rawRacket = document.getElementById("racket").value.trim();
@@ -1433,7 +1512,7 @@
         exp_years: yearsVal,
         brand,
         racket,
-        price_rm: 350,
+        price_rm: estimateRacketPriceRm(brand, racket),
         weight_grip: document.getElementById("weightGrip").value,
         balance: document.getElementById("balance").value,
         paper_flex: document.getElementById("paperFlex").value,
@@ -1558,7 +1637,7 @@
 
     function getRacketImageUrl(racketName, brand) {
       const hit = builtInCatalog.find(c =>
-        c.imgUrl && (c.racket.toLowerCase().includes(racketName.toLowerCase()) || racketName.toLowerCase().includes(c.racket.toLowerCase().replace(/^(yonex|victor|li-ning|felet|apacs)\s+/i, "")))
+        c.imgUrl && (c.racket.toLowerCase().includes(racketName.toLowerCase()) || racketName.toLowerCase().includes(c.racket.toLowerCase().replace(/^(yonex|victor|li-ning|felet|apacs|maxbolt|kumpoo|flexpower|vaxe|hundred)\s+/i, "")))
       );
       return hit ? hit.imgUrl : makeFallbackSvg(racketName, brand);
     }
@@ -1569,10 +1648,10 @@
     }
 
     const synonymGroups = [
-      ["wrist", "pergelangan", "sakit", "lenguh", "fatigue", "comfort", "selesa", "arm", "ringan"],
-      ["smash", "padu", "power", "kuasa", "berat", "heavy", "clear", "lob", "hitter", "backcourt"],
-      ["speed", "laju", "cepat", "fast", "defend", "defense", "drive", "flat", "front"],
-      ["control", "kawalan", "net", "jaring", "sedap", "hold"]
+      ["wrist", "pergelangan", "sakit", "lenguh", "fatigue", "comfort", "selesa", "arm", "ringan", "6u", "7u", "8u", "9u"],
+      ["smash", "padu", "power", "kuasa", "berat", "heavy", "clear", "lob", "hitter", "backcourt", "3u"],
+      ["speed", "laju", "cepat", "fast", "defend", "defense", "drive", "flat", "front", "5u"],
+      ["control", "kawalan", "net", "jaring", "sedap", "hold", "4u"]
     ];
 
     function expandBilingualTokens(rawQuery) {
@@ -1605,14 +1684,17 @@
       const qPriority = document.getElementById("queryPriority").value;
       const tokens = expandBilingualTokens(document.getElementById("queryText").value.trim());
 
-      const feedItems = reviews.map(r => ({
-        ...r,
-        priceRm: 350,
-        brand: r.brand || detectBrand(r.racket),
-        fromFeed: true,
-        proofText: `"${r.notes}"`,
-        citationLine: `${t.citedFrom} ${r.author} (${r.expYears} ${t.yrs}, ${r.stringSetup}, ${r.helpful} ${t.helpful.toLowerCase()})`
-      }));
+      const feedItems = reviews.map(r => {
+        const brand = r.brand || detectBrand(r.racket);
+        return {
+          ...r,
+          brand,
+          priceRm: Number(r.priceRm) || estimateRacketPriceRm(brand, r.racket),
+          fromFeed: true,
+          proofText: `"${r.notes}"`,
+          citationLine: `${t.citedFrom} ${r.author} (${r.expYears} ${t.yrs}, ${r.stringSetup}, ${r.helpful} ${t.helpful.toLowerCase()})`
+        };
+      });
 
       const catItems = builtInCatalog.map(c => ({
         ...c,
@@ -1629,7 +1711,7 @@
         if (qWeight === "Any" || item.weightGrip.startsWith(qWeight)) score += 2.5;
         if (qPriority !== "balanced" && item.scores[qPriority]) score += item.scores[qPriority] * 1.2;
 
-        const hay = `${item.brand} ${item.racket} ${item.balance} ${item.feelFlex} ${item.style} ${item.proofText}`.toLowerCase();
+        const hay = `${item.brand} ${item.racket} ${item.weightGrip} ${item.balance} ${item.feelFlex} ${item.style} ${item.proofText}`.toLowerCase();
         tokens.forEach(w => { if (hay.includes(w)) score += 2; });
         if (item.fromFeed) score += 1.5 + (item.helpful * 0.4);
         return { ...item, score };
@@ -1644,8 +1726,8 @@
       }
 
       const summary = currentLang === "bm"
-        ? `<div class="ai-summary-box"><strong>Ringkasan Cari Raket RB:</strong> Gaya <em>${qStyle}</em> · Umur ~${profile.age}. Cadangan utama: <strong>${top[0].racket}</strong>.</div>`
-        : `<div class="ai-summary-box"><strong>RB Racket Match:</strong> <em>${qStyle}</em> · Age ~${profile.age}. Top pick: <strong>${top[0].racket}</strong>.</div>`;
+        ? `<div class="ai-summary-box"><strong>Ringkasan Cari Raket RB:</strong> Gaya <em>${qStyle}</em> · Bajet maks RM${qBudget} · Umur ~${profile.age}. Cadangan utama: <strong>${top[0].racket} (~RM${top[0].priceRm})</strong>.</div>`
+        : `<div class="ai-summary-box"><strong>RB Racket Match:</strong> <em>${qStyle}</em> · Max Budget RM${qBudget} · Age ~${profile.age}. Top pick: <strong>${top[0].racket} (~RM${top[0].priceRm})</strong>.</div>`;
 
       const cards = top.map((r, i) => {
         const imgSrc = getRacketImageUrl(r.racket, r.brand);
@@ -1656,7 +1738,9 @@
         return `
           <div class="verdict-card">
             <div style="font-size:0.78rem;color:#15803d;font-weight:700;margin-bottom:8px;">
-              <span class="brand-pill">${r.brand}</span> ${t.matchLabel} #${i + 1} · ${t.scoreLabel} ${r.score.toFixed(1)} ${badge}
+              <span class="brand-pill">${r.brand}</span>
+              <span class="price-pill">~RM${r.priceRm}</span>
+              ${t.matchLabel} #${i + 1} · ${t.scoreLabel} ${r.score.toFixed(1)} ${badge}
             </div>
             <div class="rec-layout">
               <div>
@@ -1664,7 +1748,7 @@
                 <a class="img-search-link" href="${getGoogleImagesUrl(r.racket, r.brand)}" target="_blank" rel="noopener noreferrer">${t.googleImg}</a>
               </div>
               <div>
-                <h3 style="margin:0 0 6px;font-size:1.02rem;">${r.racket} <span style="font-weight:500;color:#526071;">(${r.weightGrip})</span></h3>
+                <h3 style="margin:0 0 6px;font-size:1.02rem;">${r.racket} <span style="font-weight:500;color:#526071;">(${r.weightGrip} · ~RM${r.priceRm})</span></h3>
                 <div style="font-size:0.82rem;color:#475569;">
                   <strong>${t.specsLabel}:</strong> ${r.style} · ${r.balance} · Spec: ${r.paperFlex} → Feel: <strong>${r.feelFlex}</strong> · Power ${r.scores.power}/5, Control ${r.scores.control}/5, Speed ${r.scores.speed}/5, Comfort ${r.scores.comfort}/5
                 </div>
