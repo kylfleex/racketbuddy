@@ -47,6 +47,8 @@
       align-items: center;
       justify-content: center;
       padding: 28px 16px;
+      position: relative;
+      z-index: 5;
     }
     .home-card {
       width: 100%;
@@ -57,6 +59,8 @@
       padding: 28px 24px;
       box-shadow: 0 16px 36px rgba(15, 23, 42, 0.08);
       text-align: center;
+      position: relative;
+      z-index: 6;
     }
     .big-rb-emblem {
       width: 104px;
@@ -476,43 +480,43 @@
 
       <div class="home-top-controls">
         <div class="lang-pill">
-          <button type="button" id="g_btn_en" class="lang-btn active">EN</button>
-          <button type="button" id="g_btn_bm" class="lang-btn">BM</button>
+          <button type="button" id="g_btn_en" class="lang-btn active" data-lang="en">EN</button>
+          <button type="button" id="g_btn_bm" class="lang-btn" data-lang="bm">BM</button>
         </div>
-        <button type="button" id="g_installBtn" class="ghost">📲 Add to Home Screen</button>
+        <button type="button" id="g_installBtn" class="ghost" data-action="install">📲 Add to Home Screen</button>
       </div>
 
       <div class="auth-switch" role="tablist">
-        <button type="button" id="tabRegister" class="switch-btn active">Register</button>
-        <button type="button" id="tabLogin" class="switch-btn">Login</button>
+        <button type="button" id="tabRegister" class="switch-btn active" data-auth-tab="register">Register</button>
+        <button type="button" id="tabLogin" class="switch-btn" data-auth-tab="login">Login</button>
       </div>
 
       <!-- REGISTER FORM: USERNAME, EMAIL, NEW PASSWORD (MIN 8 CHARS), CONFIRM PASSWORD -->
       <div id="registerForm" class="form-align">
-        <label id="r_lblUsername">Username (Unique — cannot be same) *</label>
+        <label for="regUsername" id="r_lblUsername">Username (Unique — cannot be same) *</label>
         <input id="regUsername" placeholder="e.g. @AimanCourt or AimanCourt" />
 
-        <label id="r_lblEmail">Email (One email = One account) *</label>
+        <label for="regEmail" id="r_lblEmail">Email (One email = One account) *</label>
         <input id="regEmail" type="email" placeholder="e.g. aiman@example.com" />
 
         <div class="row-2">
           <div>
-            <label id="r_lblPass">New Password (min 8 chars) *</label>
+            <label for="regPass" id="r_lblPass">New Password (min 8 chars) *</label>
             <input id="regPass" type="password" minlength="8" placeholder="Min 8 characters" />
           </div>
           <div>
-            <label id="r_lblConfirm">Confirm Password *</label>
+            <label for="regConfirmPass" id="r_lblConfirm">Confirm Password *</label>
             <input id="regConfirmPass" type="password" minlength="8" placeholder="Repeat password" />
           </div>
         </div>
 
         <div class="row-2">
           <div>
-            <label id="g_lblAge">Age</label>
+            <label for="gateAge" id="g_lblAge">Age</label>
             <input id="gateAge" type="number" min="8" max="80" value="24" />
           </div>
           <div>
-            <label id="g_lblStyle">Main Playstyle</label>
+            <label for="gateStyle" id="g_lblStyle">Main Playstyle</label>
             <select id="gateStyle">
               <option value="Double front (Speed)">Double front (Speed)</option>
               <option value="Double backcourt (Hard hitter)">Double backcourt (Hard hitter)</option>
@@ -523,25 +527,25 @@
           </div>
         </div>
 
-        <button type="button" class="primary" id="r_submitBtn">Create Account</button>
-        <div id="regMsg" class="status-msg"></div>
+        <button type="button" class="primary" id="r_submitBtn" data-action="register">Create Account</button>
+        <div id="regMsg" class="status-msg" role="status" aria-live="polite"></div>
       </div>
 
       <!-- LOGIN FORM: ONLY USERNAME AND PASSWORD -->
       <div id="loginForm" class="form-align" style="display:none;">
-        <label id="l_lblUsername">Username *</label>
+        <label for="loginUsername" id="l_lblUsername">Username *</label>
         <input id="loginUsername" placeholder="e.g. @AimanCourt" />
 
-        <label id="l_lblPass">Password *</label>
+        <label for="loginPass" id="l_lblPass">Password *</label>
         <input id="loginPass" type="password" placeholder="Enter your password" />
 
         <div class="link-row">
-          <button type="button" class="link-btn" id="btnOpenForgot">Forgot Password?</button>
-          <button type="button" class="link-btn" id="btnOpenHelp">Forgot username/email too?</button>
+          <button type="button" class="link-btn" id="btnOpenForgot" data-action="open-forgot">Forgot Password?</button>
+          <button type="button" class="link-btn" id="btnOpenHelp" data-action="open-help">Forgot username/email too?</button>
         </div>
 
-        <button type="button" class="primary" id="l_submitBtn">Login</button>
-        <div id="loginMsg" class="status-msg"></div>
+        <button type="button" class="primary" id="l_submitBtn" data-action="login">Login</button>
+        <div id="loginMsg" class="status-msg" role="status" aria-live="polite"></div>
       </div>
     </div>
   </div>
@@ -554,27 +558,27 @@
         Enter the <strong>Username</strong> and registered <strong>Email</strong> linked to your account, then set your new password (minimum 8 characters).
       </p>
 
-      <label id="fp_lblUser">Registered Username *</label>
+      <label for="fpUsername" id="fp_lblUser">Registered Username *</label>
       <input id="fpUsername" placeholder="e.g. @AimanCourt" />
 
-      <label id="fp_lblEmail">Registered Email *</label>
+      <label for="fpEmail" id="fp_lblEmail">Registered Email *</label>
       <input id="fpEmail" type="email" placeholder="e.g. aiman@example.com" />
 
       <div class="row-2">
         <div>
-          <label id="fp_lblNewPass">New Password (min 8 chars) *</label>
+          <label for="fpNewPass" id="fp_lblNewPass">New Password (min 8 chars) *</label>
           <input id="fpNewPass" type="password" minlength="8" placeholder="Min 8 characters" />
         </div>
         <div>
-          <label id="fp_lblConfirm">Confirm New Password *</label>
+          <label for="fpConfirmPass" id="fp_lblConfirm">Confirm New Password *</label>
           <input id="fpConfirmPass" type="password" minlength="8" placeholder="Repeat password" />
         </div>
       </div>
 
       <div id="fpMsg" class="status-msg"></div>
       <div class="row-2" style="margin-top:10px;">
-        <button type="button" class="ghost" style="padding:10px;" id="fp_btnCancel">Cancel</button>
-        <button type="button" class="primary" style="margin-top:0;" id="fp_btnReset">Reset Password</button>
+        <button type="button" class="ghost" style="padding:10px;" id="fp_btnCancel" data-action="close-forgot">Cancel</button>
+        <button type="button" class="primary" style="margin-top:0;" id="fp_btnReset" data-action="reset-password">Reset Password</button>
       </div>
     </div>
   </div>
@@ -588,7 +592,7 @@
         • <strong>Forgot your Email:</strong> Check any email address you usually use for badminton/apps, or ask a teammate to look up your exact <code>@username</code> in the RacketBuddy Feed.<br/>
         • <strong>Using a new device/browser:</strong> Accounts created in local browser storage stay on that device unless saved/synced. If your account is not found or was inactive for 60 days, register a new account with an unused username and email.
       </p>
-      <button type="button" class="primary" style="margin-top:4px;" id="rh_btnClose">Got It</button>
+      <button type="button" class="primary" style="margin-top:4px;" id="rh_btnClose" data-action="close-help">Got It</button>
     </div>
   </div>
 
@@ -601,32 +605,32 @@
         • <strong>iPhone / iPad (Safari):</strong> Tap <strong>Share</strong> (square with up arrow) → tap <strong>Add to Home Screen</strong> → tap <strong>Add</strong>.<br/>
         • <strong>Android (Chrome):</strong> Tap the <strong>⋮ menu</strong> (top right) → tap <strong>Add to Home screen</strong> or <strong>Install app</strong>.
       </p>
-      <button type="button" class="primary" style="margin-top:4px;" id="inst_btnClose">Got It</button>
+      <button type="button" class="primary" style="margin-top:4px;" id="inst_btnClose" data-action="close-install">Got It</button>
     </div>
   </div>
 
   <!-- RETRACTABLE SIDEBAR & BACKDROP -->
-  <div id="drawerBackdrop" class="drawer-backdrop"></div>
+  <div id="drawerBackdrop" class="drawer-backdrop" data-action="close-drawer"></div>
   <aside id="sideDrawer" class="side-drawer" aria-label="Menu Sidebar">
     <div class="drawer-head">
       <strong id="drawerTitle">RB Menu</strong>
-      <button type="button" class="ghost" id="drawerCloseBtn">✕</button>
+      <button type="button" class="ghost" id="drawerCloseBtn" data-action="close-drawer">✕</button>
     </div>
 
     <div>
       <label style="margin-top:0;" id="drawerLangLbl">Language / Bahasa</label>
       <div class="lang-pill">
-        <button type="button" id="btn_en" class="lang-btn active">EN</button>
-        <button type="button" id="btn_bm" class="lang-btn">BM</button>
+        <button type="button" id="btn_en" class="lang-btn active" data-lang="en">EN</button>
+        <button type="button" id="btn_bm" class="lang-btn" data-lang="bm">BM</button>
       </div>
     </div>
 
     <div class="drawer-stack">
-      <button type="button" id="app_installBtn" class="drawer-btn">📲 Add to Home Screen</button>
-      <button type="button" id="devToggleBtn" class="drawer-btn">Dev Mode</button>
-      <button type="button" id="t_clearMine" class="drawer-btn">Clear My Posts</button>
-      <button type="button" id="t_clearAll" class="drawer-btn danger" style="display:none;">Dev: Clear All Feed</button>
-      <button type="button" id="t_logoutBtn" class="drawer-btn">Sign Out</button>
+      <button type="button" id="app_installBtn" class="drawer-btn" data-action="install">📲 Add to Home Screen</button>
+      <button type="button" id="devToggleBtn" class="drawer-btn" data-action="toggle-dev">Dev Mode</button>
+      <button type="button" id="t_clearMine" class="drawer-btn" data-action="clear-mine">Clear My Posts</button>
+      <button type="button" id="t_clearAll" class="drawer-btn danger" data-action="clear-all" style="display:none;">Dev: Clear All Feed</button>
+      <button type="button" id="t_logoutBtn" class="drawer-btn" data-action="logout">Sign Out</button>
     </div>
   </aside>
 
@@ -649,15 +653,15 @@
             <p id="t_subtitle">Find your best racket as your buddy</p>
           </div>
         </div>
-        <button type="button" class="menu-trigger" id="menuOpenBtn">☰ <span id="t_menuBtn">Menu</span></button>
+        <button type="button" class="menu-trigger" id="menuOpenBtn" data-action="open-drawer">☰ <span id="t_menuBtn">Menu</span></button>
       </div>
     </div>
 
     <div class="container">
       <div class="nav-bar">
         <div class="nav-tabs">
-          <button type="button" id="nav_p1" class="nav-btn active">1. Post & Feed</button>
-          <button type="button" id="nav_p2" class="nav-btn">2. Find Racket (Top 10)</button>
+          <button type="button" id="nav_p1" class="nav-btn active" data-page="page1">1. Post & Feed</button>
+          <button type="button" id="nav_p2" class="nav-btn" data-page="page2">2. Find Racket (Top 10)</button>
         </div>
         <div class="status-pills">
           <div id="liveSyncBadge" class="auth-badge"><span class="live-dot"></span>Community + Catalogue Active</div>
@@ -794,7 +798,7 @@
             <label id="t_notes">Honest Court Feedback (BM / EN) *</label>
             <textarea id="notes" rows="3" placeholder="e.g. Fast swing, tak sakit wrist lepas main 2 jam..."></textarea>
 
-            <button type="button" class="primary" id="t_submitBtn">Submit Racket Post (+ Add More Anytime)</button>
+            <button type="button" class="primary" id="t_submitBtn" data-action="submit-post">Submit Racket Post (+ Add More Anytime)</button>
             <div id="statusMsg" class="status-msg"></div>
           </div>
 
@@ -891,7 +895,7 @@
           <label id="t_qText">Ask in BM or English (e.g. "nevow tj 1000", "3k nevow fence", "woven 888", "100zz", "ryuga", "sakit wrist")</label>
           <input id="queryText" placeholder="Taip model atau gaya: nevow tj 1000, 3k nevow fence, tai-g, tj 1000, 100zz, ryuga..." />
 
-          <button type="button" class="primary" id="t_advBtn">Find Top 10 Rackets</button>
+          <button type="button" class="primary" id="t_advBtn" data-action="recommend">Find Top 10 Rackets</button>
           <div id="results" style="margin-top:14px;"></div>
         </div>
       </section>
@@ -971,11 +975,11 @@
         deferredInstallPrompt = null;
         return;
       }
-      document.getElementById("installModal").classList.add("open");
+      document.getElementById("installModal")?.classList.add("open");
     }
 
     function closeInstallModal() {
-      document.getElementById("installModal").classList.remove("open");
+      document.getElementById("installModal")?.classList.remove("open");
     }
 
     const uiText = {
@@ -1499,44 +1503,56 @@
       const t = uiText[currentLang];
       const msgEl = document.getElementById("regMsg");
 
-      const username = normalizeUsername(document.getElementById("regUsername").value);
-      const email = normalizeEmail(document.getElementById("regEmail").value);
-      const pass = document.getElementById("regPass").value;
-      const confirmPass = document.getElementById("regConfirmPass").value;
+      const username = normalizeUsername(document.getElementById("regUsername")?.value);
+      const email = normalizeEmail(document.getElementById("regEmail")?.value);
+      const pass = document.getElementById("regPass")?.value || "";
+      const confirmPass = document.getElementById("regConfirmPass")?.value || "";
 
       if (!username || username.replace(/^@/, "").length < 2) {
-        msgEl.textContent = t.errUsernameReq;
-        msgEl.className = "status-msg status-err";
+        if (msgEl) {
+          msgEl.textContent = t.errUsernameReq;
+          msgEl.className = "status-msg status-err";
+        }
         return;
       }
       if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        msgEl.textContent = t.errEmailInvalid;
-        msgEl.className = "status-msg status-err";
+        if (msgEl) {
+          msgEl.textContent = t.errEmailInvalid;
+          msgEl.className = "status-msg status-err";
+        }
         return;
       }
       if (pass.length < MIN_PASSWORD_LEN) {
-        msgEl.textContent = t.errPassShort;
-        msgEl.className = "status-msg status-err";
+        if (msgEl) {
+          msgEl.textContent = t.errPassShort;
+          msgEl.className = "status-msg status-err";
+        }
         return;
       }
       if (pass !== confirmPass) {
-        msgEl.textContent = t.errPassMismatch;
-        msgEl.className = "status-msg status-err";
+        if (msgEl) {
+          msgEl.textContent = t.errPassMismatch;
+          msgEl.className = "status-msg status-err";
+        }
         return;
       }
       if (findAccountKeyByUsername(username)) {
-        msgEl.textContent = t.errUsernameTaken;
-        msgEl.className = "status-msg status-err";
+        if (msgEl) {
+          msgEl.textContent = t.errUsernameTaken;
+          msgEl.className = "status-msg status-err";
+        }
         return;
       }
       if (isEmailAlreadyUsed(email)) {
-        msgEl.textContent = t.errEmailTaken;
-        msgEl.className = "status-msg status-err";
+        if (msgEl) {
+          msgEl.textContent = t.errEmailTaken;
+          msgEl.className = "status-msg status-err";
+        }
         return;
       }
 
-      const age = Number(document.getElementById("gateAge").value) || 24;
-      const style = document.getElementById("gateStyle").value;
+      const age = Number(document.getElementById("gateAge")?.value) || 24;
+      const style = document.getElementById("gateStyle")?.value || "Single (Control)";
 
       accounts[username] = {
         username,
@@ -1552,9 +1568,9 @@
       currentSession = { handle: username };
       safeStorage.setItem("rb_session_v9", JSON.stringify(currentSession));
 
-      document.getElementById("regPass").value = "";
-      document.getElementById("regConfirmPass").value = "";
-      msgEl.textContent = "";
+      if (document.getElementById("regPass")) document.getElementById("regPass").value = "";
+      if (document.getElementById("regConfirmPass")) document.getElementById("regConfirmPass").value = "";
+      if (msgEl) msgEl.textContent = "";
       syncGateVisibility();
     }
 
@@ -1563,13 +1579,15 @@
       const t = uiText[currentLang];
       const msgEl = document.getElementById("loginMsg");
 
-      const username = normalizeUsername(document.getElementById("loginUsername").value);
-      const pass = document.getElementById("loginPass").value;
+      const username = normalizeUsername(document.getElementById("loginUsername")?.value);
+      const pass = document.getElementById("loginPass")?.value || "";
       const key = findAccountKeyByUsername(username);
 
       if (!key || !accounts[key] || accounts[key].pass !== pass) {
-        msgEl.textContent = t.errLoginInvalid;
-        msgEl.className = "status-msg status-err";
+        if (msgEl) {
+          msgEl.textContent = t.errLoginInvalid;
+          msgEl.className = "status-msg status-err";
+        }
         return;
       }
 
@@ -1580,30 +1598,33 @@
       currentSession = { handle: key };
       safeStorage.setItem("rb_session_v9", JSON.stringify(currentSession));
 
-      document.getElementById("loginPass").value = "";
-      msgEl.textContent = "";
+      if (document.getElementById("loginPass")) document.getElementById("loginPass").value = "";
+      if (msgEl) msgEl.textContent = "";
       syncGateVisibility();
     }
 
     function openForgotModal() {
-      const preUser = document.getElementById("loginUsername").value.trim();
-      if (preUser) document.getElementById("fpUsername").value = preUser;
-      document.getElementById("fpMsg").textContent = "";
-      document.getElementById("fpNewPass").value = "";
-      document.getElementById("fpConfirmPass").value = "";
-      document.getElementById("forgotModal").classList.add("open");
+      const preUser = document.getElementById("loginUsername")?.value.trim() || "";
+      if (preUser && document.getElementById("fpUsername")) {
+        document.getElementById("fpUsername").value = preUser;
+      }
+      const fpMsg = document.getElementById("fpMsg");
+      if (fpMsg) fpMsg.textContent = "";
+      if (document.getElementById("fpNewPass")) document.getElementById("fpNewPass").value = "";
+      if (document.getElementById("fpConfirmPass")) document.getElementById("fpConfirmPass").value = "";
+      document.getElementById("forgotModal")?.classList.add("open");
     }
 
     function closeForgotModal() {
-      document.getElementById("forgotModal").classList.remove("open");
+      document.getElementById("forgotModal")?.classList.remove("open");
     }
 
     function openRecoveryHelpModal() {
-      document.getElementById("recoveryHelpModal").classList.add("open");
+      document.getElementById("recoveryHelpModal")?.classList.add("open");
     }
 
     function closeRecoveryHelpModal() {
-      document.getElementById("recoveryHelpModal").classList.remove("open");
+      document.getElementById("recoveryHelpModal")?.classList.remove("open");
     }
 
     function submitForgotPassword() {
@@ -1611,25 +1632,31 @@
       const t = uiText[currentLang];
       const msgEl = document.getElementById("fpMsg");
 
-      const username = normalizeUsername(document.getElementById("fpUsername").value);
-      const email = normalizeEmail(document.getElementById("fpEmail").value);
-      const newPass = document.getElementById("fpNewPass").value;
-      const confirmPass = document.getElementById("fpConfirmPass").value;
+      const username = normalizeUsername(document.getElementById("fpUsername")?.value);
+      const email = normalizeEmail(document.getElementById("fpEmail")?.value);
+      const newPass = document.getElementById("fpNewPass")?.value || "";
+      const confirmPass = document.getElementById("fpConfirmPass")?.value || "";
 
       const key = findAccountKeyByUsername(username);
       if (!key || !accounts[key] || normalizeEmail(accounts[key].email) !== email) {
-        msgEl.textContent = t.errForgotMatch;
-        msgEl.className = "status-msg status-err";
+        if (msgEl) {
+          msgEl.textContent = t.errForgotMatch;
+          msgEl.className = "status-msg status-err";
+        }
         return;
       }
       if (newPass.length < MIN_PASSWORD_LEN) {
-        msgEl.textContent = t.errPassShort;
-        msgEl.className = "status-msg status-err";
+        if (msgEl) {
+          msgEl.textContent = t.errPassShort;
+          msgEl.className = "status-msg status-err";
+        }
         return;
       }
       if (newPass !== confirmPass) {
-        msgEl.textContent = t.errPassMismatch;
-        msgEl.className = "status-msg status-err";
+        if (msgEl) {
+          msgEl.textContent = t.errPassMismatch;
+          msgEl.className = "status-msg status-err";
+        }
         return;
       }
 
@@ -1638,11 +1665,13 @@
       safeStorage.setItem("rb_accounts_v9", JSON.stringify(accounts));
 
       switchAuthTab("login");
-      document.getElementById("loginUsername").value = key;
-      document.getElementById("loginPass").value = "";
+      if (document.getElementById("loginUsername")) document.getElementById("loginUsername").value = key;
+      if (document.getElementById("loginPass")) document.getElementById("loginPass").value = "";
       const loginMsg = document.getElementById("loginMsg");
-      loginMsg.textContent = t.resetSuccess;
-      loginMsg.className = "status-msg status-ok";
+      if (loginMsg) {
+        loginMsg.textContent = t.resetSuccess;
+        loginMsg.className = "status-msg status-ok";
+      }
       closeForgotModal();
     }
 
@@ -1650,7 +1679,7 @@
       currentSession = null;
       isDevMode = false;
       safeStorage.removeItem("rb_session_v9");
-      document.getElementById("loginPass").value = "";
+      if (document.getElementById("loginPass")) document.getElementById("loginPass").value = "";
       switchAuthTab("login");
       syncGateVisibility();
     }
@@ -1681,8 +1710,10 @@
     function syncGateVisibility() {
       accounts = pruneInactiveAccounts(accounts);
       const loggedIn = Boolean(currentSession && currentSession.handle && accounts[currentSession.handle]);
-      document.getElementById("homeGate").style.display = loggedIn ? "none" : "flex";
-      document.getElementById("mainApp").style.display = loggedIn ? "block" : "none";
+      const homeGate = document.getElementById("homeGate");
+      const mainApp = document.getElementById("mainApp");
+      if (homeGate) homeGate.style.display = loggedIn ? "none" : "flex";
+      if (mainApp) mainApp.style.display = loggedIn ? "block" : "none";
       if (loggedIn) {
         touchAccountActivity(currentSession.handle);
         applyProfileToInputs();
@@ -1698,9 +1729,14 @@
 
     function toggleDevMode() {
       if (!isDevMode) {
-        const pin = prompt(currentLang === "bm" ? "Masukkan PIN Developer:" : "Enter Developer PIN:");
+        let pin = "";
+        try {
+          pin = window.prompt(currentLang === "bm" ? "Masukkan PIN Developer:" : "Enter Developer PIN:") || "";
+        } catch (e) {
+          pin = "";
+        }
         if (pin !== DEV_PIN) {
-          alert(currentLang === "bm" ? "PIN Developer tidak sah." : "Invalid Developer PIN.");
+          setStatusMsg(currentLang === "bm" ? "PIN Developer tidak sah." : "Invalid Developer PIN.", true);
           return;
         }
         isDevMode = true;
@@ -1719,47 +1755,47 @@
       if (isDevMode) {
         badge.textContent = currentLang === "bm" ? "Mod Developer" : "Developer Mode";
         badge.className = "mode-badge dev";
-        devBtn.className = "drawer-btn dev-on";
-        devBtn.textContent = currentLang === "bm" ? "Keluar Dev Mode" : "Exit Dev Mode";
-        clearAllBtn.style.display = "block";
+        if (devBtn) {
+          devBtn.className = "drawer-btn dev-on";
+          devBtn.textContent = currentLang === "bm" ? "Keluar Dev Mode" : "Exit Dev Mode";
+        }
+        if (clearAllBtn) clearAllBtn.style.display = "block";
       } else {
         badge.textContent = currentLang === "bm" ? "Mod Pengguna" : "User Mode";
         badge.className = "mode-badge";
-        devBtn.className = "drawer-btn";
-        devBtn.textContent = "Dev Mode";
-        clearAllBtn.style.display = "none";
+        if (devBtn) {
+          devBtn.className = "drawer-btn";
+          devBtn.textContent = "Dev Mode";
+        }
+        if (clearAllBtn) clearAllBtn.style.display = "none";
       }
     }
 
     function clearMyPosts() {
       const me = getActiveHandle().toLowerCase();
       if (!me) return;
-      const mineCount = reviews.filter(r => normalizeUsername(r.author).toLowerCase() === me).length;
-      if (!mineCount) {
-        alert(currentLang === "bm" ? `Tiada post milik ${getActiveHandle()} untuk dipadam.` : `No posts by ${getActiveHandle()} to clear.`);
-        return;
-      }
-      const msg = currentLang === "bm"
-        ? `Padam ${mineCount} post milik ${getActiveHandle()} sahaja? (Post orang lain tidak disentuh)`
-        : `Delete ${mineCount} post(s) belonging to ${getActiveHandle()} only? (Other users' posts stay intact)`;
-      if (!confirm(msg)) return;
-
+      const beforeLen = reviews.length;
       reviews = reviews.filter(r => normalizeUsername(r.author).toLowerCase() !== me);
       safeStorage.setItem("rb_reviews_v9", JSON.stringify(reviews));
       renderFeed();
+      const removed = beforeLen - reviews.length;
+      setStatusMsg(
+        removed
+          ? (currentLang === "bm" ? `Dipadam ${removed} post milik ${getActiveHandle()}.` : `Cleared ${removed} post(s) by ${getActiveHandle()}.`)
+          : (currentLang === "bm" ? `Tiada post milik ${getActiveHandle()}.` : `No posts by ${getActiveHandle()} to clear.`),
+        false
+      );
     }
 
     function clearEntireFeed() {
       if (!isDevMode) {
-        alert(currentLang === "bm" ? "Hanya Developer Mode boleh mengosongkan keseluruhan feed." : "Only Developer Mode can clear the entire feed.");
+        setStatusMsg(currentLang === "bm" ? "Hanya Developer Mode boleh mengosongkan keseluruhan feed." : "Only Developer Mode can clear the entire feed.", true);
         return;
       }
-      const msg = currentLang === "bm" ? "[DEV] Kosongkan SEMUA post dalam feed?" : "[DEV] Clear ALL posts in the feed?";
-      if (!confirm(msg)) return;
-
       reviews = [];
       safeStorage.setItem("rb_reviews_v9", JSON.stringify(reviews));
       renderFeed();
+      setStatusMsg(currentLang === "bm" ? "[DEV] Semua post feed telah dikosongkan." : "[DEV] All feed posts cleared.", false);
     }
 
     function deleteSinglePost(id) {
@@ -1770,11 +1806,9 @@
       const me = getActiveHandle().toLowerCase();
       const isOwner = normalizeUsername(target.author).toLowerCase() === me;
       if (!isOwner && !isDevMode) {
-        alert(currentLang === "bm" ? "Dalam User Mode, anda hanya boleh memadam post anda sendiri." : "In User Mode, you can only delete your own posts.");
+        setStatusMsg(currentLang === "bm" ? "Dalam User Mode, anda hanya boleh memadam post anda sendiri." : "In User Mode, you can only delete your own posts.", true);
         return;
       }
-
-      if (!confirm(uiText[currentLang].confirmDeleteOne)) return;
 
       reviews = reviews.filter(r => String(r.id) !== targetId);
       safeStorage.setItem("rb_reviews_v9", JSON.stringify(reviews));
@@ -1814,7 +1848,7 @@
       if (!r) return;
       const text = `${r.racket} (${r.weightGrip}, ${r.style}) — "${r.notes}" by ${r.author} via RacketBuddy (RB)`;
       navigator.clipboard?.writeText(text).catch(() => {});
-      alert(uiText[currentLang].copied + "\n\n" + text);
+      setStatusMsg(uiText[currentLang].copied + " " + text, false);
     }
 
     function updateAuthUI() {
@@ -1917,8 +1951,9 @@
 
     function setLang(lang) {
       currentLang = lang;
-      ["btn_en", "g_btn_en"].forEach(id => document.getElementById(id)?.classList.toggle("active", lang === "en"));
-      ["btn_bm", "g_btn_bm"].forEach(id => document.getElementById(id)?.classList.toggle("active", lang === "bm"));
+      document.querySelectorAll(".lang-btn").forEach(btn => {
+        btn.classList.toggle("active", btn.getAttribute("data-lang") === lang);
+      });
       applyLangLabels();
       updateAuthUI();
       updateModeUI();
@@ -1927,6 +1962,7 @@
 
     function setStatusMsg(msg, isError) {
       const el = document.getElementById("statusMsg");
+      if (!el) return;
       el.textContent = msg;
       el.className = "status-msg " + (isError ? "status-err" : "status-ok");
     }
@@ -2287,64 +2323,99 @@
       document.getElementById("results").innerHTML = summary + cards;
     }
 
-    function bindAllEvents() {
-      document.getElementById("g_btn_en")?.addEventListener("click", () => setLang("en"));
-      document.getElementById("g_btn_bm")?.addEventListener("click", () => setLang("bm"));
-      document.getElementById("btn_en")?.addEventListener("click", () => setLang("en"));
-      document.getElementById("btn_bm")?.addEventListener("click", () => setLang("bm"));
+    function bindDelegatedEvents() {
+      document.addEventListener("click", (event) => {
+        const target = event.target instanceof Element ? event.target : null;
+        if (!target) return;
 
-      document.getElementById("g_installBtn")?.addEventListener("click", triggerAddToHomeScreen);
-      document.getElementById("app_installBtn")?.addEventListener("click", () => {
-        closeSidebar();
-        triggerAddToHomeScreen();
+        if (target.id === "forgotModal") {
+          closeForgotModal();
+          return;
+        }
+        if (target.id === "recoveryHelpModal") {
+          closeRecoveryHelpModal();
+          return;
+        }
+        if (target.id === "installModal") {
+          closeInstallModal();
+          return;
+        }
+
+        const authTabEl = target.closest("[data-auth-tab]");
+        if (authTabEl) {
+          switchAuthTab(authTabEl.getAttribute("data-auth-tab") || "register");
+          return;
+        }
+
+        const langEl = target.closest("[data-lang]");
+        if (langEl) {
+          setLang(langEl.getAttribute("data-lang") || "en");
+          return;
+        }
+
+        const pageEl = target.closest("[data-page]");
+        if (pageEl) {
+          showPage(pageEl.getAttribute("data-page") || "page1");
+          return;
+        }
+
+        const chipEl = target.closest("#feedFilters .filter-chip");
+        if (chipEl) {
+          setFeedFilter(chipEl.getAttribute("data-style") || "All", chipEl);
+          return;
+        }
+
+        const actionEl = target.closest("[data-action]");
+        if (!actionEl) return;
+        const action = actionEl.getAttribute("data-action");
+        if (action === "register") submitRegister();
+        else if (action === "login") submitLogin();
+        else if (action === "open-forgot") openForgotModal();
+        else if (action === "close-forgot") closeForgotModal();
+        else if (action === "reset-password") submitForgotPassword();
+        else if (action === "open-help") openRecoveryHelpModal();
+        else if (action === "close-help") closeRecoveryHelpModal();
+        else if (action === "install") {
+          closeSidebar();
+          triggerAddToHomeScreen();
+        }
+        else if (action === "close-install") closeInstallModal();
+        else if (action === "open-drawer") openSidebar();
+        else if (action === "close-drawer") closeSidebar();
+        else if (action === "toggle-dev") toggleDevMode();
+        else if (action === "clear-mine") clearMyPosts();
+        else if (action === "clear-all") clearEntireFeed();
+        else if (action === "logout") {
+          closeSidebar();
+          signOutToGate();
+        }
+        else if (action === "submit-post") submitCombinedPost();
+        else if (action === "recommend") recommend();
       });
 
-      document.getElementById("tabRegister")?.addEventListener("click", () => switchAuthTab("register"));
-      document.getElementById("tabLogin")?.addEventListener("click", () => switchAuthTab("login"));
-
-      document.getElementById("r_submitBtn")?.addEventListener("click", submitRegister);
-      document.getElementById("l_submitBtn")?.addEventListener("click", submitLogin);
-      document.getElementById("btnOpenForgot")?.addEventListener("click", openForgotModal);
-      document.getElementById("btnOpenHelp")?.addEventListener("click", openRecoveryHelpModal);
-
-      document.getElementById("forgotModal")?.addEventListener("click", (e) => handleBackdropClose(e, "forgotModal"));
-      document.getElementById("fp_btnCancel")?.addEventListener("click", closeForgotModal);
-      document.getElementById("fp_btnReset")?.addEventListener("click", submitForgotPassword);
-
-      document.getElementById("recoveryHelpModal")?.addEventListener("click", (e) => handleBackdropClose(e, "recoveryHelpModal"));
-      document.getElementById("rh_btnClose")?.addEventListener("click", closeRecoveryHelpModal);
-
-      document.getElementById("installModal")?.addEventListener("click", (e) => handleBackdropClose(e, "installModal"));
-      document.getElementById("inst_btnClose")?.addEventListener("click", closeInstallModal);
-
-      document.getElementById("menuOpenBtn")?.addEventListener("click", openSidebar);
-      document.getElementById("drawerBackdrop")?.addEventListener("click", closeSidebar);
-      document.getElementById("drawerCloseBtn")?.addEventListener("click", closeSidebar);
-
-      document.getElementById("devToggleBtn")?.addEventListener("click", toggleDevMode);
-      document.getElementById("t_clearMine")?.addEventListener("click", clearMyPosts);
-      document.getElementById("t_clearAll")?.addEventListener("click", clearEntireFeed);
-      document.getElementById("t_logoutBtn")?.addEventListener("click", () => {
-        closeSidebar();
-        signOutToGate();
+      document.addEventListener("keydown", (event) => {
+        if (event.key !== "Enter") return;
+        const activeId = document.activeElement?.id || "";
+        if (["regUsername", "regEmail", "regPass", "regConfirmPass", "gateAge"].includes(activeId)) {
+          event.preventDefault();
+          submitRegister();
+        } else if (["loginUsername", "loginPass"].includes(activeId)) {
+          event.preventDefault();
+          submitLogin();
+        } else if (["fpUsername", "fpEmail", "fpNewPass", "fpConfirmPass"].includes(activeId)) {
+          event.preventDefault();
+          submitForgotPassword();
+        } else if (activeId === "queryText") {
+          event.preventDefault();
+          recommend();
+        }
       });
 
-      document.getElementById("nav_p1")?.addEventListener("click", () => showPage("page1"));
-      document.getElementById("nav_p2")?.addEventListener("click", () => showPage("page2"));
       document.getElementById("pStyle")?.addEventListener("change", syncAdvisorStyleFromProfile);
-      document.getElementById("t_submitBtn")?.addEventListener("click", submitCombinedPost);
       document.getElementById("feedSearchInput")?.addEventListener("input", renderFeed);
-
-      document.querySelectorAll("#feedFilters .filter-chip").forEach((btn) => {
-        btn.addEventListener("click", () => {
-          setFeedFilter(btn.getAttribute("data-style") || "All", btn);
-        });
-      });
-
-      document.getElementById("t_advBtn")?.addEventListener("click", recommend);
     }
 
-    bindAllEvents();
+    bindDelegatedEvents();
     applyLangLabels();
     syncGateVisibility();
   </script>
