@@ -341,6 +341,10 @@
       display: inline-block; background: #fef3c7; border: 1px solid #fcd34d;
       color: #92400e; padding: 2px 9px; border-radius: 999px; font-size: 0.75rem; font-weight: 800;
     }
+    .rank-pill {
+      display: inline-block; background: #0f172a; color: #ffffff;
+      padding: 2px 9px; border-radius: 999px; font-size: 0.73rem; font-weight: 800;
+    }
     .meta-tag {
       display: inline-block; background: var(--surface-soft); border: 1px solid var(--border);
       color: #334155; padding: 3px 8px; border-radius: 999px; font-size: 0.74rem; margin: 4px 4px 0 0; font-weight: 500;
@@ -366,6 +370,11 @@
       background: #ffffff; border: 1px solid var(--border); border-left: 4px solid var(--accent);
       border-radius: 14px; padding: 15px; margin-top: 12px; box-shadow: 0 2px 6px rgba(15, 23, 42, 0.05);
     }
+    .verdict-card.top-pick {
+      border-left-width: 6px;
+      border-color: #86efac;
+      background: linear-gradient(180deg, #ffffff 0%, #f7fee7 100%);
+    }
     .rec-layout { display: grid; grid-template-columns: 106px 1fr; gap: 14px; align-items: start; }
     @media (max-width: 560px) { .rec-layout { grid-template-columns: 1fr; } }
     .racket-thumb {
@@ -373,8 +382,12 @@
       border: 1px solid var(--border); border-radius: 10px; padding: 6px;
     }
     .img-search-link { display: inline-block; margin-top: 6px; font-size: 0.76rem; color: #0284c7; text-decoration: none; font-weight: 600; }
+    .judge-box {
+      font-size: 0.84rem; color: #14532d; margin-top: 8px;
+      padding: 8px 10px; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; line-height: 1.45;
+    }
     .cite-ref {
-      font-size: 0.84rem; color: #334155; margin-top: 8px;
+      font-size: 0.83rem; color: #334155; margin-top: 6px;
       padding: 8px 10px; background: var(--surface-soft); border-radius: 8px; line-height: 1.45;
     }
     .hint { font-size: 0.78rem; color: var(--muted); line-height: 1.45; margin-top: 4px; }
@@ -418,7 +431,7 @@
       <h1 class="home-brand">RacketBuddy</h1>
       <div class="home-tagline" id="g_tagline">Find your best racket as your buddy</div>
       <p class="home-desc" id="g_desc">
-        Compare real court feel from fellow players, post your racket setup, and ask the AI consultant. Accounts inactive for 60 days are automatically removed.
+        Compare real court feel from fellow players, post your racket setup, and search Malaysia market rackets. Accounts inactive for 60 days are automatically removed.
       </p>
 
       <div class="home-top-controls">
@@ -694,15 +707,15 @@
         </div>
       </section>
 
-      <!-- PAGE 2: FIND RACKET -->
+      <!-- PAGE 2: FIND RACKET (STRICT BRAND ISOLATION + TOP 10 + STREET MARKET PRICES) -->
       <section id="page2" style="display:none;">
         <div class="card">
-          <h2 id="t_advTitle">Find Racket (BM & EN · Works With Empty or Full Feed)</h2>
-          <div class="hint" id="t_advContextHint">Automatically uses your saved player playstyle context.</div>
+          <h2 id="t_advTitle">Find Racket — Top 10 Ranked (MY Market Price: Shopee / TikTok / Store)</h2>
+          <div class="hint" id="t_advContextHint">Strict brand filter: searching or selecting a brand shows ONLY that brand, ranked Top 10 with current Malaysia online/store street prices.</div>
 
           <div class="row-3">
             <div>
-              <label id="t_qBrand">Brand</label>
+              <label id="t_qBrand">Brand (Strict Filter)</label>
               <select id="queryBrand">
                 <option value="Any">Any Brand / Semua</option>
                 <option value="Yonex">Yonex</option>
@@ -729,7 +742,7 @@
               </select>
             </div>
             <div>
-              <label id="t_qBudget">Max Budget (RM)</label>
+              <label id="t_qBudget">Max Budget (RM — Street Price)</label>
               <input id="queryBudget" type="number" min="50" max="2000" value="800" />
             </div>
           </div>
@@ -760,10 +773,10 @@
             </div>
           </div>
 
-          <label id="t_qText">Ask in BM or English (e.g. "maxbolt", "kumpoo", "8u ringan", "sakit wrist", "smash padu")</label>
-          <input id="queryText" placeholder="Taip soalan atau model raket: maxbolt, kumpoo, hundred, 7u ringan..." />
+          <label id="t_qText">Search Brand, Model, or Feel (e.g. "felet", "yonex", "maxbolt", "kumpoo", "8u ringan", "smash padu")</label>
+          <input id="queryText" placeholder="Taip jenama atau ciri: felet, yonex, maxbolt, kumpoo, hundred, 8u ringan..." />
 
-          <button type="button" class="primary" id="t_advBtn" onclick="recommend()">Find Racket</button>
+          <button type="button" class="primary" id="t_advBtn" onclick="recommend()">Find Top 10 Rackets</button>
           <div id="results" style="margin-top:14px;"></div>
         </div>
       </section>
@@ -851,7 +864,7 @@
     const uiText = {
       en: {
         tagline: "Find your best racket as your buddy",
-        desc: "Compare real court feel from fellow players, post your racket setup, and ask the AI consultant. Accounts inactive for 60 days are automatically removed.",
+        desc: "Compare real court feel from fellow players, post your racket setup, and search Malaysia market rackets. Accounts inactive for 60 days are automatically removed.",
         installBtn: "📲 Add to Home Screen",
         tabReg: "Register",
         tabLog: "Login",
@@ -894,28 +907,29 @@
         submitBtn: "Submit Player & Racket Post",
         feedTitle: "RacketBuddy Feed",
         searchPlaceholder: "Search racket, brand, @player, string, or court feedback...",
-        advTitle: "Find Racket (BM & EN · Works With Empty or Full Feed)",
-        advContextHint: "Automatically uses your saved player playstyle context.",
-        qBrand: "Brand",
+        advTitle: "Find Racket — Top 10 Ranked (MY Market Price: Shopee / TikTok / Store)",
+        advContextHint: "Strict brand filter: searching or selecting a brand shows ONLY that brand, ranked Top 10 with current Malaysia online/store street prices.",
+        qBrand: "Brand (Strict Filter)",
         qStyle: "Playstyle",
-        qBudget: "Max Budget (RM)",
+        qBudget: "Max Budget (RM — Street Price)",
         qWeight: "Preferred Weight (3U–9U)",
         qPriority: "Top Court Priority",
-        qText: "Ask in BM or English (e.g. \"maxbolt\", \"kumpoo\", \"8u ringan\", \"sakit wrist\", \"smash padu\")",
-        advBtn: "Find Racket",
+        qText: "Search Brand, Model, or Feel (e.g. \"felet\", \"yonex\", \"maxbolt\", \"kumpoo\", \"8u ringan\", \"smash padu\")",
+        advBtn: "Find Top 10 Rackets",
         yrs: "yrs",
         ageLabel: "age",
         helpful: "Helpful",
         share: "Copy Summary",
         deletePost: "Delete Post",
         copied: "Copied!",
-        matchLabel: "RB AI PICK",
-        scoreLabel: "Match Score",
-        estPriceLabel: "Est. Price",
+        matchLabel: "TOP",
+        scoreLabel: "Fit Score",
+        streetTag: "Shopee / TikTok / Store",
         specsLabel: "Specs",
-        proofLabel: "Evidence & Reasoning",
+        judgeLabel: "RB Judgment",
+        proofLabel: "Source & Notes",
         citedFrom: "Player log by",
-        aiCatalogSource: "RB Catalog + Playstyle Knowledge (No community log for this exact match yet)",
+        aiCatalogSource: "MY Market Street Price & Playstyle Benchmark",
         googleImg: "Search photos on Google Images ↗",
         missingFields: "Please enter both Racket Model and Honest Court Feedback before submitting.",
         postSaved: "Posted to shared RacketBuddy feed!",
@@ -926,7 +940,7 @@
       },
       bm: {
         tagline: "Find your best racket as your buddy",
-        desc: "Bandingkan rasa sebenar di court daripada rakan pemain, kongsi setup raket anda, dan tanya AI. Akaun tidak aktif 60 hari dipadam automatik.",
+        desc: "Bandingkan rasa sebenar di court daripada rakan pemain, kongsi setup raket anda, dan cari harga pasaran Malaysia. Akaun tidak aktif 60 hari dipadam automatik.",
         installBtn: "📲 Tambah ke Skrin Utama",
         tabReg: "Daftar",
         tabLog: "Log Masuk",
@@ -969,28 +983,29 @@
         submitBtn: "Hantar Post Pemain & Raket",
         feedTitle: "Feed RacketBuddy",
         searchPlaceholder: "Cari raket, jenama, @pemain, tali, atau feedback court...",
-        advTitle: "Cari Raket (BM & EN · Feed Kosong / Ada Isi)",
-        advContextHint: "Mengambil gaya main yang disimpan pada profil anda.",
-        qBrand: "Jenama",
+        advTitle: "Cari Raket — Top 10 Terbaik (Harga Pasaran MY: Shopee / TikTok / Kedai)",
+        advContextHint: "Tapisan jenama ketat: carian atau pilihan jenama hanya memaparkan jenama tersebut sahaja dalam senarai Top 10 harga pasaran semasa.",
+        qBrand: "Jenama (Tapisan Ketat)",
         qStyle: "Gaya Main",
-        qBudget: "Bajet Maksimum (RM)",
+        qBudget: "Bajet Maksimum (RM — Harga Pasaran)",
         qWeight: "Pilihan Berat (3U–9U)",
         qPriority: "Keutamaan Utama",
-        qText: "Tanya dalam BM atau English (cth: \"maxbolt\", \"kumpoo\", \"8u ringan\", \"sakit wrist\", \"smash padu\")",
-        advBtn: "Cari Raket",
+        qText: "Cari Jenama, Model atau Rasa (cth: \"felet\", \"yonex\", \"maxbolt\", \"kumpoo\", \"8u ringan\", \"smash padu\")",
+        advBtn: "Cari Top 10 Raket",
         yrs: "thn",
         ageLabel: "umur",
         helpful: "Membantu",
         share: "Salin Ringkasan",
         deletePost: "Padam Post",
         copied: "Disalin!",
-        matchLabel: "PILIHAN AI RB",
-        scoreLabel: "Skor Padanan",
-        estPriceLabel: "Anggaran Harga",
+        matchLabel: "TOP",
+        scoreLabel: "Skor Sesuai",
+        streetTag: "Shopee / TikTok / Kedai",
         specsLabel: "Spesifikasi",
-        proofLabel: "Bukti & Huraian AI",
+        judgeLabel: "Penilaian RB",
+        proofLabel: "Sumber & Nota",
         citedFrom: "Log pemain oleh",
-        aiCatalogSource: "Pengetahuan Katalog RB & Gaya Main (Belum ada log komuniti untuk padanan ini)",
+        aiCatalogSource: "Harga Pasaran Semasa MY & Penanda Aras Gaya Main",
         googleImg: "Cari gambar di Google Images ↗",
         missingFields: "Sila isi Model Raket dan Feedback Jujur Di Court sebelum menghantar.",
         postSaved: "Berjaya dihantar ke feed bersama RacketBuddy!",
@@ -1001,85 +1016,336 @@
       }
     };
 
+    // Current Malaysia Online / Store Street Market Prices (Shopee / TikTok / Local Badminton Shops)
     const builtInCatalog = [
+      // YONEX (10 models)
       {
-        id: "cat-1", brand: "Yonex", racket: "Yonex Nanoflare 1000 Play", priceRm: 220,
+        id: "ynx-1", brand: "Yonex", racket: "Yonex Nanoflare 1000 Play", priceRm: 230, priceRange: "RM220–RM250",
         weightGrip: "4U G5", balance: "Head-Light", paperFlex: "Medium", feelFlex: "Medium",
         style: "Double front (Speed)", scores: { power: 3, control: 4, speed: 5, comfort: 5 },
-        aiNoteEn: "Head-light speed frame makes fast front-court net play, flat drives, and defensive lifts quick and easy on the wrist.",
-        aiNoteBm: "Frame ringan di kepala (head-light) membantu permainan depan net, drive laju, dan defend dengan selesa.",
+        aiNoteEn: "Best value speed frame from Yonex for front-court interceptions, flat drives, and low wrist strain.",
+        aiNoteBm: "Frame speed Yonex paling berbaloi untuk pintasan depan net, drive laju, dan jaga pergelangan tangan.",
         imgUrl: "https://www.yonex.com/media/catalog/product/n/a/nanoflare_1000play.png?quality=80&bg-color=248,248,248,0.75&fit=bounds&height=819&width=600&canvas=600:819"
       },
       {
-        id: "cat-2", brand: "Yonex", racket: "Yonex Arcsaber 11 Pro", priceRm: 720,
-        weightGrip: "4U G5", balance: "Even-Balance", paperFlex: "Stiff", feelFlex: "Medium",
-        style: "Single (Control)", scores: { power: 4, control: 5, speed: 4, comfort: 4 },
-        aiNoteEn: "Even-balance control racket with strong shuttle hold for pinpoint placement and steady rally consistency.",
-        aiNoteBm: "Raket kawalan seimbang dengan cengkaman bulu tangkis yang kemas untuk penempatan tepat dan rally konsisten.",
-        imgUrl: "https://www.yonex.com/media/catalog/product/2/0/2022-03-yonex-arcsaber-11-d-stacked_2.png?quality=80&bg-color=248,248,248,0.75&fit=bounds&height=819&width=600&canvas=600:819"
-      },
-      {
-        id: "cat-3", brand: "Victor", racket: "Victor Thruster K Ryuga II", priceRm: 540,
-        weightGrip: "4U G5", balance: "Head-Heavy", paperFlex: "Stiff", feelFlex: "Stiff",
-        style: "Double backcourt (Hard hitter)", scores: { power: 5, control: 4, speed: 3, comfort: 3 },
-        aiNoteEn: "Head-heavy power profile designed for rear-court hard hitters looking for heavy smash angles and rear-court drive punch.",
-        aiNoteBm: "Profil berat kepala untuk pemain belakang (hard hitter) yang mahukan smash tajam dan kuasa hentakan tinggi."
-      },
-      {
-        id: "cat-4", brand: "Li-Ning", racket: "Li-Ning Axforce 80", priceRm: 690,
-        weightGrip: "4U G5", balance: "Head-Heavy", paperFlex: "Stiff", feelFlex: "Stiff",
-        style: "Single (Attacking)", scores: { power: 5, control: 4, speed: 4, comfort: 3 },
-        aiNoteEn: "Attacking singles frame built to press opponents with steep smashes, heavy clears, and offensive rally pressure.",
-        aiNoteBm: "Frame menyerang untuk single yang membantu menekan lawan melalui smash tajam dan clear bertenaga."
-      },
-      {
-        id: "cat-5", brand: "Felet", racket: "Felet Woven 8000", priceRm: 330,
+        id: "ynx-2", brand: "Yonex", racket: "Yonex Arcsaber 7 Play", priceRm: 285, priceRange: "RM275–RM315",
         weightGrip: "4U G5", balance: "Even-Balance", paperFlex: "Medium", feelFlex: "Medium",
-        style: "Mixed", scores: { power: 4, control: 4, speed: 4, comfort: 4 },
-        aiNoteEn: "Versatile even-balance setup well suited for mixed rotations where players switch between net control and rear support.",
-        aiNoteBm: "Raket seimbang serba boleh yang sesuai untuk mixed kerana mudah bertukar antara kawalan net dan sokongan belakang."
+        style: "Single (Control)", scores: { power: 4, control: 5, speed: 4, comfort: 5 },
+        aiNoteEn: "Forgiving even-balance control frame with clean shuttle hold and effortless transition between singles and doubles.",
+        aiNoteBm: "Raket kawalan seimbang yang senang dikawal dengan cengkaman bulu tangkis kemas untuk single dan beregu."
       },
       {
-        id: "cat-6", brand: "Apacs", racket: "Apacs Z-Ziggler", priceRm: 165,
+        id: "ynx-3", brand: "Yonex", racket: "Yonex Astrox 77 Play", priceRm: 305, priceRange: "RM290–RM320",
         weightGrip: "4U G5", balance: "Head-Heavy", paperFlex: "Medium", feelFlex: "Medium",
         style: "Double backcourt (Hard hitter)", scores: { power: 4, control: 4, speed: 4, comfort: 4 },
-        aiNoteEn: "Budget-friendly head-heavy option for backcourt power at a lower price point.",
-        aiNoteBm: "Pilihan bajet berat kepala untuk hentakan belakang gelanggang pada harga lebih mesra."
+        aiNoteEn: "Accessible head-heavy smasher that generates easy steep smash angles without feeling overly stiff.",
+        aiNoteBm: "Raket berat kepala yang mudah menjana sudut smash tajam tanpa shaft terlalu keras."
       },
       {
-        id: "cat-7", brand: "Maxbolt", racket: "Maxbolt Gallant Sakiko", priceRm: 195,
+        id: "ynx-4", brand: "Yonex", racket: "Yonex Nanoflare Nextage", priceRm: 360, priceRange: "RM350–RM430",
+        weightGrip: "4U G5", balance: "Head-Light", paperFlex: "Medium", feelFlex: "Medium",
+        style: "Double front (Speed)", scores: { power: 4, control: 4, speed: 5, comfort: 4 },
+        aiNoteEn: "Crisp mid-range speed frame bridging Play and Tour tiers with faster repulsion on counter-drives.",
+        aiNoteBm: "Raket speed pertengahan yang lebih padat daripada siri Play dengan pantulan pantas semasa drive."
+      },
+      {
+        id: "ynx-5", brand: "Yonex", racket: "Yonex Arcsaber 11 Play", priceRm: 235, priceRange: "RM220–RM260",
+        weightGrip: "4U G5", balance: "Even-Balance", paperFlex: "Medium", feelFlex: "Medium",
+        style: "Mixed", scores: { power: 4, control: 5, speed: 4, comfort: 5 },
+        aiNoteEn: "Budget-friendly Arcsaber 11 DNA for steady placement, net drops, and mixed-doubles rotations.",
+        aiNoteBm: "DNA Arcsaber 11 pada harga mampu milik untuk kawalan penempatan, drop net, dan giliran mixed."
+      },
+      {
+        id: "ynx-6", brand: "Yonex", racket: "Yonex Nanoflare 001 Feel / Clear", priceRm: 165, priceRange: "RM150–RM185",
+        weightGrip: "5U G5", balance: "Head-Light", paperFlex: "Flexible", feelFlex: "Flexible",
+        style: "Double front (Speed)", scores: { power: 3, control: 4, speed: 5, comfort: 5 },
+        aiNoteEn: "Lightweight 5U flexible frame ideal for beginners or players recovering from wrist/shoulder fatigue.",
+        aiNoteBm: "Raket ringan 5U lembut yang sangat sesuai untuk pemain santai atau yang mahu elak lenguh wrist."
+      },
+      {
+        id: "ynx-7", brand: "Yonex", racket: "Yonex Astrox 88D Play", priceRm: 295, priceRange: "RM280–RM320",
         weightGrip: "4U G5", balance: "Head-Heavy", paperFlex: "Medium", feelFlex: "Medium",
         style: "Double backcourt (Hard hitter)", scores: { power: 5, control: 4, speed: 4, comfort: 4 },
-        aiNoteEn: "High-tension capable Maxbolt frame with crisp smash punch and accessible medium flex for club attackers.",
-        aiNoteBm: "Raket Maxbolt tahan tension tinggi dengan smash padu serta flex sederhana yang mesra tangan pemain kelab."
+        aiNoteEn: "Rear-court doubles specialist built for continuous backline smashes and punch clears.",
+        aiNoteBm: "Pakar belakang gelanggang beregu untuk smash bertubi-tubi dan clear jauh."
       },
       {
-        id: "cat-8", brand: "Kumpoo", racket: "Kumpoo Power Control E58LS", priceRm: 180,
-        weightGrip: "6U G5", balance: "Even-Balance", paperFlex: "Flexible", feelFlex: "Flexible",
-        style: "Double front (Speed)", scores: { power: 3, control: 4, speed: 5, comfort: 5 },
-        aiNoteEn: "Ultra-light 6U Kumpoo control frame engineered for effortless swing recovery, wrist comfort, and fast net interceptions.",
-        aiNoteBm: "Raket ultra-ringan 6U Kumpoo yang sangat selesa di pergelangan tangan serta pantas memintas bola di jaring."
-      },
-      {
-        id: "cat-9", brand: "Flexpower", racket: "Flexpower Nano Speed 900", priceRm: 170,
-        weightGrip: "5U G5", balance: "Head-Light", paperFlex: "Medium", feelFlex: "Flexible",
-        style: "Mixed", scores: { power: 3, control: 4, speed: 5, comfort: 5 },
-        aiNoteEn: "Lightweight 5U aerodynamic frame giving smooth flat-drive transitions and low shoulder fatigue in long doubles sets.",
-        aiNoteBm: "Raket ringan 5U aerodinamik yang memudahkan transisi drive laju dan mengurangkan lenguh bahu semasa bermain lama."
-      },
-      {
-        id: "cat-10", brand: "Vaxe", racket: "Vaxe Featherlight 8U Pro", priceRm: 190,
-        weightGrip: "8U G5", balance: "Head-Heavy", paperFlex: "Flexible", feelFlex: "Flexible",
-        style: "Double front (Speed)", scores: { power: 3, control: 4, speed: 5, comfort: 5 },
-        aiNoteEn: "Featherweight 8U (~62g) Vaxe design offering lightning-fast defensive reaction while keeping slight head weight for clear depth.",
-        aiNoteBm: "Reka bentuk ultra-ringan 8U (~62g) Vaxe untuk tindak balas defend super pantas dengan bantuan berat kepala untuk lob."
-      },
-      {
-        id: "cat-11", brand: "Hundred", racket: "Hundred Battle 900", priceRm: 260,
+        id: "ynx-8", brand: "Yonex", racket: "Yonex Arcsaber 7 Tour", priceRm: 685, priceRange: "RM650–RM710",
         weightGrip: "4U G5", balance: "Even-Balance", paperFlex: "Medium", feelFlex: "Medium",
         style: "Single (Control)", scores: { power: 4, control: 5, speed: 4, comfort: 4 },
-        aiNoteEn: "Stable even-balance Hundred frame built for crisp shuttle placement, solid torsional stability, and all-round rally control.",
-        aiNoteBm: "Raket Hundred seimbang yang stabil untuk kawalan penempatan bulu tangkis tepat dan permainan rally serba boleh."
+        aiNoteEn: "Near-Pro precision and shuttle pocketing at a noticeably lower street price than Japan-made Pro models.",
+        aiNoteBm: "Ketepatan hampir setaraf versi Pro pada harga pasaran jauh lebih rendah daripada buatan Jepun."
+      },
+      {
+        id: "ynx-9", brand: "Yonex", racket: "Yonex Nanoflare 800 Game", priceRm: 695, priceRange: "RM670–RM730",
+        weightGrip: "4U G5", balance: "Head-Light", paperFlex: "Medium", feelFlex: "Medium",
+        style: "Double front (Speed)", scores: { power: 4, control: 4, speed: 5, comfort: 4 },
+        aiNoteEn: "Wide-profile Razor Frame speed racket for rapid front-court net kills and flat exchanges.",
+        aiNoteBm: "Frame aerodinamik nipis untuk bunuh bola di depan net dan pertukaran drive pantas."
+      },
+      {
+        id: "ynx-10", brand: "Yonex", racket: "Yonex Arcsaber 11 Pro", priceRm: 910, priceRange: "RM890–RM1,025",
+        weightGrip: "4U G5", balance: "Even-Balance", paperFlex: "Stiff", feelFlex: "Medium",
+        style: "Single (Control)", scores: { power: 4, control: 5, speed: 4, comfort: 4 },
+        aiNoteEn: "Flagship control benchmark with unmatched shuttle hold for advanced tactical rally players.",
+        aiNoteBm: "Penanda aras kawalan utama Yonex untuk pemain taktikal yang mahukan ketepatan maksimum.",
+        imgUrl: "https://www.yonex.com/media/catalog/product/2/0/2022-03-yonex-arcsaber-11-d-stacked_2.png?quality=80&bg-color=248,248,248,0.75&fit=bounds&height=819&width=600&canvas=600:819"
+      },
+
+      // FELET (10 models — real MY online/store prices)
+      {
+        id: "flt-1", brand: "Felet", racket: "Felet TJ Power (Power / Control / Speed)", priceRm: 165, priceRange: "RM155–RM240",
+        weightGrip: "4U G5", balance: "Even-Balance", paperFlex: "Medium", feelFlex: "Medium",
+        style: "Mixed", scores: { power: 4, control: 4, speed: 4, comfort: 4 },
+        aiNoteEn: "One of Malaysia's highest-value 35lbs-rated rackets—choose Power, Control, or Speed variant to match your role.",
+        aiNoteBm: "Antara raket paling berbaloi di Malaysia (tahan 35lbs)—pilih varian Power, Control, atau Speed ikut posisi."
+      },
+      {
+        id: "flt-2", brand: "Felet", racket: "Felet TJ-1000 (Power / Control / Speed)", priceRm: 260, priceRange: "RM245–RM280",
+        weightGrip: "4U G5", balance: "Head-Heavy", paperFlex: "Medium", feelFlex: "Medium",
+        style: "Double backcourt (Hard hitter)", scores: { power: 5, control: 4, speed: 4, comfort: 4 },
+        aiNoteEn: "Upgraded shaft stability over TJ Power with crisp rear-court smash repulsion under RM280 street price.",
+        aiNoteBm: "Shaft lebih stabil berbanding TJ Power dengan pantulan smash belakang gelanggang di bawah RM280."
+      },
+      {
+        id: "flt-3", brand: "Felet", racket: "Felet Woven 8000", priceRm: 485, priceRange: "RM480–RM520",
+        weightGrip: "4U G5", balance: "Even-Balance", paperFlex: "Medium", feelFlex: "Medium",
+        style: "Single (Control)", scores: { power: 4, control: 5, speed: 4, comfort: 4 },
+        aiNoteEn: "Flagship woven carbon stability with solid torsional resistance for controlled singles and aggressive doubles.",
+        aiNoteBm: "Karbon woven flagship yang sangat stabil untuk kawalan single dan permainan beregu pantas."
+      },
+      {
+        id: "flt-4", brand: "Felet", racket: "Felet Airlighter 58 V2 (8U / 9U)", priceRm: 299, priceRange: "RM280–RM305",
+        weightGrip: "9U G5", balance: "Head-Heavy", paperFlex: "Flexible", feelFlex: "Flexible",
+        style: "Double front (Speed)", scores: { power: 3, control: 4, speed: 5, comfort: 5 },
+        aiNoteEn: "Ultra-featherweight 58g (9U) / 67g (8U) frame—effortless defense and zero wrist fatigue over 3-hour sessions.",
+        aiNoteBm: "Raket super ringan 58g (9U) / 67g (8U)—defend sangat pantas dan langsung tak memenatkan wrist."
+      },
+      {
+        id: "flt-5", brand: "Felet", racket: "Felet Carbon Woven 18", priceRm: 279, priceRange: "RM260–RM295",
+        weightGrip: "4U G5", balance: "Even-Balance", paperFlex: "Medium", feelFlex: "Medium",
+        style: "Mixed", scores: { power: 4, control: 4, speed: 4, comfort: 4 },
+        aiNoteEn: "76-grommet woven frame offering durable string tension hold and reliable all-court feel.",
+        aiNoteBm: "Frame woven 76 lubang tali yang tahan tarikan tinggi dan selesa untuk semua posisi gelanggang."
+      },
+      {
+        id: "flt-6", brand: "Felet", racket: "Felet Hypermax", priceRm: 259, priceRange: "RM240–RM275",
+        weightGrip: "4U G5", balance: "Head-Heavy", paperFlex: "Medium", feelFlex: "Medium",
+        style: "Single (Attacking)", scores: { power: 5, control: 4, speed: 4, comfort: 4 },
+        aiNoteEn: "Attacking box-aero hybrid frame built for heavy baseline clears and steep follow-up smashes.",
+        aiNoteBm: "Frame hibrid menyerang untuk clear jauh dari baseline dan smash susulan yang tajam."
+      },
+      {
+        id: "flt-7", brand: "Felet", racket: "Felet Woven TJ 1000", priceRm: 625, priceRange: "RM599–RM685",
+        weightGrip: "4U G5", balance: "Head-Heavy", paperFlex: "Stiff", feelFlex: "Stiff",
+        style: "Double backcourt (Hard hitter)", scores: { power: 5, control: 5, speed: 4, comfort: 3 },
+        aiNoteEn: "46-Tonne Japan Hot Melt woven shaft rated up to high tensions for hard-hitting tournament players.",
+        aiNoteBm: "Shaft woven 46-Tonne Japan Hot Melt yang padu untuk pemain menyerang berintensiti tinggi."
+      },
+      {
+        id: "flt-8", brand: "Felet", racket: "Felet F-Force Super Light 7U", priceRm: 120, priceRange: "RM115–RM135",
+        weightGrip: "7U G5", balance: "Even-Balance", paperFlex: "Flexible", feelFlex: "Flexible",
+        style: "Double front (Speed)", scores: { power: 3, control: 4, speed: 5, comfort: 5 },
+        aiNoteEn: "Budget 7U featherlight option (~68g) for quick front-court net exchanges and easy defensive lifts.",
+        aiNoteBm: "Pilihan bajet 7U ultra-ringan (~68g) untuk reaksi pantas di depan net dan defend mudah."
+      },
+      {
+        id: "flt-9", brand: "Felet", racket: "Felet Sakurra / Kurina 4U", priceRm: 179, priceRange: "RM165–RM195",
+        weightGrip: "4U G5", balance: "Even-Balance", paperFlex: "Flexible", feelFlex: "Flexible",
+        style: "Mixed", scores: { power: 3, control: 4, speed: 5, comfort: 5 },
+        aiNoteEn: "Easy-swinging 82g carbon frame with lively whip for effortless clears and comfortable social play.",
+        aiNoteBm: "Frame karbon 82g yang ringan dihayun untuk clear mudah dan permainan sosial yang selesa."
+      },
+      {
+        id: "flt-10", brand: "Felet", racket: "Felet Woven Eighty8", priceRm: 639, priceRange: "RM610–RM660",
+        weightGrip: "4U G5", balance: "Head-Heavy", paperFlex: "Stiff", feelFlex: "Medium",
+        style: "Single (Attacking)", scores: { power: 5, control: 5, speed: 4, comfort: 4 },
+        aiNoteEn: "Top-tier Felet attacking frame combining woven stability with rapid head recovery.",
+        aiNoteBm: "Raket menyerang kelas tertinggi Felet yang menggabungkan kestabilan woven dan hayunan pantas."
+      },
+
+      // VICTOR (5 models)
+      {
+        id: "vic-1", brand: "Victor", racket: "Victor Auraspeed 8000 / 9000", priceRm: 178, priceRange: "RM163–RM195",
+        weightGrip: "4U G5", balance: "Even-Balance", paperFlex: "Flexible", feelFlex: "Flexible",
+        style: "Double front (Speed)", scores: { power: 3, control: 4, speed: 5, comfort: 5 },
+        aiNoteEn: "Fast-swinging entry Auraspeed with whipping shaft—very popular in Malaysia for quick doubles drives.",
+        aiNoteBm: "Siri Auraspeed mampu milik dengan ayunan pantas—sangat popular untuk drive beregu laju."
+      },
+      {
+        id: "vic-2", brand: "Victor", racket: "Victor Thruster HMR L (5U / 6U)", priceRm: 229, priceRange: "RM210–RM249",
+        weightGrip: "5U G5", balance: "Head-Heavy", paperFlex: "Flexible", feelFlex: "Flexible",
+        style: "Mixed", scores: { power: 4, control: 4, speed: 5, comfort: 5 },
+        aiNoteEn: "Light 5U/6U body paired with head-heavy momentum so you get easy smash pop without heavy arm strain.",
+        aiNoteBm: "Badan ringan 5U/6U dengan berat kepala supaya smash tetap bertenaga tanpa membebankan lengan."
+      },
+      {
+        id: "vic-3", brand: "Victor", racket: "Victor Auraspeed 30H / 33H", priceRm: 435, priceRange: "RM420–RM460",
+        weightGrip: "4U G5", balance: "Head-Light", paperFlex: "Medium", feelFlex: "Medium",
+        style: "Double front (Speed)", scores: { power: 4, control: 4, speed: 5, comfort: 4 },
+        aiNoteEn: "High-tension 30lbs+ speed frame with crisp flat-play rebound for fast-paced doubles.",
+        aiNoteBm: "Frame speed tahan tension tinggi 30lbs+ dengan pantulan kemas untuk permainan beregu pantas."
+      },
+      {
+        id: "vic-4", brand: "Victor", racket: "Victor Thruster Ryuga CLS", priceRm: 378, priceRange: "RM360–RM410",
+        weightGrip: "4U G5", balance: "Head-Heavy", paperFlex: "Medium", feelFlex: "Medium",
+        style: "Double backcourt (Hard hitter)", scores: { power: 5, control: 4, speed: 4, comfort: 4 },
+        aiNoteEn: "More user-friendly Ryuga edition delivering heavy rear-court smash power at half the Pro price.",
+        aiNoteBm: "Edisi Ryuga yang lebih mesra tangan dengan kuasa smash belakang tinggi pada separuh harga Pro."
+      },
+      {
+        id: "vic-5", brand: "Victor", racket: "Victor Thruster Ryuga II Pro", priceRm: 799, priceRange: "RM745–RM850",
+        weightGrip: "4U G5", balance: "Head-Heavy", paperFlex: "Stiff", feelFlex: "Stiff",
+        style: "Double backcourt (Hard hitter)", scores: { power: 5, control: 4, speed: 3, comfort: 3 },
+        aiNoteEn: "Pro-level FreeCore power weapon built for explosive steep smashes and heavy backcourt dominance.",
+        aiNoteBm: "Senjata kuasa tahap pro dengan FreeCore untuk smash tajam bertenaga dari belakang gelanggang."
+      },
+
+      // LI-NING (4 models)
+      {
+        id: "ln-1", brand: "Li-Ning", racket: "Li-Ning Axforce Cannon", priceRm: 165, priceRange: "RM155–RM195",
+        weightGrip: "4U G5", balance: "Head-Heavy", paperFlex: "Flexible", feelFlex: "Flexible",
+        style: "Double backcourt (Hard hitter)", scores: { power: 4, control: 4, speed: 4, comfort: 5 },
+        aiNoteEn: "Best budget head-heavy Li-Ning racket—whippy shaft generates easy smash power for intermediate players.",
+        aiNoteBm: "Raket berat kepala bajet terbaik Li-Ning—shaft lembut membantu smash padu dengan mudah."
+      },
+      {
+        id: "ln-2", brand: "Li-Ning", racket: "Li-Ning Halbertec Motor", priceRm: 229, priceRange: "RM215–RM250",
+        weightGrip: "4U G5", balance: "Even-Balance", paperFlex: "Medium", feelFlex: "Medium",
+        style: "Single (Control)", scores: { power: 4, control: 5, speed: 4, comfort: 4 },
+        aiNoteEn: "Balanced control frame with solid shuttle stability for accurate drops, net play, and all-round rallies.",
+        aiNoteBm: "Raket kawalan seimbang yang stabil untuk drop tepat, permainan net, dan rally menyeluruh."
+      },
+      {
+        id: "ln-3", brand: "Li-Ning", racket: "Li-Ning BladeX 500", priceRm: 510, priceRange: "RM490–RM540",
+        weightGrip: "4U G5", balance: "Head-Light", paperFlex: "Flexible", feelFlex: "Medium",
+        style: "Double front (Speed)", scores: { power: 4, control: 4, speed: 5, comfort: 4 },
+        aiNoteEn: "Aerodynamic speed specialist designed for rapid defensive reactions and front-court flat drives.",
+        aiNoteBm: "Pakar kelajuan aerodinamik untuk tindak balas defend pantas dan drive depan gelanggang."
+      },
+      {
+        id: "ln-4", brand: "Li-Ning", racket: "Li-Ning Axforce 80", priceRm: 790, priceRange: "RM750–RM880",
+        weightGrip: "4U G5", balance: "Head-Heavy", paperFlex: "Stiff", feelFlex: "Stiff",
+        style: "Single (Attacking)", scores: { power: 5, control: 4, speed: 4, comfort: 3 },
+        aiNoteEn: "Flagship attacking frame with HDF shock absorption for steep, heavy singles and rear-court smashes.",
+        aiNoteBm: "Raket menyerang utama dengan penyerap gegaran HDF untuk smash tajam dan berat."
+      },
+
+      // MAXBOLT (3 models)
+      {
+        id: "mxb-1", brand: "Maxbolt", racket: "Maxbolt Gallant Sakiko", priceRm: 162, priceRange: "RM155–RM175",
+        weightGrip: "4U G5", balance: "Head-Heavy", paperFlex: "Medium", feelFlex: "Medium",
+        style: "Double backcourt (Hard hitter)", scores: { power: 5, control: 4, speed: 4, comfort: 4 },
+        aiNoteEn: "Cult-favorite budget powerhouse in Malaysia—supports high tension with crisp smash punch around RM160.",
+        aiNoteBm: "Raket bajet paling popular di Malaysia—tahan tension tinggi dengan smash padu sekitar RM160."
+      },
+      {
+        id: "mxb-2", brand: "Maxbolt", racket: "Maxbolt Woven Gold Limited", priceRm: 183, priceRange: "RM175–RM199",
+        weightGrip: "4U G5", balance: "Even-Balance", paperFlex: "Medium", feelFlex: "Medium",
+        style: "Mixed", scores: { power: 4, control: 4, speed: 4, comfort: 4 },
+        aiNoteEn: "Woven carbon frame offering crisp shuttle repulsion and balanced handling for doubles and mixed.",
+        aiNoteBm: "Frame karbon woven dengan pantulan kemas dan kawalan seimbang untuk beregu dan mixed."
+      },
+      {
+        id: "mxb-3", brand: "Maxbolt", racket: "Maxbolt Superstar 10 / 11", priceRm: 155, priceRange: "RM145–RM170",
+        weightGrip: "4U G5", balance: "Head-Heavy", paperFlex: "Medium", feelFlex: "Medium",
+        style: "Single (Attacking)", scores: { power: 4, control: 4, speed: 4, comfort: 4 },
+        aiNoteEn: "High-tension attacking frame with slim shaft for strong baseline clears and punchy smashes.",
+        aiNoteBm: "Frame menyerang tahan tension tinggi dengan shaft nipis untuk clear jauh dan smash bertenaga."
+      },
+
+      // KUMPOO (3 models)
+      {
+        id: "kmp-1", brand: "Kumpoo", racket: "Kumpoo K520 Pro", priceRm: 90, priceRange: "RM80–RM105",
+        weightGrip: "4U G5", balance: "Even-Balance", paperFlex: "Flexible", feelFlex: "Flexible",
+        style: "Mixed", scores: { power: 3, control: 4, speed: 4, comfort: 5 },
+        aiNoteEn: "Unbeatable entry-level full-carbon value under RM100—easy to swing and gentle on beginner wrists.",
+        aiNoteBm: "Raket karbon penuh bawah RM100 paling berbaloi—senang dihayun dan selesa untuk pergelangan tangan."
+      },
+      {
+        id: "kmp-2", brand: "Kumpoo", racket: "Kumpoo Putra 4U", priceRm: 216, priceRange: "RM205–RM235",
+        weightGrip: "4U G5", balance: "Head-Heavy", paperFlex: "Medium", feelFlex: "Medium",
+        style: "Double backcourt (Hard hitter)", scores: { power: 4, control: 4, speed: 4, comfort: 4 },
+        aiNoteEn: "32lbs-rated attacking frame built for crisp rear-court smashes and solid frame stability.",
+        aiNoteBm: "Raket menyerang tahan 32lbs untuk smash belakang gelanggang yang padu dan stabil."
+      },
+      {
+        id: "kmp-3", brand: "Kumpoo", racket: "Kumpoo Power Control E58LS (6U)", priceRm: 185, priceRange: "RM175–RM205",
+        weightGrip: "6U G5", balance: "Even-Balance", paperFlex: "Flexible", feelFlex: "Flexible",
+        style: "Double front (Speed)", scores: { power: 3, control: 4, speed: 5, comfort: 5 },
+        aiNoteEn: "Ultra-light 6U frame designed for rapid front-court net kills and fatigue-free defense.",
+        aiNoteBm: "Raket ultra-ringan 6U untuk pintasan depan net yang pantas dan defend tanpa lenguh."
+      },
+
+      // HUNDRED (3 models)
+      {
+        id: "hnd-1", brand: "Hundred", racket: "Hundred Primearmour 800", priceRm: 99, priceRange: "RM95–RM115",
+        weightGrip: "4U G5", balance: "Even-Balance", paperFlex: "Flexible", feelFlex: "Flexible",
+        style: "Mixed", scores: { power: 3, control: 4, speed: 4, comfort: 5 },
+        aiNoteEn: "Great budget all-rounder around RM99 for club players wanting light handling and comfortable clears.",
+        aiNoteBm: "Raket serba boleh bajet sekitar RM99 untuk pemain kelab yang mahu kawalan ringan dan selesa."
+      },
+      {
+        id: "hnd-2", brand: "Hundred", racket: "Hundred Nitrix / Atomic Air (6U–7U)", priceRm: 169, priceRange: "RM155–RM185",
+        weightGrip: "6U G5", balance: "Head-Light", paperFlex: "Flexible", feelFlex: "Flexible",
+        style: "Double front (Speed)", scores: { power: 3, control: 4, speed: 5, comfort: 5 },
+        aiNoteEn: "Featherweight speed racket tailored for quick doubles rotations and wrist-friendly net play.",
+        aiNoteBm: "Raket ringan berorientasikan kelajuan untuk giliran beregu pantas dan permainan net yang selesa."
+      },
+      {
+        id: "hnd-3", brand: "Hundred", racket: "Hundred Battle 900", priceRm: 349, priceRange: "RM327–RM399",
+        weightGrip: "4U G5", balance: "Head-Heavy", paperFlex: "Medium", feelFlex: "Medium",
+        style: "Single (Attacking)", scores: { power: 5, control: 4, speed: 4, comfort: 4 },
+        aiNoteEn: "34lbs-rated flagship Hundred power frame delivering steep smashes and solid torsional control.",
+        aiNoteBm: "Raket kuasa utama Hundred tahan 34lbs dengan smash tajam dan kawalan kilasan yang stabil."
+      },
+
+      // APACS (2 models)
+      {
+        id: "apc-1", brand: "Apacs", racket: "Apacs Nano Fusion Speed 722 (6U)", priceRm: 99, priceRange: "RM95–RM115",
+        weightGrip: "6U G5", balance: "Even-Balance", paperFlex: "Flexible", feelFlex: "Flexible",
+        style: "Double front (Speed)", scores: { power: 3, control: 4, speed: 5, comfort: 5 },
+        aiNoteEn: "Legendary Malaysian 6U lightweight bargain (~RM99) for fast defense and effortless swing speed.",
+        aiNoteBm: "Raket ringan 6U lagenda bajet (~RM99) untuk defend pantas dan hayunan yang sangat ringan."
+      },
+      {
+        id: "apc-2", brand: "Apacs", racket: "Apacs Z-Ziggler", priceRm: 159, priceRange: "RM145–RM175",
+        weightGrip: "4U G5", balance: "Head-Heavy", paperFlex: "Medium", feelFlex: "Medium",
+        style: "Double backcourt (Hard hitter)", scores: { power: 4, control: 4, speed: 4, comfort: 4 },
+        aiNoteEn: "Compact head-heavy frame delivering surprising smash punch at a wallet-friendly street price.",
+        aiNoteBm: "Frame kompak berat kepala yang menghasilkan smash padu pada harga pasaran sangat mesra."
+      },
+
+      // FLEXPOWER (2 models)
+      {
+        id: "flx-1", brand: "Flexpower", racket: "Flexpower Air Spiral 1000 / 3000", priceRm: 130, priceRange: "RM120–RM145",
+        weightGrip: "4U G5", balance: "Head-Heavy", paperFlex: "Medium", feelFlex: "Medium",
+        style: "Double backcourt (Hard hitter)", scores: { power: 4, control: 4, speed: 4, comfort: 4 },
+        aiNoteEn: "36lbs-rated high-tension frame giving crisp smash repulsion and durable build under RM140.",
+        aiNoteBm: "Frame tahan tension tinggi 36lbs dengan pantulan smash padu pada harga bawah RM140."
+      },
+      {
+        id: "flx-2", brand: "Flexpower", racket: "Flexpower Speed Booster 100 (7U)", priceRm: 179, priceRange: "RM165–RM195",
+        weightGrip: "7U G5", balance: "Head-Light", paperFlex: "Flexible", feelFlex: "Flexible",
+        style: "Double front (Speed)", scores: { power: 3, control: 4, speed: 5, comfort: 5 },
+        aiNoteEn: "Ultra-light 7U speed racket for rapid net exchanges and minimal wrist fatigue.",
+        aiNoteBm: "Raket speed ultra-ringan 7U untuk pertukaran bola pantas di net tanpa lenguh tangan."
+      },
+
+      // VAXE (2 models)
+      {
+        id: "vax-1", brand: "Vaxe", racket: "Vaxe Featherlight 8U Pro", priceRm: 185, priceRange: "RM170–RM199",
+        weightGrip: "8U G5", balance: "Head-Heavy", paperFlex: "Flexible", feelFlex: "Flexible",
+        style: "Double front (Speed)", scores: { power: 3, control: 4, speed: 5, comfort: 5 },
+        aiNoteEn: "Featherweight 8U (~62g) frame combining lightning defense with slight head weight for clear depth.",
+        aiNoteBm: "Raket ultra-ringan 8U (~62g) untuk defend super pantas dengan bantuan berat kepala untuk lob jauh."
+      },
+      {
+        id: "vax-2", brand: "Vaxe", racket: "Vaxe Power Strike 4U", priceRm: 165, priceRange: "RM150–RM180",
+        weightGrip: "4U G5", balance: "Even-Balance", paperFlex: "Medium", feelFlex: "Medium",
+        style: "Mixed", scores: { power: 4, control: 4, speed: 4, comfort: 4 },
+        aiNoteEn: "Balanced 4U all-rounder suited for social doubles and mixed rotations.",
+        aiNoteBm: "Raket 4U seimbang yang sesuai untuk permainan beregu sosial dan giliran mixed."
       }
     ];
 
@@ -1200,7 +1466,7 @@
         age: row.age ?? 24,
         expYears: row.exp_years ?? row.expYears ?? 1,
         racket: row.racket || "",
-        priceRm: row.price_rm ?? row.priceRm ?? 250,
+        priceRm: row.price_rm ?? row.priceRm ?? 220,
         weightGrip: row.weight_grip ?? row.weightGrip ?? "4U G5",
         balance: row.balance || "Even-Balance",
         paperFlex: row.paper_flex ?? row.paperFlex ?? "Medium",
@@ -1406,16 +1672,32 @@
     function detectBrand(text) {
       const low = text.toLowerCase();
       if (/yonex|arcsaber|astrox|nanoflare|nanoray|duora|voltric/.test(low)) return "Yonex";
-      if (/victor|auraspeed|thruster|drivex|jetspeed|bravesword/.test(low)) return "Victor";
+      if (/victor|auraspeed|thruster|drivex|jetspeed|bravesword|ryuga/.test(low)) return "Victor";
       if (/li-ning|lining|halbertec|bladex|axforce/.test(low)) return "Li-Ning";
-      if (/felet|woven|tj\s*power|tj\s*1000/.test(low)) return "Felet";
-      if (/apacs|lethal|tantrum|z-ziggler/.test(low)) return "Apacs";
+      if (/felet|woven\s*8000|woven\s*18|woven\s*eighty|tj\s*power|tj[\s-]*1000|airlighter|hypermax|f-force|sakurra|kurina/.test(low)) return "Felet";
+      if (/apacs|lethal|tantrum|z-ziggler|nano\s*fusion/.test(low)) return "Apacs";
       if (/maxbolt|gallant|sakiko|black\s*woven|superstar/.test(low)) return "Maxbolt";
-      if (/kumpoo|e58|power\s*control/.test(low)) return "Kumpoo";
-      if (/flexpower|flex\s*power/.test(low)) return "Flexpower";
-      if (/vaxe|featherlight/.test(low)) return "Vaxe";
-      if (/hundred|battle\s*900|nitrix/.test(low)) return "Hundred";
+      if (/kumpoo|e58|k520|putra/.test(low)) return "Kumpoo";
+      if (/flexpower|flex\s*power|air\s*spiral|speed\s*booster/.test(low)) return "Flexpower";
+      if (/vaxe|featherlight|power\s*strike/.test(low)) return "Vaxe";
+      if (/hundred|battle\s*900|nitrix|primearmour|atomic\s*air/.test(low)) return "Hundred";
       return "Other";
+    }
+
+    function extractExplicitBrandFilter(qBrandDropdown, rawQuery) {
+      if (qBrandDropdown && qBrandDropdown !== "Any") return qBrandDropdown;
+      const low = (rawQuery || "").toLowerCase();
+      if (/\byonex\b/.test(low)) return "Yonex";
+      if (/\bvictor\b/.test(low)) return "Victor";
+      if (/\bli[\s-]?ning\b/.test(low)) return "Li-Ning";
+      if (/\bfelet\b/.test(low)) return "Felet";
+      if (/\bapacs\b/.test(low)) return "Apacs";
+      if (/\bmaxbolt\b/.test(low)) return "Maxbolt";
+      if (/\bkumpoo\b/.test(low)) return "Kumpoo";
+      if (/\bflex\s?power\b/.test(low)) return "Flexpower";
+      if (/\bvaxe\b/.test(low)) return "Vaxe";
+      if (/\bhundred\b/.test(low)) return "Hundred";
+      return null;
     }
 
     function applyLangLabels() {
@@ -1465,18 +1747,29 @@
       el.className = "status-msg " + (isError ? "status-err" : "status-ok");
     }
 
-    function estimateRacketPriceRm(brand, racketName) {
+    function lookupMarketPriceInfo(brand, racketName) {
+      const cleanName = racketName.toLowerCase();
       const catHit = builtInCatalog.find(c =>
-        c.racket.toLowerCase().includes(racketName.toLowerCase()) ||
-        racketName.toLowerCase().includes(c.racket.toLowerCase().replace(/^(yonex|victor|li-ning|felet|apacs|maxbolt|kumpoo|flexpower|vaxe|hundred)\s+/i, ""))
+        c.racket.toLowerCase().includes(cleanName) ||
+        cleanName.includes(c.racket.toLowerCase().replace(/^(yonex|victor|li-ning|felet|apacs|maxbolt|kumpoo|flexpower|vaxe|hundred)\s+/i, ""))
       );
-      if (catHit) return catHit.priceRm;
-      const brandAvg = {
-        "Yonex": 420, "Victor": 400, "Li-Ning": 390, "Felet": 260,
-        "Apacs": 170, "Maxbolt": 200, "Kumpoo": 190, "Flexpower": 175,
-        "Vaxe": 185, "Hundred": 230, "Other": 220
+      if (catHit) {
+        return { priceRm: catHit.priceRm, priceRange: catHit.priceRange || `~RM${catHit.priceRm}` };
+      }
+      const brandStreetAvg = {
+        "Yonex": { priceRm: 310, priceRange: "RM230–RM390" },
+        "Victor": { priceRm: 295, priceRange: "RM220–RM380" },
+        "Li-Ning": { priceRm: 260, priceRange: "RM180–RM350" },
+        "Felet": { priceRm: 225, priceRange: "RM165–RM285" },
+        "Apacs": { priceRm: 145, priceRange: "RM100–RM185" },
+        "Maxbolt": { priceRm: 165, priceRange: "RM150–RM190" },
+        "Kumpoo": { priceRm: 160, priceRange: "RM90–RM220" },
+        "Flexpower": { priceRm: 145, priceRange: "RM120–RM185" },
+        "Vaxe": { priceRm: 175, priceRange: "RM150–RM199" },
+        "Hundred": { priceRm: 185, priceRange: "RM99–RM349" },
+        "Other": { priceRm: 180, priceRange: "RM140–RM230" }
       };
-      return brandAvg[brand] || 240;
+      return brandStreetAvg[brand] || { priceRm: 180, priceRange: "~RM180" };
     }
 
     async function submitCombinedPost() {
@@ -1505,6 +1798,7 @@
       const chosenBrand = document.getElementById("brandSelect").value;
       const brand = chosenBrand === "Auto" ? detectBrand(rawRacket) : chosenBrand;
       const racket = (brand !== "Other" && !rawRacket.toLowerCase().startsWith(brand.toLowerCase())) ? `${brand} ${rawRacket}` : rawRacket;
+      const marketInfo = lookupMarketPriceInfo(brand, racket);
 
       const payload = {
         author: handleVal,
@@ -1512,7 +1806,7 @@
         exp_years: yearsVal,
         brand,
         racket,
-        price_rm: estimateRacketPriceRm(brand, racket),
+        price_rm: marketInfo.priceRm,
         weight_grip: document.getElementById("weightGrip").value,
         balance: document.getElementById("balance").value,
         paper_flex: document.getElementById("paperFlex").value,
@@ -1675,21 +1969,61 @@
       return 0;
     }
 
+    function buildJudgmentText(item, qStyle, qBudget, qWeight, qPriority) {
+      const reasons = [];
+      if (item.style === qStyle) {
+        reasons.push(currentLang === "bm" ? `Sesuai terus untuk ${qStyle}` : `Direct role match for ${qStyle}`);
+      } else {
+        reasons.push(currentLang === "bm" ? `Profil ${item.balance} serasi dengan ${qStyle}` : `${item.balance} profile adapts well to ${qStyle}`);
+      }
+      if (item.priceRm <= qBudget) {
+        const diff = qBudget - item.priceRm;
+        reasons.push(currentLang === "bm"
+          ? `Dalam bajet (jimat ~RM${diff} bawah had RM${qBudget})`
+          : `Within budget (~RM${diff} below your RM${qBudget} cap)`);
+      }
+      if (qWeight !== "Any" && item.weightGrip.startsWith(qWeight)) {
+        reasons.push(currentLang === "bm" ? `Tepat berat pilihan ${qWeight}` : `Exact ${qWeight} weight class match`);
+      }
+      if (qPriority === "comfort" && item.scores.comfort >= 4) {
+        reasons.push(currentLang === "bm" ? "Mesra pergelangan tangan (Comfort tinggi)" : "High wrist comfort & low fatigue");
+      } else if (qPriority === "speed" && item.scores.speed >= 4) {
+        reasons.push(currentLang === "bm" ? "Hayunan pantas untuk net & defend" : "Fast swing recovery for net & defense");
+      } else if (qPriority === "power" && item.scores.power >= 4) {
+        reasons.push(currentLang === "bm" ? "Hentakan smash padu dari belakang" : "Strong rear-court smash punch");
+      } else if (qPriority === "control" && item.scores.control >= 4) {
+        reasons.push(currentLang === "bm" ? "Kawalan penempatan bulu tangkis stabil" : "Stable shuttle placement control");
+      }
+      return reasons.join(" · ") + ".";
+    }
+
     function recommend() {
       const t = uiText[currentLang];
-      const qBrand = document.getElementById("queryBrand").value;
+      const qBrandDropdown = document.getElementById("queryBrand").value;
       const qStyle = document.getElementById("queryStyle").value;
       const qBudget = Number(document.getElementById("queryBudget").value) || 2000;
       const qWeight = document.getElementById("queryWeight").value;
       const qPriority = document.getElementById("queryPriority").value;
-      const tokens = expandBilingualTokens(document.getElementById("queryText").value.trim());
+      const rawQuery = document.getElementById("queryText").value.trim();
+
+      // Strict brand isolation: either dropdown OR brand typed in query locks to ONLY that brand
+      const strictBrand = extractExplicitBrandFilter(qBrandDropdown, rawQuery);
+      if (strictBrand && qBrandDropdown === "Any") {
+        document.getElementById("queryBrand").value = strictBrand;
+      }
+
+      const tokens = expandBilingualTokens(rawQuery).filter(tok =>
+        !strictBrand || tok !== strictBrand.toLowerCase().replace("-", "")
+      );
 
       const feedItems = reviews.map(r => {
         const brand = r.brand || detectBrand(r.racket);
+        const mInfo = lookupMarketPriceInfo(brand, r.racket);
         return {
           ...r,
           brand,
-          priceRm: Number(r.priceRm) || estimateRacketPriceRm(brand, r.racket),
+          priceRm: mInfo.priceRm,
+          priceRange: mInfo.priceRange,
           fromFeed: true,
           proofText: `"${r.notes}"`,
           citationLine: `${t.citedFrom} ${r.author} (${r.expYears} ${t.yrs}, ${r.stringSetup}, ${r.helpful} ${t.helpful.toLowerCase()})`
@@ -1703,44 +2037,77 @@
         citationLine: t.aiCatalogSource
       }));
 
-      const scored = [...feedItems, ...catItems].map(item => {
+      // 1. Strict brand isolation filter first
+      let pool = [...feedItems, ...catItems].filter(item => {
+        if (!strictBrand) return true;
+        return item.brand.toLowerCase() === strictBrand.toLowerCase();
+      });
+
+      // 2. Score & rank pool
+      const scored = pool.map(item => {
         let score = 0;
-        if (qBrand !== "Any") score += (item.brand.toLowerCase() === qBrand.toLowerCase()) ? 8 : -6;
-        if (item.priceRm <= qBudget) score += 3; else score -= 4;
+        if (item.priceRm <= qBudget) score += 4; else score -= 5;
         score += playstyleScoreBonus(item, qStyle);
-        if (qWeight === "Any" || item.weightGrip.startsWith(qWeight)) score += 2.5;
-        if (qPriority !== "balanced" && item.scores[qPriority]) score += item.scores[qPriority] * 1.2;
+        if (qWeight === "Any") {
+          score += 1;
+        } else if (item.weightGrip.startsWith(qWeight)) {
+          score += 4.5;
+        } else {
+          score -= 1.5;
+        }
+        if (qPriority !== "balanced" && item.scores[qPriority]) score += item.scores[qPriority] * 1.4;
 
         const hay = `${item.brand} ${item.racket} ${item.weightGrip} ${item.balance} ${item.feelFlex} ${item.style} ${item.proofText}`.toLowerCase();
-        tokens.forEach(w => { if (hay.includes(w)) score += 2; });
-        if (item.fromFeed) score += 1.5 + (item.helpful * 0.4);
+        tokens.forEach(w => { if (hay.includes(w)) score += 2.2; });
+        if (item.fromFeed) score += 1.5 + (item.helpful * 0.35);
         return { ...item, score };
       }).sort((a, b) => b.score - a.score);
 
-      const top = [];
+      // 3. Deduplicate up to TOP 10
+      const top10 = [];
       const seen = new Set();
       for (const item of scored) {
         const k = item.racket.toLowerCase();
-        if (!seen.has(k)) { seen.add(k); top.push(item); }
-        if (top.length === 2) break;
+        if (!seen.has(k)) {
+          seen.add(k);
+          top10.push(item);
+        }
+        if (top10.length === 10) break;
       }
 
-      const summary = currentLang === "bm"
-        ? `<div class="ai-summary-box"><strong>Ringkasan Cari Raket RB:</strong> Gaya <em>${qStyle}</em> · Bajet maks RM${qBudget} · Umur ~${profile.age}. Cadangan utama: <strong>${top[0].racket} (~RM${top[0].priceRm})</strong>.</div>`
-        : `<div class="ai-summary-box"><strong>RB Racket Match:</strong> <em>${qStyle}</em> · Max Budget RM${qBudget} · Age ~${profile.age}. Top pick: <strong>${top[0].racket} (~RM${top[0].priceRm})</strong>.</div>`;
+      if (!top10.length) {
+        document.getElementById("results").innerHTML = `<div class="ai-summary-box">${currentLang === "bm" ? "Tiada model dijumpai untuk penapis ini. Cuba tukar jenama atau naikkan bajet." : "No models found for this filter. Try another brand or increase budget."}</div>`;
+        return;
+      }
 
-      const cards = top.map((r, i) => {
+      const brandBanner = strictBrand
+        ? (currentLang === "bm" ? `Jenama Eksklusif: <strong>${strictBrand}</strong>` : `Strict Brand: <strong>${strictBrand}</strong>`)
+        : (currentLang === "bm" ? `Semua Jenama` : `All Brands`);
+
+      const summary = currentLang === "bm"
+        ? `<div class="ai-summary-box"><strong>Penilaian Top ${top10.length} RB (${brandBanner}):</strong> Gaya <em>${qStyle}</em> · Bajet maks RM${qBudget} (Harga Pasaran Shopee/TikTok/Kedai). Pilihan #1: <strong>${top10[0].racket} (~RM${top10[0].priceRm})</strong>.</div>`
+        : `<div class="ai-summary-box"><strong>RB Top ${top10.length} Judgment (${brandBanner}):</strong> <em>${qStyle}</em> · Max Budget RM${qBudget} (Shopee/TikTok/Store Street Price). #1 Pick: <strong>${top10[0].racket} (~RM${top10[0].priceRm})</strong>.</div>`;
+
+      const cards = top10.map((r, i) => {
         const imgSrc = getRacketImageUrl(r.racket, r.brand);
         const fallbackSrc = makeFallbackSvg(r.racket, r.brand);
         const badge = r.fromFeed
           ? `<span class="stat-pill">${currentLang === "bm" ? "Bukti Komuniti" : "Community Proof"}</span>`
-          : `<span class="meta-tag">${currentLang === "bm" ? "Katalog RB" : "RB Catalog"}</span>`;
+          : `<span class="meta-tag">${t.streetTag}</span>`;
+        const judgment = buildJudgmentText(r, qStyle, qBudget, qWeight, qPriority);
+        const overBudgetTag = r.priceRm > qBudget
+          ? `<span class="meta-tag" style="background:#fee2e2;color:#dc2626;border-color:#fecaca;">${currentLang === "bm" ? "Melebihi Bajet" : "Above Budget"}</span>`
+          : "";
+
         return `
-          <div class="verdict-card">
-            <div style="font-size:0.78rem;color:#15803d;font-weight:700;margin-bottom:8px;">
+          <div class="verdict-card ${i === 0 ? "top-pick" : ""}">
+            <div style="font-size:0.78rem;color:#15803d;font-weight:700;margin-bottom:8px;display:flex;gap:6px;flex-wrap:wrap;align-items:center;">
+              <span class="rank-pill">#${i + 1}</span>
               <span class="brand-pill">${r.brand}</span>
-              <span class="price-pill">~RM${r.priceRm}</span>
-              ${t.matchLabel} #${i + 1} · ${t.scoreLabel} ${r.score.toFixed(1)} ${badge}
+              <span class="price-pill">~RM${r.priceRm} (${r.priceRange || "MY Market"})</span>
+              <span>${t.scoreLabel}: ${r.score.toFixed(1)}</span>
+              ${badge}
+              ${overBudgetTag}
             </div>
             <div class="rec-layout">
               <div>
@@ -1748,9 +2115,12 @@
                 <a class="img-search-link" href="${getGoogleImagesUrl(r.racket, r.brand)}" target="_blank" rel="noopener noreferrer">${t.googleImg}</a>
               </div>
               <div>
-                <h3 style="margin:0 0 6px;font-size:1.02rem;">${r.racket} <span style="font-weight:500;color:#526071;">(${r.weightGrip} · ~RM${r.priceRm})</span></h3>
+                <h3 style="margin:0 0 6px;font-size:1.02rem;">${r.racket} <span style="font-weight:600;color:#0369a1;">(${r.weightGrip} · ~RM${r.priceRm})</span></h3>
                 <div style="font-size:0.82rem;color:#475569;">
                   <strong>${t.specsLabel}:</strong> ${r.style} · ${r.balance} · Spec: ${r.paperFlex} → Feel: <strong>${r.feelFlex}</strong> · Power ${r.scores.power}/5, Control ${r.scores.control}/5, Speed ${r.scores.speed}/5, Comfort ${r.scores.comfort}/5
+                </div>
+                <div class="judge-box">
+                  <strong>${t.judgeLabel}:</strong> ${judgment}
                 </div>
                 <div class="cite-ref">
                   <strong>${t.proofLabel}:</strong> ${r.proofText}<br/>
