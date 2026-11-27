@@ -560,6 +560,7 @@
             <select id="gateStyle">
               <option value="Double front (Speed)">Double front (Speed)</option>
               <option value="Double backcourt (Hard hitter)">Double backcourt (Hard hitter)</option>
+              <option value="Double (Attacking)">Double (Attacking)</option>
               <option value="Single (Attacking)">Single (Attacking)</option>
               <option value="Single (Control)" selected>Single (Control)</option>
               <option value="Mixed">Mixed</option>
@@ -739,6 +740,7 @@
               <select id="pStyle">
                 <option value="Double front (Speed)">Double front (Speed)</option>
                 <option value="Double backcourt (Hard hitter)">Double backcourt (Hard hitter)</option>
+                <option value="Double (Attacking)">Double (Attacking)</option>
                 <option value="Single (Attacking)">Single (Attacking)</option>
                 <option value="Single (Control)" selected>Single (Control)</option>
                 <option value="Mixed">Mixed</option>
@@ -761,6 +763,9 @@
                   <option value="Flexpower">Flexpower</option>
                   <option value="Vaxe">Vaxe</option>
                   <option value="Hundred">Hundred</option>
+                  <option value="Protech">Protech</option>
+                  <option value="Maxx">Maxx</option>
+                  <option value="Young">Young</option>
                   <option value="Other">Other</option>
                 </select>
               </div>
@@ -778,7 +783,9 @@
                   <option value="4U G5" selected>4U G5</option>
                   <option value="4U G6">4U G6</option>
                   <option value="5U G5">5U G5</option>
+                  <option value="5U G6">5U G6</option>
                   <option value="6U G5">6U G5</option>
+                  <option value="6U G6">6U G6</option>
                   <option value="7U G5">7U G5</option>
                   <option value="8U G5">8U G5</option>
                   <option value="9U G5">9U G5</option>
@@ -857,6 +864,7 @@
               <button type="button" class="filter-chip active" data-style="All">All</button>
               <button type="button" class="filter-chip" data-style="Double front (Speed)">Double front (Speed)</button>
               <button type="button" class="filter-chip" data-style="Double backcourt (Hard hitter)">Double backcourt (Hard hitter)</button>
+              <button type="button" class="filter-chip" data-style="Double (Attacking)">Double (Attacking)</button>
               <button type="button" class="filter-chip" data-style="Single (Attacking)">Single (Attacking)</button>
               <button type="button" class="filter-chip" data-style="Single (Control)">Single (Control)</button>
               <button type="button" class="filter-chip" data-style="Mixed">Mixed</button>
@@ -870,7 +878,7 @@
       <section id="page2" style="display:none;">
         <div class="card">
           <h2 id="t_advTitle">Find Racket — Top 10 Suggested (Shopee / TikTok / Pro Shop Market Range)</h2>
-          <div class="hint" id="t_advContextHint">Searches both community feedback posts and the multi-brand Malaysia catalogue, handles spelling/variant variations (e.g. Nevow TJ 1000, 3K Nevow Fence, TJ 1000), and ranks best matches.</div>
+          <div class="hint" id="t_advContextHint">Searches both community feedback posts and the multi-brand Malaysia catalogue (including your live GitHub CSV), handles spelling/variant variations (e.g. Nevow TJ 1000, 3K Nevow Fence, TJ 1000), and strictly respects your Max Budget (RM).</div>
 
           <div class="row-3">
             <div>
@@ -887,6 +895,9 @@
                 <option value="Flexpower">Flexpower Only</option>
                 <option value="Vaxe">Vaxe Only</option>
                 <option value="Hundred">Hundred Only</option>
+                <option value="Protech">Protech Only</option>
+                <option value="Maxx">Maxx Only</option>
+                <option value="Young">Young Only</option>
                 <option value="Other">Other / Lain-lain</option>
               </select>
             </div>
@@ -895,6 +906,7 @@
               <select id="queryStyle">
                 <option value="Double front (Speed)">Double front (Speed)</option>
                 <option value="Double backcourt (Hard hitter)">Double backcourt (Hard hitter)</option>
+                <option value="Double (Attacking)">Double (Attacking)</option>
                 <option value="Single (Attacking)">Single (Attacking)</option>
                 <option value="Single (Control)" selected>Single (Control)</option>
                 <option value="Mixed">Mixed</option>
@@ -946,6 +958,7 @@
     const DEV_PIN = "RBDEV2026";
     const MIN_PASSWORD_LEN = 8;
     const INACTIVE_DAYS_MS = 60 * 24 * 60 * 60 * 1000;
+    const GITHUB_RACKETS_CSV_URL = "https://raw.githubusercontent.com/kylfleex/racketbuddy/refs/heads/main/rackets.csv";
 
     const memoryFallback = {};
     const safeStorage = {
@@ -985,6 +998,8 @@
     let authMode = "register";
     let deferredInstallPrompt = null;
     let activeManifestUrl = null;
+    let csvCatalog = [];
+    let csvStatus = "loading"; // "loading" | "loaded" | "fallback"
 
     function createAppIconDataUrl(size) {
       const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 120 120">
@@ -1143,7 +1158,7 @@
         feedTitle: "RacketBuddy Feed",
         searchPlaceholder: "Search racket, brand, @player, string, or court feedback...",
         advTitle: "Find Racket — Top 10 Suggested (Shopee / TikTok / Pro Shop Market Range)",
-        advContextHint: "Searches both community feedback posts and the multi-brand Malaysia catalogue, handles spelling/variant variations (e.g. Nevow TJ 1000, 3K Nevow Fence, TJ 1000), and ranks best matches.",
+        advContextHint: "Searches both community feedback posts and the multi-brand Malaysia catalogue (including your live GitHub CSV), handles spelling/variant variations (e.g. Nevow TJ 1000, 3K Nevow Fence, TJ 1000), and strictly respects your Max Budget (RM).",
         qBrand: "Brand Filter",
         qStyle: "Playstyle",
         qBudget: "Max Budget (RM)",
@@ -1164,6 +1179,7 @@
         proofLabel: "Full Feedback & Judgment",
         citedFrom: "Community log by",
         aiCatalogSource: "Malaysia Market & Court Spec Reference (Shopee / TikTok / Pro Shop street average)",
+        csvCatalogSource: "GitHub Live CSV Catalogue (rackets.csv)",
         googleImg: "Search photos on Google Images ↗",
         missingFields: "Please enter both Racket Model and Honest Court Feedback before submitting.",
         postSaved: "Racket posted! It is now in the Feed and searchable in Find Racket.",
@@ -1236,7 +1252,7 @@
         feedTitle: "Feed RacketBuddy",
         searchPlaceholder: "Cari raket, jenama, @pemain, tali, atau feedback court...",
         advTitle: "Cari Raket — Top 10 Cadangan (Harga Pasaran Shopee / TikTok / Kedai)",
-        advContextHint: "Cari serentak dalam post feedback komuniti dan katalog pelbagai jenama Malaysia, faham variasi ejaan/model (cth: Nevow TJ 1000, 3K Nevow Fence, TJ 1000).",
+        advContextHint: "Cari serentak dalam post feedback komuniti dan katalog pelbagai jenama Malaysia (termasuk CSV GitHub langsung anda), faham variasi ejaan/model, dan menapis ketat mengikut Bajet Maksimum (RM).",
         qBrand: "Tapisan Jenama",
         qStyle: "Gaya Main",
         qBudget: "Bajet Maksimum (RM)",
@@ -1257,6 +1273,7 @@
         proofLabel: "Feedback Penuh & Penilaian",
         citedFrom: "Log komuniti oleh",
         aiCatalogSource: "Rujukan Pasaran Malaysia & Spec Court (Purata Shopee / TikTok / Kedai)",
+        csvCatalogSource: "Katalog CSV GitHub Langsung (rackets.csv)",
         googleImg: "Cari gambar di Google Images ↗",
         missingFields: "Sila isi Model Raket dan Feedback Jujur Di Court sebelum menghantar.",
         postSaved: "Raket berjaya dihantar! Ia kini ada di Feed dan boleh dicari di Cari Raket.",
@@ -1472,6 +1489,129 @@
         aiNoteBm: "Frame ringan 6U untuk kelajuan pergelangan tangan mudah, permainan jaring pantas, dan kurang lenguh."
       }
     ];
+
+    function parseCsvLine(line) {
+      const cells = [];
+      let cur = "";
+      let inQuotes = false;
+      for (let i = 0; i < line.length; i++) {
+        const ch = line[i];
+        if (ch === '"') {
+          if (inQuotes && line[i + 1] === '"') {
+            cur += '"';
+            i++;
+          } else {
+            inQuotes = !inQuotes;
+          }
+        } else if (ch === "," && !inQuotes) {
+          cells.push(cur.trim());
+          cur = "";
+        } else {
+          cur += ch;
+        }
+      }
+      cells.push(cur.trim());
+      return cells;
+    }
+
+    function inferScoresFromSpec(balance, style) {
+      const bal = String(balance || "").toLowerCase();
+      const st = String(style || "").toLowerCase();
+      let power = 4, control = 4, speed = 4, comfort = 4;
+      if (bal.includes("heavy")) { power = 5; speed = 4; comfort = 3; }
+      else if (bal.includes("light")) { power = 3; speed = 5; comfort = 5; }
+      if (st.includes("control")) { control = 5; }
+      if (st.includes("speed") || st.includes("front")) { speed = 5; }
+      if (st.includes("attack") || st.includes("hitter") || st.includes("backcourt")) { power = 5; }
+      return { power, control, speed, comfort };
+    }
+
+    function parseRacketsCsv(csvText) {
+      const lines = String(csvText || "").split(/\r?\n/).filter(l => l.trim().length > 0);
+      if (lines.length < 2) return [];
+      const headers = parseCsvLine(lines[0]).map(h => h.toLowerCase().trim());
+      const idxBrand = headers.indexOf("brand");
+      const idxModel = headers.indexOf("model");
+      const idxPrice = headers.indexOf("price");
+      const idxWeight = headers.indexOf("weight_grip");
+      const idxBalance = headers.indexOf("balance");
+      const idxStyle = headers.indexOf("style");
+
+      const items = [];
+      for (let i = 1; i < lines.length; i++) {
+        const cols = parseCsvLine(lines[i]);
+        const rawBrand = (idxBrand >= 0 ? cols[idxBrand] : "") || "";
+        const rawModel = (idxModel >= 0 ? cols[idxModel] : "") || "";
+        if (!rawModel) continue;
+
+        const brand = rawBrand || detectBrand(rawModel);
+        const fullName = (brand !== "Other" && !rawModel.toLowerCase().startsWith(brand.toLowerCase()))
+          ? `${brand} ${rawModel}`
+          : rawModel;
+        const cleanPriceStr = String(idxPrice >= 0 ? cols[idxPrice] : "").replace(/[^0-9.]/g, "");
+        const priceNum = Number(cleanPriceStr);
+        const priceRm = Number.isFinite(priceNum) && priceNum > 0 ? Math.round(priceNum) : estimateMarketPriceRm(brand, fullName);
+        const weightGrip = (idxWeight >= 0 && cols[idxWeight]) ? cols[idxWeight] : "4U G5";
+        const balance = (idxBalance >= 0 && cols[idxBalance]) ? cols[idxBalance] : "Even-Balance";
+        const style = (idxStyle >= 0 && cols[idxStyle]) ? cols[idxStyle] : "Single (Control)";
+
+        items.push({
+          id: `csv_${i}_${normalizeSearchText(fullName).replace(/\s+/g, "_")}`,
+          brand,
+          racket: fullName,
+          priceRm,
+          priceRange: `RM${priceRm}`,
+          limited: /limited|cny|kurenai|va\b|ultraman/i.test(fullName),
+          weightGrip,
+          balance,
+          paperFlex: "Medium",
+          feelFlex: "Medium",
+          style,
+          scores: inferScoresFromSpec(balance, style),
+          fromCsv: true,
+          aiNoteEn: `${fullName} (${weightGrip}, ${balance}) listed at RM${priceRm} for ${style}.`,
+          aiNoteBm: `${fullName} (${weightGrip}, ${balance}) disenaraikan pada RM${priceRm} untuk gaya ${style}.`
+        });
+      }
+      return items;
+    }
+
+    function updateSyncBadge() {
+      const badge = document.getElementById("liveSyncBadge");
+      if (!badge) return;
+      if (csvStatus === "loaded") {
+        badge.innerHTML = `<span class="live-dot"></span>CSV Catalogue (${csvCatalog.length}) + Community`;
+      } else if (csvStatus === "loading") {
+        badge.innerHTML = `<span class="live-dot"></span>Syncing CSV + Built-In Catalogue`;
+      } else {
+        badge.innerHTML = `<span class="live-dot"></span>Built-In Catalogue + Community`;
+      }
+    }
+
+    async function loadGitHubRacketsCsv() {
+      csvStatus = "loading";
+      updateSyncBadge();
+      try {
+        const res = await fetch(`${GITHUB_RACKETS_CSV_URL}?t=${Date.now()}`, { cache: "no-store" });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const text = await res.text();
+        const parsed = parseRacketsCsv(text);
+        if (parsed.length > 0) {
+          csvCatalog = parsed;
+          csvStatus = "loaded";
+        } else {
+          csvStatus = "fallback";
+        }
+      } catch (e) {
+        csvStatus = "fallback";
+      }
+      updateSyncBadge();
+      const page2Visible = document.getElementById("page2")?.style.display !== "none";
+      const hasQuery = Boolean(document.getElementById("queryText")?.value.trim());
+      if (page2Visible && hasQuery) {
+        recommend();
+      }
+    }
 
     function normalizeUsername(raw) {
       const cleaned = (raw || "").trim().replace(/\s+/g, "").toLowerCase();
@@ -1913,11 +2053,11 @@
 
     function escapeHtml(str) {
       return String(str ?? "")
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#39;");
+        .replace(/&/g, "&")
+        .replace(/</g, "<")
+        .replace(/>/g, ">")
+        .replace(/"/g, """)
+        .replace(/'/g, "'");
     }
 
     function showPage(pageId) {
@@ -1987,20 +2127,28 @@
       if (/flexpower|flex\s*power/.test(low)) return "Flexpower";
       if (/vaxe|featherlight/.test(low)) return "Vaxe";
       if (/hundred|battle\s*900|nitrix/.test(low)) return "Hundred";
+      if (/protech/.test(low)) return "Protech";
+      if (/\bmaxx\b/.test(low)) return "Maxx";
+      if (/\byoung\b/.test(low)) return "Young";
       return "Other";
+    }
+
+    function getCombinedReferenceCatalog() {
+      return [...csvCatalog, ...builtInCatalog];
     }
 
     function estimateMarketPriceRm(brand, racketName) {
       const normRacket = normalizeSearchText(racketName);
-      const catHit = builtInCatalog.find(c => {
+      const refList = getCombinedReferenceCatalog();
+      const catHit = refList.find(c => {
         const normCat = normalizeSearchText(c.racket);
         return normCat === normRacket || normCat.includes(normRacket) || normRacket.includes(normCat);
       });
-      if (catHit) return catHit.priceRm;
+      if (catHit && Number.isFinite(Number(catHit.priceRm))) return Number(catHit.priceRm);
       const brandStreetAvg = {
         "Felet": 420, "Yonex": 650, "Victor": 550, "Li-Ning": 680,
         "Apacs": 165, "Maxbolt": 210, "Kumpoo": 220, "Flexpower": 170,
-        "Vaxe": 190, "Hundred": 240, "Other": 220
+        "Vaxe": 190, "Hundred": 240, "Protech": 200, "Maxx": 210, "Young": 190, "Other": 220
       };
       return brandStreetAvg[brand] || 240;
     }
@@ -2038,6 +2186,7 @@
 
       const searchEl = document.getElementById("feedSearchInput");
       if (searchEl) searchEl.placeholder = t.searchPlaceholder;
+      updateSyncBadge();
     }
 
     function setLang(lang) {
@@ -2254,6 +2403,7 @@
       if (item.style === qStyle) return 4;
       if (qStyle === "Double front (Speed)") return item.scores.speed * 1.0;
       if (qStyle === "Double backcourt (Hard hitter)") return item.scores.power * 1.0;
+      if (qStyle === "Double (Attacking)") return (item.scores.power + item.scores.speed) * 0.55;
       if (qStyle === "Single (Attacking)") return (item.scores.power + item.scores.speed) * 0.55;
       if (qStyle === "Single (Control)") return (item.scores.control + item.scores.comfort) * 0.55;
       if (qStyle === "Mixed") return (item.scores.control + item.scores.speed) * 0.5;
@@ -2262,7 +2412,7 @@
 
     function detectTypedBrandOverride(rawText) {
       const low = normalizeSearchText(rawText);
-      const brands = ["Yonex", "Victor", "Li-Ning", "Felet", "Apacs", "Maxbolt", "Kumpoo", "Flexpower", "Vaxe", "Hundred"];
+      const brands = ["Yonex", "Victor", "Li-Ning", "Felet", "Apacs", "Maxbolt", "Kumpoo", "Flexpower", "Vaxe", "Hundred", "Protech", "Maxx", "Young"];
       for (const b of brands) {
         if (low.includes(normalizeSearchText(b))) return b;
       }
@@ -2296,28 +2446,32 @@
           priceRange: `~RM${estPrice}`,
           limited: /limited|cny|kurenai|va\b|ultraman/i.test(r.racket),
           fromFeed: true,
+          fromCsv: false,
           proofText: r.notes,
           citationLine: `${t.citedFrom} ${r.author} (${r.expYears} ${t.yrs}, ${r.stringSetup}, ${r.helpful} ${t.helpful.toLowerCase()})`
         };
       });
 
-      const catItems = builtInCatalog.map(c => ({
+      const refItems = getCombinedReferenceCatalog().map(c => ({
         ...c,
         fromFeed: false,
-        proofText: currentLang === "bm" ? c.aiNoteBm : c.aiNoteEn,
-        citationLine: t.aiCatalogSource
+        proofText: currentLang === "bm" ? (c.aiNoteBm || c.aiNoteEn) : (c.aiNoteEn || c.aiNoteBm),
+        citationLine: c.fromCsv ? t.csvCatalogSource : t.aiCatalogSource
       }));
 
-      let pool = [...feedItems, ...catItems];
+      let pool = [...feedItems, ...refItems];
       if (qBrand !== "Any") {
         pool = pool.filter(item => (item.brand || "").toLowerCase() === qBrand.toLowerCase());
       }
 
+      // Strict Max Budget (RM) filter so items above qBudget never appear
+      pool = pool.filter(item => Number(item.priceRm) <= qBudget);
+
       if (!pool.length) {
         document.getElementById("results").innerHTML = `<div class="ai-summary-box">${
           currentLang === "bm"
-            ? `Tiada model ditemui untuk jenama <strong>${escapeHtml(qBrand)}</strong> lagi. Cuba tambah post raket ${escapeHtml(qBrand)} di Tab 1!`
-            : `No models found yet for <strong>${escapeHtml(qBrand)}</strong>. Add a ${escapeHtml(qBrand)} racket post on Tab 1 to build community data!`
+            ? `Tiada raket di bawah bajet <strong>RM${qBudget}</strong>${qBrand !== "Any" ? ` untuk jenama <strong>${escapeHtml(qBrand)}</strong>` : ""}. Cuba naikkan Bajet Maksimum (RM) atau tambah post raket di Tab 1!`
+            : `No rackets found within <strong>RM${qBudget}</strong>${qBrand !== "Any" ? ` for brand <strong>${escapeHtml(qBrand)}</strong>` : ""}. Try increasing Max Budget (RM) or add a racket post on Tab 1!`
         }</div>`;
         return;
       }
@@ -2339,15 +2493,10 @@
           }
         }
 
-        if (item.priceRm <= qBudget) {
-          score += 3.5;
-        } else {
-          score -= Math.min(4, (item.priceRm - qBudget) / 160);
-        }
-
+        score += 3.5; // Within strict Max Budget (RM)
         score += playstyleScoreBonus(item, qStyle);
-        if (qWeight === "Any" || item.weightGrip.startsWith(qWeight)) score += 2.5;
-        if (qPriority !== "balanced" && item.scores[qPriority]) score += item.scores[qPriority] * 1.1;
+        if (qWeight === "Any" || String(item.weightGrip || "").startsWith(qWeight)) score += 2.5;
+        if (qPriority !== "balanced" && item.scores && item.scores[qPriority]) score += item.scores[qPriority] * 1.1;
 
         tokens.forEach(w => {
           if (hay.includes(w)) score += 2;
@@ -2359,7 +2508,7 @@
       const top10 = [];
       const seen = new Set();
       for (const item of scored) {
-        const k = normalizeSearchText(item.racket);
+        const k = normalizeSearchText(`${item.racket} ${item.weightGrip || ""}`);
         if (!seen.has(k)) {
           seen.add(k);
           top10.push(item);
@@ -2377,7 +2526,9 @@
         const fallbackSrc = makeFallbackSvg(r.racket, r.brand);
         const badge = r.fromFeed
           ? `<span class="stat-pill">${currentLang === "bm" ? "Ulasan Komuniti" : "Community Review"}</span>`
-          : `<span class="meta-tag">${currentLang === "bm" ? "Pasaran Malaysia" : "MY Market Data"}</span>`;
+          : (r.fromCsv
+            ? `<span class="meta-tag">${currentLang === "bm" ? "CSV GitHub" : "GitHub CSV"}</span>`
+            : `<span class="meta-tag">${currentLang === "bm" ? "Pasaran Malaysia" : "MY Market Data"}</span>`);
         const limBadge = r.limited
           ? `<span class="limited-pill">LIMITED EDITION</span>`
           : "";
@@ -2500,6 +2651,7 @@
     bindAllEvents();
     applyLangLabels();
     syncGateVisibility();
+    loadGitHubRacketsCsv();
   </script>
 </body>
 </html>
