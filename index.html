@@ -10,6 +10,7 @@
   <meta name="apple-mobile-web-app-title" content="RacketBuddy" />
   <meta name="description" content="RacketBuddy (RB) — Find your best racket as your buddy." />
   <title>RacketBuddy (RB) — Find your best racket as your buddy</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     :root {
       --bg: #e6f2ed;
@@ -574,8 +575,8 @@
 
       <!-- LOGIN FORM -->
       <form id="loginForm" class="form-align" style="display:none;" novalidate>
-        <label for="loginUsername" id="l_lblUsername">Username *</label>
-        <input id="loginUsername" placeholder="e.g. @AimanCourt" autocomplete="username" />
+        <label for="loginUsername" id="l_lblUsername">Username or Email *</label>
+        <input id="loginUsername" placeholder="e.g. @AimanCourt or aiman@example.com" autocomplete="username" />
 
         <label for="loginPass" id="l_lblPass">Password *</label>
         <input id="loginPass" type="password" placeholder="Enter your password" autocomplete="current-password" />
@@ -629,9 +630,9 @@
     <div class="modal-card">
       <h2 style="margin:0 0 8px;" id="rh_title">Forgot Password Help</h2>
       <p class="hint" id="rh_body" style="margin:0 0 12px;">
-        • <strong>Know your Username & Email:</strong> Click <em>Forgot Password?</em> on the Login tab to set a new password (at least 8 characters) immediately.<br/>
+        • <strong>Know your Username & Email:</strong> Click <em>Forgot Password?</em> on the Login tab to reset your password.<br/>
         • <strong>Forgot your Email:</strong> Check any email address you usually use for badminton/apps, or ask a teammate to look up your exact <code>@username</code> in the RacketBuddy Feed.<br/>
-        • <strong>Using a new device/browser:</strong> Accounts created in local browser storage stay on that device unless saved/synced. If your account is not found or was inactive for 60 days, register a new account with an unused username and email.
+        • <strong>Using a new device/browser:</strong> With Supabase enabled, accounts and posts sync across devices; if an account is missing, register a new account with an unused username and email.
       </p>
       <button type="button" class="primary" style="margin-top:4px;" id="rh_btnClose" data-action="close-help">Got It</button>
     </div>
@@ -643,7 +644,7 @@
       <h2 style="margin:0 0 8px;" id="inst_title">Install RacketBuddy on Your Phone</h2>
       <p class="hint" id="inst_body" style="margin:0 0 12px;">
         Web apps install as a Home Screen app rather than an <code>.apk</code> file from a single HTML page:<br/>
-        • <strong>Android (Chrome):</strong> Tap <strong>⋮</strong> (top right) → tap <strong>Add to Home screen</strong> or <strong>Install app</strong>. (Automatic install prompts require serving the file over <code>https://</code> or <code>localhost</code> rather than <code>file://</code>.)<br/>
+        • <strong>Android (Chrome):</strong> Tap <strong>⋮</strong> (top right) → tap <strong>Add to Home screen</strong> or <strong>Install app</strong>.<br/>
         • <strong>iPhone / iPad (Safari):</strong> Tap <strong>Share</strong> → tap <strong>Add to Home Screen</strong> → tap <strong>Add</strong>.<br/>
         • <strong>Need a real <code>.apk</code>?</strong> Wrap this <code>index.html</code> inside Capacitor or PWABuilder and export an Android APK.
       </p>
@@ -870,6 +871,7 @@
               <button type="button" class="filter-chip" data-style="Mixed">Mixed</button>
             </div>
             <div id="feed"></div>
+            <button type="button" id="loadMoreFeedBtn" class="ghost" style="margin-top:12px;display:none;" data-action="load-more-feed">Load More Posts</button>
           </div>
         </div>
       </section>
@@ -959,6 +961,13 @@
     const MIN_PASSWORD_LEN = 8;
     const INACTIVE_DAYS_MS = 60 * 24 * 60 * 60 * 1000;
     const GITHUB_RACKETS_CSV_URL = "https://raw.githubusercontent.com/kylfleex/racketbuddy/refs/heads/main/rackets.csv";
+    const SUPABASE_URL = "https://xrpotytssefqnyhosrmi.supabase.co";
+    const SUPABASE_ANON_KEY = "sb_publishable_D2mCyVmZeJKTCPNSLySgCA_AMM0NN9x";
+    const FEED_PAGE_SIZE = 30;
+
+    const sb = window.supabase && SUPABASE_URL && SUPABASE_ANON_KEY
+      ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+      : null;
 
     const memoryFallback = {};
     const safeStorage = {
@@ -1000,6 +1009,8 @@
     let activeManifestUrl = null;
     let csvCatalog = [];
     let csvStatus = "loading"; // "loading" | "loaded" | "fallback"
+    let activeSupabaseUser = null;
+    let hasMoreCloudPosts = false;
 
     function createAppIconDataUrl(size) {
       const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 120 120">
@@ -1112,7 +1123,7 @@
         gLblAge: "Age",
         gLblStyle: "Main Playstyle",
         btnRegister: "Create Account",
-        lLblUsername: "Username *",
+        lLblUsername: "Username or Email *",
         lLblPass: "Password *",
         btnLogin: "Login",
         btnForgot: "Forgot Password?",
@@ -1189,7 +1200,7 @@
         errPassMismatch: "New Password and Confirm Password do not match.",
         errUsernameTaken: "That username is already taken. Please choose another username.",
         errEmailTaken: "This email is already registered to an account (one email = one account).",
-        errLoginInvalid: "Invalid username or password. Make sure you registered first on the Register tab.",
+        errLoginInvalid: "Invalid username/email or password. Make sure you registered first on the Register tab.",
         errForgotMatch: "No account matches both that username and email.",
         resetSuccess: "Password reset! You can now log in with your new password."
       },
@@ -1206,7 +1217,7 @@
         gLblAge: "Umur",
         gLblStyle: "Gaya Main Utama",
         btnRegister: "Daftar Akaun",
-        lLblUsername: "Username *",
+        lLblUsername: "Username atau Emel *",
         lLblPass: "Kata Laluan *",
         btnLogin: "Log Masuk",
         btnForgot: "Lupa Kata Laluan?",
@@ -1579,12 +1590,13 @@
     function updateSyncBadge() {
       const badge = document.getElementById("liveSyncBadge");
       if (!badge) return;
+      const cloudLabel = sb ? "Supabase" : "Local";
       if (csvStatus === "loaded") {
-        badge.innerHTML = `<span class="live-dot"></span>CSV Catalogue (${csvCatalog.length}) + Community`;
+        badge.innerHTML = `<span class="live-dot"></span>${cloudLabel} + CSV (${csvCatalog.length})`;
       } else if (csvStatus === "loading") {
-        badge.innerHTML = `<span class="live-dot"></span>Syncing CSV + Built-In Catalogue`;
+        badge.innerHTML = `<span class="live-dot"></span>${cloudLabel} + Syncing CSV`;
       } else {
-        badge.innerHTML = `<span class="live-dot"></span>Built-In Catalogue + Community`;
+        badge.innerHTML = `<span class="live-dot"></span>${cloudLabel} + Catalogue`;
       }
     }
 
@@ -1733,7 +1745,56 @@
       if (loginMsg) loginMsg.textContent = "";
     }
 
-    function submitRegister() {
+    async function syncCloudFeed(reset = true) {
+      if (!sb) return;
+      try {
+        const from = reset ? 0 : reviews.length;
+        const to = from + FEED_PAGE_SIZE - 1;
+        const { data: cloudPosts, error } = await sb
+          .from("racket_posts")
+          .select("*")
+          .order("created_at", { ascending: false })
+          .range(from, to);
+
+        if (error || !Array.isArray(cloudPosts)) return;
+
+        const mapped = cloudPosts.map(p => normalizeRow({
+          id: p.id,
+          author: p.author_handle,
+          brand: p.brand,
+          racket: p.racket_model,
+          weight_grip: p.weight_grip,
+          balance: p.balance,
+          style: p.style,
+          string_setup: p.string_setup,
+          notes: p.notes,
+          helpful: p.helpful_count
+        }));
+
+        hasMoreCloudPosts = cloudPosts.length === FEED_PAGE_SIZE;
+        reviews = reset ? mapped : [...reviews, ...mapped];
+        safeStorage.setItem("rb_reviews_v10", JSON.stringify(reviews));
+
+        if (activeSupabaseUser) {
+          const { data: likes } = await sb
+            .from("post_likes")
+            .select("post_id")
+            .eq("user_id", activeSupabaseUser.id);
+          const me = getActiveHandle();
+          if (me && Array.isArray(likes)) {
+            userLikedMap[me] = likes.map(x => String(x.post_id));
+            safeStorage.setItem("rb_user_likes_v10", JSON.stringify(userLikedMap));
+          }
+        }
+
+        const loadMoreBtn = document.getElementById("loadMoreFeedBtn");
+        if (loadMoreBtn) {
+          loadMoreBtn.style.display = hasMoreCloudPosts ? "inline-block" : "none";
+        }
+      } catch (e) {}
+    }
+
+    async function submitRegister() {
       accounts = pruneInactiveAccounts(accounts);
       const t = uiText[currentLang];
       const msgEl = document.getElementById("regMsg");
@@ -1771,23 +1832,63 @@
         }
         return;
       }
-      if (findAccountKeyByUsername(username)) {
-        if (msgEl) {
-          msgEl.textContent = t.errUsernameTaken;
-          msgEl.className = "status-msg status-err";
-        }
-        return;
-      }
-      if (isEmailAlreadyUsed(email)) {
-        if (msgEl) {
-          msgEl.textContent = t.errEmailTaken;
-          msgEl.className = "status-msg status-err";
-        }
-        return;
-      }
 
       const age = Number(document.getElementById("gateAge")?.value) || 24;
       const style = document.getElementById("gateStyle")?.value || "Single (Control)";
+
+      if (sb) {
+        const { data: taken } = await sb.from("profiles").select("id").eq("username", username).maybeSingle();
+        if (taken) {
+          if (msgEl) {
+            msgEl.textContent = t.errUsernameTaken;
+            msgEl.className = "status-msg status-err";
+          }
+          return;
+        }
+
+        const { data, error } = await sb.auth.signUp({
+          email,
+          password: pass,
+          options: { data: { username, age, style } }
+        });
+
+        if (error) {
+          if (msgEl) {
+            msgEl.textContent = error.message;
+            msgEl.className = "status-msg status-err";
+          }
+          return;
+        }
+
+        if (data?.user) {
+          await sb.from("profiles").upsert({ id: data.user.id, username, email, age, style });
+        }
+
+        if (!data?.session) {
+          if (msgEl) {
+            msgEl.textContent = "Account created! Check your email to confirm, then log in.";
+            msgEl.className = "status-msg status-ok";
+          }
+          return;
+        }
+
+        activeSupabaseUser = data.user;
+      } else {
+        if (findAccountKeyByUsername(username)) {
+          if (msgEl) {
+            msgEl.textContent = t.errUsernameTaken;
+            msgEl.className = "status-msg status-err";
+          }
+          return;
+        }
+        if (isEmailAlreadyUsed(email)) {
+          if (msgEl) {
+            msgEl.textContent = t.errEmailTaken;
+            msgEl.className = "status-msg status-err";
+          }
+          return;
+        }
+      }
 
       accounts[username] = {
         username,
@@ -1806,16 +1907,79 @@
       if (document.getElementById("regPass")) document.getElementById("regPass").value = "";
       if (document.getElementById("regConfirmPass")) document.getElementById("regConfirmPass").value = "";
       if (msgEl) msgEl.textContent = "";
+      await syncCloudFeed(true);
       syncGateVisibility();
     }
 
-    function submitLogin() {
+    async function submitLogin() {
       accounts = pruneInactiveAccounts(accounts);
       const t = uiText[currentLang];
       const msgEl = document.getElementById("loginMsg");
 
-      const username = normalizeUsername(document.getElementById("loginUsername")?.value);
+      const rawLogin = (document.getElementById("loginUsername")?.value || "").trim();
       const pass = document.getElementById("loginPass")?.value || "";
+
+      if (!rawLogin || !pass) {
+        if (msgEl) {
+          msgEl.textContent = t.errLoginInvalid;
+          msgEl.className = "status-msg status-err";
+        }
+        return;
+      }
+
+      if (sb) {
+        let email = normalizeEmail(rawLogin);
+        let fallbackHandle = normalizeUsername(rawLogin);
+
+        if (!email.includes("@")) {
+          const { data: prof } = await sb
+            .from("profiles")
+            .select("email, username, age, style")
+            .eq("username", fallbackHandle)
+            .maybeSingle();
+          if (!prof?.email) {
+            if (msgEl) {
+              msgEl.textContent = t.errLoginInvalid;
+              msgEl.className = "status-msg status-err";
+            }
+            return;
+          }
+          email = normalizeEmail(prof.email);
+        }
+
+        const { data, error } = await sb.auth.signInWithPassword({ email, password: pass });
+        if (error || !data?.user) {
+          if (msgEl) {
+            msgEl.textContent = error?.message || t.errLoginInvalid;
+            msgEl.className = "status-msg status-err";
+          }
+          return;
+        }
+
+        activeSupabaseUser = data.user;
+        const { data: prof } = await sb.from("profiles").select("*").eq("id", data.user.id).maybeSingle();
+        const resolvedHandle = normalizeUsername(
+          prof?.username || data.user.user_metadata?.username || fallbackHandle || email.split("@")[0]
+        );
+
+        profile = {
+          handle: resolvedHandle,
+          age: Number(prof?.age || data.user.user_metadata?.age) || 24,
+          years: Number(profile.years) || 6,
+          style: prof?.style || data.user.user_metadata?.style || "Single (Control)"
+        };
+        currentSession = { handle: resolvedHandle };
+        safeStorage.setItem("rb_profile_v10", JSON.stringify(profile));
+        safeStorage.setItem("rb_session_v10", JSON.stringify(currentSession));
+
+        if (document.getElementById("loginPass")) document.getElementById("loginPass").value = "";
+        if (msgEl) msgEl.textContent = "";
+        await syncCloudFeed(true);
+        syncGateVisibility();
+        return;
+      }
+
+      const username = normalizeUsername(rawLogin);
       const key = findAccountKeyByUsername(username);
 
       if (!key || !accounts[key] || accounts[key].pass !== pass) {
@@ -1862,7 +2026,7 @@
       document.getElementById("recoveryHelpModal")?.classList.remove("open");
     }
 
-    function submitForgotPassword() {
+    async function submitForgotPassword() {
       accounts = pruneInactiveAccounts(accounts);
       const t = uiText[currentLang];
       const msgEl = document.getElementById("fpMsg");
@@ -1871,6 +2035,31 @@
       const email = normalizeEmail(document.getElementById("fpEmail")?.value);
       const newPass = document.getElementById("fpNewPass")?.value || "";
       const confirmPass = document.getElementById("fpConfirmPass")?.value || "";
+
+      if (sb) {
+        if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+          if (msgEl) {
+            msgEl.textContent = t.errEmailInvalid;
+            msgEl.className = "status-msg status-err";
+          }
+          return;
+        }
+        const { error } = await sb.auth.resetPasswordForEmail(email, {
+          redirectTo: window.location.href.split("#")[0]
+        });
+        if (error) {
+          if (msgEl) {
+            msgEl.textContent = error.message;
+            msgEl.className = "status-msg status-err";
+          }
+          return;
+        }
+        if (msgEl) {
+          msgEl.textContent = "Password reset link sent to your email.";
+          msgEl.className = "status-msg status-ok";
+        }
+        return;
+      }
 
       const key = findAccountKeyByUsername(username);
       if (!key || !accounts[key] || normalizeEmail(accounts[key].email) !== email) {
@@ -1910,7 +2099,11 @@
       closeForgotModal();
     }
 
-    function signOutToGate() {
+    async function signOutToGate() {
+      if (sb) {
+        try { await sb.auth.signOut(); } catch (e) {}
+      }
+      activeSupabaseUser = null;
       currentSession = null;
       isDevMode = false;
       safeStorage.removeItem("rb_session_v10");
@@ -1944,7 +2137,9 @@
 
     function syncGateVisibility() {
       accounts = pruneInactiveAccounts(accounts);
-      const loggedIn = Boolean(currentSession && currentSession.handle && accounts[currentSession.handle]);
+      const loggedIn = Boolean(
+        currentSession && currentSession.handle && (accounts[currentSession.handle] || activeSupabaseUser)
+      );
       const homeGate = document.getElementById("homeGate");
       const mainApp = document.getElementById("mainApp");
       if (homeGate) homeGate.style.display = loggedIn ? "none" : "flex";
@@ -2002,9 +2197,16 @@
       }
     }
 
-    function clearMyPosts() {
+    async function clearMyPosts() {
       const me = getActiveHandle();
       if (!me) return;
+      if (sb && activeSupabaseUser) {
+        await sb.from("racket_posts").delete().eq("user_id", activeSupabaseUser.id);
+        await syncCloudFeed(true);
+        renderFeed();
+        setStatusMsg(currentLang === "bm" ? `Dipadam post milik ${me}.` : `Cleared posts by ${me}.`, false);
+        return;
+      }
       const beforeLen = reviews.length;
       reviews = reviews.filter(r => normalizeUsername(r.author) !== me);
       safeStorage.setItem("rb_reviews_v10", JSON.stringify(reviews));
@@ -2029,7 +2231,7 @@
       setStatusMsg(currentLang === "bm" ? "[DEV] Semua post feed telah dikosongkan." : "[DEV] All feed posts cleared.", false);
     }
 
-    function deleteSinglePost(id) {
+    async function deleteSinglePost(id) {
       const targetId = String(id);
       const target = reviews.find(r => String(r.id) === targetId);
       if (!target) return;
@@ -2038,6 +2240,13 @@
       const isOwner = normalizeUsername(target.author) === me;
       if (!isOwner && !isDevMode) {
         setStatusMsg(currentLang === "bm" ? "Dalam User Mode, anda hanya boleh memadam post anda sendiri." : "In User Mode, you can only delete your own posts.", true);
+        return;
+      }
+
+      if (sb && activeSupabaseUser && isOwner) {
+        await sb.from("racket_posts").delete().eq("id", targetId).eq("user_id", activeSupabaseUser.id);
+        await syncCloudFeed(true);
+        renderFeed();
         return;
       }
 
@@ -2207,7 +2416,7 @@
       el.className = "status-msg " + (isError ? "status-err" : "status-ok");
     }
 
-    function submitCombinedPost() {
+    async function submitCombinedPost() {
       const t = uiText[currentLang];
       const rawRacket = document.getElementById("racket").value.trim();
       const notes = document.getElementById("notes").value.trim();
@@ -2258,17 +2467,38 @@
         helpful: 0
       });
 
-      reviews.unshift(newPost);
-      safeStorage.setItem("rb_reviews_v10", JSON.stringify(reviews));
-      renderFeed();
+      if (sb && activeSupabaseUser) {
+        const { error } = await sb.from("racket_posts").insert({
+          user_id: activeSupabaseUser.id,
+          author_handle: handleVal,
+          brand,
+          racket_model: racket,
+          weight_grip: newPost.weightGrip,
+          balance: newPost.balance,
+          style: styleVal,
+          string_setup: newPost.stringSetup,
+          notes,
+          helpful_count: 0
+        });
+        if (!error) {
+          await syncCloudFeed(true);
+        } else {
+          reviews.unshift(newPost);
+          safeStorage.setItem("rb_reviews_v10", JSON.stringify(reviews));
+        }
+      } else {
+        reviews.unshift(newPost);
+        safeStorage.setItem("rb_reviews_v10", JSON.stringify(reviews));
+      }
 
+      renderFeed();
       document.getElementById("racket").value = "";
       document.getElementById("stringSetup").value = "";
       document.getElementById("notes").value = "";
       setStatusMsg(t.postSaved, false);
     }
 
-    function toggleLikePost(id) {
+    async function toggleLikePost(id) {
       const targetId = String(id);
       const item = reviews.find(r => String(r.id) === targetId);
       if (!item) return;
@@ -2284,6 +2514,15 @@
         likesSet.add(targetId);
       }
       saveUserLikesSet(likesSet);
+
+      if (sb && activeSupabaseUser) {
+        if (alreadyLiked) {
+          await sb.from("post_likes").delete().eq("post_id", targetId).eq("user_id", activeSupabaseUser.id);
+        } else {
+          await sb.from("post_likes").insert({ post_id: targetId, user_id: activeSupabaseUser.id });
+        }
+        await sb.from("racket_posts").update({ helpful_count: nextHelpful }).eq("id", targetId);
+      }
 
       item.helpful = nextHelpful;
       safeStorage.setItem("rb_reviews_v10", JSON.stringify(reviews));
@@ -2464,7 +2703,6 @@
         pool = pool.filter(item => (item.brand || "").toLowerCase() === qBrand.toLowerCase());
       }
 
-      // Strict Max Budget (RM) filter so items above qBudget never appear
       pool = pool.filter(item => Number(item.priceRm) <= qBudget);
 
       if (!pool.length) {
@@ -2493,7 +2731,7 @@
           }
         }
 
-        score += 3.5; // Within strict Max Budget (RM)
+        score += 3.5;
         score += playstyleScoreBonus(item, qStyle);
         if (qWeight === "Any" || String(item.weightGrip || "").startsWith(qWeight)) score += 2.5;
         if (qPriority !== "balanced" && item.scores && item.scores[qPriority]) score += item.scores[qPriority] * 1.1;
@@ -2635,6 +2873,9 @@
         else if (action === "toggle-dev") toggleDevMode();
         else if (action === "clear-mine") clearMyPosts();
         else if (action === "clear-all") clearEntireFeed();
+        else if (action === "load-more-feed") {
+          syncCloudFeed(false).then(renderFeed);
+        }
         else if (action === "logout") {
           closeSidebar();
           signOutToGate();
@@ -2647,11 +2888,39 @@
       document.getElementById("feedSearchInput")?.addEventListener("input", renderFeed);
     }
 
-    setupPwaManifest();
-    bindAllEvents();
-    applyLangLabels();
-    syncGateVisibility();
-    loadGitHubRacketsCsv();
+    async function initApp() {
+      setupPwaManifest();
+      bindAllEvents();
+      applyLangLabels();
+
+      if (sb) {
+        try {
+          const { data: { session } } = await sb.auth.getSession();
+          if (session?.user) {
+            activeSupabaseUser = session.user;
+            const { data: prof } = await sb.from("profiles").select("*").eq("id", session.user.id).maybeSingle();
+            const handle = normalizeUsername(
+              prof?.username || session.user.user_metadata?.username || session.user.email?.split("@")[0] || "player"
+            );
+            profile = {
+              handle,
+              age: Number(prof?.age || session.user.user_metadata?.age) || 24,
+              years: Number(profile.years) || 6,
+              style: prof?.style || session.user.user_metadata?.style || "Single (Control)"
+            };
+            currentSession = { handle };
+            safeStorage.setItem("rb_profile_v10", JSON.stringify(profile));
+            safeStorage.setItem("rb_session_v10", JSON.stringify(currentSession));
+            await syncCloudFeed(true);
+          }
+        } catch (e) {}
+      }
+
+      syncGateVisibility();
+      loadGitHubRacketsCsv();
+    }
+
+    initApp();
   </script>
 </body>
 </html>
